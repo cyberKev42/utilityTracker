@@ -13,38 +13,56 @@ const getApiUrl = () => {
 
 export const API_URL = getApiUrl();
 
+function getHeaders() {
+  const headers = { 'Content-Type': 'application/json' };
+  const token = localStorage.getItem('token');
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  return headers;
+}
+
+async function handleResponse(res) {
+  const data = await res.json();
+  if (!res.ok) {
+    const error = new Error(data.error || `API Error: ${res.status}`);
+    error.status = res.status;
+    throw error;
+  }
+  return data;
+}
+
 export const api = {
   async get(endpoint) {
-    const res = await fetch(`${API_URL}${endpoint}`);
-    if (!res.ok) throw new Error(`API Error: ${res.status}`);
-    return res.json();
+    const res = await fetch(`${API_URL}${endpoint}`, {
+      headers: getHeaders(),
+    });
+    return handleResponse(res);
   },
 
   async post(endpoint, data) {
     const res = await fetch(`${API_URL}${endpoint}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getHeaders(),
       body: JSON.stringify(data),
     });
-    if (!res.ok) throw new Error(`API Error: ${res.status}`);
-    return res.json();
+    return handleResponse(res);
   },
 
   async put(endpoint, data) {
     const res = await fetch(`${API_URL}${endpoint}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getHeaders(),
       body: JSON.stringify(data),
     });
-    if (!res.ok) throw new Error(`API Error: ${res.status}`);
-    return res.json();
+    return handleResponse(res);
   },
 
   async delete(endpoint) {
     const res = await fetch(`${API_URL}${endpoint}`, {
       method: 'DELETE',
+      headers: getHeaders(),
     });
-    if (!res.ok) throw new Error(`API Error: ${res.status}`);
-    return res.json();
+    return handleResponse(res);
   },
 };

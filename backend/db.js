@@ -4,10 +4,34 @@ const { Pool } = pg;
 
 let pool = null;
 
+async function initializeSchema() {
+  if (!pool) return;
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS utility_entries (
+      id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+      user_id UUID NOT NULL,
+      type VARCHAR(20) NOT NULL CHECK (type IN ('electricity', 'water', 'fuel')),
+      usage_amount NUMERIC NOT NULL,
+      cost_amount NUMERIC NOT NULL,
+      unit VARCHAR(20) NOT NULL,
+      date DATE NOT NULL,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    )
+  `);
+
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS idx_utility_entries_user_id ON utility_entries(user_id)
+  `);
+
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS idx_utility_entries_user_date ON utility_entries(user_id, date DESC)
+  `);
+}
+
 export async function connect() {
   const databaseUrl = process.env.DATABASE_URL;
 
-  // Skip connection if no DATABASE_URL provided
   if (!databaseUrl) {
     return null;
   }
@@ -15,11 +39,11 @@ export async function connect() {
   try {
     pool = new Pool({
       connectionString: databaseUrl,
-      ssl: { rejectUnauthorized: false }
+      ssl: { rejectUnauthorized: false },
     });
 
-    // Test the connection
     await pool.query('SELECT 1');
+    await initializeSchema();
     return pool;
   } catch (error) {
     console.error('Failed to connect to database:', error.message);
@@ -35,37 +59,5 @@ export async function close() {
   if (pool) {
     await pool.end();
     pool = null;
-  }
-}
-
-// #PLACEHOLDER - Remove this function when user starts to work on his project
-export async function testConnection() {
-  const databaseUrl = process.env.DATABASE_URL;
-
-  if (!databaseUrl) {
-    return {
-      connected: false,
-      message: 'DATABASE_URL not configured'
-    };
-  }
-
-  try {
-    const testPool = new Pool({
-      connectionString: databaseUrl,
-      ssl: { rejectUnauthorized: false }
-    });
-
-    const result = await testPool.query('SELECT NOW() as current_time');
-    await testPool.end();
-
-    return {
-      connected: true,
-      message: `Database connected (${result.rows[0].current_time})`
-    };
-  } catch (error) {
-    return {
-      connected: false,
-      message: `Database connection failed: ${error.message}`
-    };
   }
 }
