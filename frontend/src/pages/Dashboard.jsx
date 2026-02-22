@@ -37,7 +37,7 @@ function formatDate(dateStr) {
 
 export default function Dashboard() {
   const { t } = useTranslation();
-  const [stats, setStats] = useState([]);
+  const [stats, setStats] = useState(null);
   const [recentEntries, setRecentEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -60,9 +60,9 @@ export default function Dashboard() {
     load();
   }, []);
 
-  const getStatByType = (type) => stats.find((s) => s.type === type);
-  const totalCost = stats.reduce((sum, s) => sum + (s.total_cost || 0), 0);
-  const totalCount = stats.reduce((sum, s) => sum + (s.entry_count || 0), 0);
+  const getStatByType = (type) => stats?.byType?.find((s) => s.type === type);
+  const totalCost = stats?.totals?.total_cost || 0;
+  const totalCount = stats?.totals?.entry_count || 0;
 
   if (loading) {
     return (

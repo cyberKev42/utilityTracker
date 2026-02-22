@@ -94,7 +94,25 @@
   },
   "statistics": {
     "title": "Statistiken",
-    "description": "Sehen Sie Ihre Verbrauchsstatistiken ein."
+    "description": "Sehen Sie Ihre Verbrauchsstatistiken ein.",
+    "noData": "Noch keine Daten vorhanden. Fügen Sie Einträge hinzu, um Statistiken zu sehen.",
+    "addEntries": "Einträge hinzufügen",
+    "spendingOverTime": "Ausgaben im Zeitverlauf",
+    "spendingOverTimeDesc": "Monatlicher Kostentrend aller Verbrauchsarten",
+    "spendingByCategory": "Ausgaben nach Kategorie",
+    "spendingByCategoryDesc": "Kostenaufteilung pro Verbrauchsart",
+    "costDistribution": "Kostenverteilung",
+    "costDistributionDesc": "Prozentualer Anteil jeder Verbrauchsart",
+    "month": "Monat",
+    "cost": "Kosten",
+    "entries": "Einträge",
+    "totalCost": "Gesamtkosten",
+    "avgCost": "Durchschn. Kosten",
+    "electricity": "Strom",
+    "water": "Wasser",
+    "fuel": "Brennstoff",
+    "noMonthlyData": "Noch nicht genug Daten für einen Zeitverlauf.",
+    "noCategoryData": "Keine Kategoriedaten vorhanden."
   },
   "settings": {
     "title": "Einstellungen",

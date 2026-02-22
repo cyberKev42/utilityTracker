@@ -94,7 +94,25 @@
   },
   "statistics": {
     "title": "Statistics",
-    "description": "View your utility usage statistics."
+    "description": "View your utility usage statistics.",
+    "noData": "No data available yet. Add entries to see your statistics.",
+    "addEntries": "Add entries",
+    "spendingOverTime": "Spending Over Time",
+    "spendingOverTimeDesc": "Monthly cost trend across all utilities",
+    "spendingByCategory": "Spending by Category",
+    "spendingByCategoryDesc": "Total cost breakdown per utility type",
+    "costDistribution": "Cost Distribution",
+    "costDistributionDesc": "Percentage share of each utility",
+    "month": "Month",
+    "cost": "Cost",
+    "entries": "Entries",
+    "totalCost": "Total Cost",
+    "avgCost": "Avg Cost",
+    "electricity": "Electricity",
+    "water": "Water",
+    "fuel": "Fuel",
+    "noMonthlyData": "Not enough data for a time trend yet.",
+    "noCategoryData": "No category data available."
   },
   "settings": {
     "title": "Settings",
