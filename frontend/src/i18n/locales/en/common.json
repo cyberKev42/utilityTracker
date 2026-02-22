@@ -1,0 +1,34 @@
+{
+  "app": {
+    "name": "UtilityTracker"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "entries": "Entries",
+    "statistics": "Statistics",
+    "logout": "Log out"
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signingIn": "Signing in...",
+    "createAccount": "Create account",
+    "creatingAccount": "Creating account...",
+    "email": "Email",
+    "password": "Password",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "createOne": "Create one"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "description": "Overview of your utility consumption."
+  },
+  "entries": {
+    "title": "Utility Entries",
+    "description": "Manage your utility entries."
+  },
+  "statistics": {
+    "title": "Statistics",
+    "description": "View your utility usage statistics."
+  }
+}

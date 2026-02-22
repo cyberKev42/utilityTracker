@@ -1,8 +1,11 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/useAuth';
 import { Button } from '../components/ui/button';
+import { LanguageSwitcher } from '../components/LanguageSwitcher';
 
 export function MainLayout() {
+  const { t } = useTranslation();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -12,9 +15,9 @@ export function MainLayout() {
   };
 
   const navItems = [
-    { to: '/', label: 'Dashboard' },
-    { to: '/entries', label: 'Entries' },
-    { to: '/statistics', label: 'Statistics' },
+    { to: '/', label: t('nav.dashboard') },
+    { to: '/entries', label: t('nav.entries') },
+    { to: '/statistics', label: t('nav.statistics') },
   ];
 
   return (
@@ -23,7 +26,7 @@ export function MainLayout() {
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <nav className="flex items-center gap-6">
             <span className="text-lg font-semibold text-foreground tracking-tight">
-              UtilityTracker
+              {t('app.name')}
             </span>
             <div className="hidden sm:flex items-center gap-1">
               {navItems.map((item) => (
@@ -44,12 +47,13 @@ export function MainLayout() {
               ))}
             </div>
           </nav>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <LanguageSwitcher />
             <span className="hidden sm:inline text-sm text-muted-foreground">
               {user?.email}
             </span>
             <Button variant="outline" size="sm" onClick={handleLogout}>
-              Log out
+              {t('nav.logout')}
             </Button>
           </div>
         </div>

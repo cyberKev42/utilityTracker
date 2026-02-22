@@ -1,0 +1,34 @@
+{
+  "app": {
+    "name": "UtilityTracker"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "entries": "Einträge",
+    "statistics": "Statistiken",
+    "logout": "Abmelden"
+  },
+  "auth": {
+    "signIn": "Anmelden",
+    "signingIn": "Anmeldung...",
+    "createAccount": "Konto erstellen",
+    "creatingAccount": "Konto wird erstellt...",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "noAccount": "Noch kein Konto?",
+    "hasAccount": "Bereits ein Konto?",
+    "createOne": "Jetzt registrieren"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "description": "Überblick über Ihren Verbrauch."
+  },
+  "entries": {
+    "title": "Verbrauchseinträge",
+    "description": "Verwalten Sie Ihre Verbrauchseinträge."
+  },
+  "statistics": {
+    "title": "Statistiken",
+    "description": "Sehen Sie Ihre Verbrauchsstatistiken ein."
+  }
+}
