@@ -1,6 +1,7 @@
 {
   "app": {
-    "name": "UtilityTracker"
+    "name": "UtilityTracker",
+    "tagline": "Track your utility consumption"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -13,13 +14,29 @@
   "auth": {
     "signIn": "Sign in",
     "signingIn": "Signing in...",
+    "signInSubtitle": "Enter your credentials to access your account",
     "createAccount": "Create account",
     "creatingAccount": "Creating account...",
+    "createAccountSubtitle": "Start tracking your utility consumption today",
     "email": "Email",
+    "emailPlaceholder": "you@example.com",
     "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "confirmPassword": "Confirm password",
+    "confirmPasswordPlaceholder": "Repeat your password",
     "noAccount": "Don't have an account?",
     "hasAccount": "Already have an account?",
-    "createOne": "Create one"
+    "createOne": "Create one",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "validation": {
+      "emailRequired": "Email is required",
+      "emailInvalid": "Please enter a valid email address",
+      "passwordRequired": "Password is required",
+      "passwordMinLength": "Password must be at least 6 characters",
+      "confirmPasswordRequired": "Please confirm your password",
+      "passwordsMismatch": "Passwords do not match"
+    }
   },
   "dashboard": {
     "title": "Dashboard",

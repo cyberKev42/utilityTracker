@@ -1,6 +1,7 @@
 {
   "app": {
-    "name": "UtilityTracker"
+    "name": "UtilityTracker",
+    "tagline": "Verbrauch einfach im Blick"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -13,13 +14,29 @@
   "auth": {
     "signIn": "Anmelden",
     "signingIn": "Anmeldung...",
+    "signInSubtitle": "Melden Sie sich mit Ihren Zugangsdaten an",
     "createAccount": "Konto erstellen",
     "creatingAccount": "Konto wird erstellt...",
+    "createAccountSubtitle": "Beginnen Sie noch heute mit der Verbrauchserfassung",
     "email": "E-Mail",
+    "emailPlaceholder": "name@beispiel.de",
     "password": "Passwort",
+    "passwordPlaceholder": "Passwort eingeben",
+    "confirmPassword": "Passwort bestätigen",
+    "confirmPasswordPlaceholder": "Passwort wiederholen",
     "noAccount": "Noch kein Konto?",
     "hasAccount": "Bereits ein Konto?",
-    "createOne": "Jetzt registrieren"
+    "createOne": "Jetzt registrieren",
+    "showPassword": "Passwort anzeigen",
+    "hidePassword": "Passwort verbergen",
+    "validation": {
+      "emailRequired": "E-Mail ist erforderlich",
+      "emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+      "passwordRequired": "Passwort ist erforderlich",
+      "passwordMinLength": "Passwort muss mindestens 6 Zeichen lang sein",
+      "confirmPasswordRequired": "Bitte bestätigen Sie Ihr Passwort",
+      "passwordsMismatch": "Passwörter stimmen nicht überein"
+    }
   },
   "dashboard": {
     "title": "Dashboard",

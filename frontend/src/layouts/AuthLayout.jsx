@@ -1,10 +1,8 @@
 import { Outlet, Navigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/useAuth';
 import { LanguageSwitcher } from '../components/LanguageSwitcher';
 
 export function AuthLayout() {
-  const { t } = useTranslation();
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -20,15 +18,14 @@ export function AuthLayout() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <div className="w-full max-w-md">
-        <div className="flex justify-end mb-4">
-          <LanguageSwitcher />
+    <div className="min-h-[100dvh] flex flex-col bg-background">
+      <div className="flex justify-end px-4 pt-4 sm:px-6 sm:pt-6">
+        <LanguageSwitcher />
+      </div>
+      <div className="flex flex-1 flex-col items-center justify-center px-4 pb-8 sm:px-6">
+        <div className="w-full max-w-sm">
+          <Outlet />
         </div>
-        <h1 className="text-2xl font-bold text-center text-foreground mb-8 tracking-tight">
-          {t('app.name')}
-        </h1>
-        <Outlet />
       </div>
     </div>
   );
