@@ -44,7 +44,35 @@
   },
   "addEntry": {
     "title": "Eintrag hinzufügen",
-    "description": "Neuen Verbrauchseintrag erfassen."
+    "description": "Neuen Verbrauchseintrag erfassen.",
+    "type": "Verbrauchsart",
+    "typePlaceholder": "Art auswählen",
+    "types": {
+      "electricity": "Strom",
+      "water": "Wasser",
+      "fuel": "Brennstoff"
+    },
+    "usageAmount": "Verbrauchsmenge",
+    "usageAmountPlaceholder": "0,00",
+    "costAmount": "Kosten",
+    "costAmountPlaceholder": "0,00",
+    "unit": "Einheit",
+    "unitPlaceholder": "z.B. kWh, m³, L",
+    "date": "Datum",
+    "submit": "Eintrag speichern",
+    "submitting": "Speichern...",
+    "success": "Eintrag erfolgreich gespeichert!",
+    "addAnother": "Weiteren Eintrag hinzufügen",
+    "validation": {
+      "typeRequired": "Bitte wählen Sie eine Verbrauchsart",
+      "usageRequired": "Verbrauchsmenge ist erforderlich",
+      "usagePositive": "Verbrauchsmenge muss 0 oder größer sein",
+      "costRequired": "Kosten sind erforderlich",
+      "costPositive": "Kosten müssen 0 oder größer sein",
+      "unitRequired": "Einheit ist erforderlich",
+      "dateRequired": "Datum ist erforderlich",
+      "dateInvalid": "Bitte geben Sie ein gültiges Datum ein"
+    }
   },
   "entries": {
     "title": "Verbrauchseinträge",

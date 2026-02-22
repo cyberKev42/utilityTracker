@@ -44,7 +44,35 @@
   },
   "addEntry": {
     "title": "Add Entry",
-    "description": "Record a new utility entry."
+    "description": "Record a new utility entry.",
+    "type": "Utility type",
+    "typePlaceholder": "Select a type",
+    "types": {
+      "electricity": "Electricity",
+      "water": "Water",
+      "fuel": "Fuel"
+    },
+    "usageAmount": "Usage amount",
+    "usageAmountPlaceholder": "0.00",
+    "costAmount": "Cost",
+    "costAmountPlaceholder": "0.00",
+    "unit": "Unit",
+    "unitPlaceholder": "e.g. kWh, m³, L",
+    "date": "Date",
+    "submit": "Save entry",
+    "submitting": "Saving...",
+    "success": "Entry saved successfully!",
+    "addAnother": "Add another entry",
+    "validation": {
+      "typeRequired": "Please select a utility type",
+      "usageRequired": "Usage amount is required",
+      "usagePositive": "Usage amount must be 0 or greater",
+      "costRequired": "Cost amount is required",
+      "costPositive": "Cost amount must be 0 or greater",
+      "unitRequired": "Unit is required",
+      "dateRequired": "Date is required",
+      "dateInvalid": "Please enter a valid date"
+    }
   },
   "entries": {
     "title": "Utility Entries",
