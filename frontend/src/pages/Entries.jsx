@@ -178,7 +178,7 @@ export default function Entries() {
                     <select
                       value={filterType}
                       onChange={(e) => setFilterType(e.target.value)}
-                      className="w-full h-12 rounded-md border border-input bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="w-full h-12 rounded-md border border-input bg-secondary px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                     >
                       <option value="">{t('entries.filterByType')}</option>
                       {TYPES.map((type) => (
@@ -196,7 +196,7 @@ export default function Entries() {
                       type="date"
                       value={filterFrom}
                       onChange={(e) => setFilterFrom(e.target.value)}
-                      className="w-full h-12 rounded-md border border-input bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="w-full h-12 rounded-md border border-input bg-secondary px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                     />
                   </div>
                   <div>
@@ -207,7 +207,7 @@ export default function Entries() {
                       type="date"
                       value={filterTo}
                       onChange={(e) => setFilterTo(e.target.value)}
-                      className="w-full h-12 rounded-md border border-input bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="w-full h-12 rounded-md border border-input bg-secondary px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                     />
                   </div>
                 </div>

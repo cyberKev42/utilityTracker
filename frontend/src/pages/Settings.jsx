@@ -75,7 +75,7 @@ export default function Settings() {
                     transition-colors duration-200
                     ${isActive
                       ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                      : 'border-border bg-background hover:bg-muted/50'
+                      : 'border-border bg-secondary hover:bg-accent'
                     }
                   `}
                 >

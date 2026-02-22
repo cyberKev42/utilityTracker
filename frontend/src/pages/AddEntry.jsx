@@ -202,7 +202,7 @@ export default function AddEntry() {
                       className={`flex flex-col items-center justify-center gap-1.5 rounded-lg border p-4 min-h-[80px] transition-colors duration-200 ${
                         selected
                           ? 'border-primary bg-primary/10 text-primary'
-                          : 'border-border bg-background text-muted-foreground hover:border-foreground/20 hover:text-foreground'
+                          : 'border-border bg-secondary text-muted-foreground hover:border-foreground/20 hover:text-foreground'
                       }`}
                     >
                       <item.icon className="h-6 w-6" />
