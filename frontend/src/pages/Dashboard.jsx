@@ -116,7 +116,7 @@ export default function Dashboard() {
         <p className="text-muted-foreground mt-1">{t('dashboard.description')}</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <Card className="sm:col-span-2 lg:col-span-1">
           <CardContent className="pt-5 pb-5">
             <div className="flex items-center gap-3 mb-3">
@@ -147,7 +147,7 @@ export default function Dashboard() {
           </h2>
           {recentEntries.length > 0 && (
             <Link to="/entries">
-              <Button variant="ghost" size="sm" className="text-muted-foreground">
+              <Button variant="ghost" size="sm" className="text-muted-foreground h-11">
                 {t('dashboard.viewAll')}
               </Button>
             </Link>
@@ -165,7 +165,7 @@ export default function Dashboard() {
                   {t('dashboard.noRecentEntries')}
                 </p>
                 <Link to="/add-entry">
-                  <Button size="sm">{t('dashboard.addFirst')}</Button>
+                  <Button className="h-11 px-6">{t('dashboard.addFirst')}</Button>
                 </Link>
               </div>
             </CardContent>
@@ -180,7 +180,7 @@ export default function Dashboard() {
                   return (
                     <div
                       key={entry.id}
-                      className="flex items-center gap-3 py-3 px-4 sm:px-0"
+                      className="flex items-center gap-3 py-3.5 px-4 sm:px-0"
                     >
                       <div className={`h-9 w-9 rounded-lg ${config.bgClass} flex items-center justify-center shrink-0`}>
                         <Icon className={`h-4 w-4 ${config.colorClass}`} />

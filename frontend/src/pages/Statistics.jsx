@@ -69,7 +69,7 @@ export default function Statistics() {
                 {t('statistics.noData')}
               </p>
               <Link to="/add-entry">
-                <Button size="sm">{t('statistics.addEntries')}</Button>
+                <Button className="h-11 px-6">{t('statistics.addEntries')}</Button>
               </Link>
             </div>
           </CardContent>
@@ -85,9 +85,9 @@ export default function Statistics() {
         <p className="text-muted-foreground mt-1">{t('statistics.description')}</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         <Card className="lg:col-span-2">
-          <CardContent className="pt-5">
+          <CardContent className="pt-5 px-3 sm:px-6">
             <h2 className="text-base font-semibold text-foreground mb-1">
               {t('statistics.spendingOverTime')}
             </h2>
@@ -99,7 +99,7 @@ export default function Statistics() {
         </Card>
 
         <Card>
-          <CardContent className="pt-5">
+          <CardContent className="pt-5 px-3 sm:px-6">
             <h2 className="text-base font-semibold text-foreground mb-1">
               {t('statistics.spendingByCategory')}
             </h2>
@@ -111,7 +111,7 @@ export default function Statistics() {
         </Card>
 
         <Card>
-          <CardContent className="pt-5">
+          <CardContent className="pt-5 px-3 sm:px-6">
             <h2 className="text-base font-semibold text-foreground mb-1">
               {t('statistics.costDistribution')}
             </h2>

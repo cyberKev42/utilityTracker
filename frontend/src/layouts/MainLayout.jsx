@@ -46,7 +46,7 @@ export function MainLayout() {
                 to={item.to}
                 end={item.to === '/'}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-200 ${
+                  `flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-colors duration-200 ${
                     isActive
                       ? 'bg-primary/10 text-primary'
                       : 'text-muted-foreground hover:text-foreground hover:bg-accent'
@@ -90,12 +90,12 @@ export function MainLayout() {
           <LanguageSwitcher />
         </header>
 
-        <main className="px-4 py-6 pb-24 lg:pb-6 lg:px-8">
+        <main className="px-4 py-5 lg:py-6 lg:px-8 pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] lg:pb-6">
           <Outlet />
         </main>
       </div>
 
-      <nav className="fixed bottom-0 inset-x-0 z-40 border-t border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 lg:hidden">
+      <nav className="fixed bottom-0 inset-x-0 z-40 border-t border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 lg:hidden" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
         <div className="flex items-center justify-around h-16 px-2">
           {NAV_ITEMS.map((item) => (
             <NavLink
@@ -103,7 +103,7 @@ export function MainLayout() {
               to={item.to}
               end={item.to === '/'}
               className={({ isActive }) =>
-                `flex flex-col items-center justify-center gap-0.5 min-w-[64px] min-h-[48px] rounded-lg px-2 py-1.5 transition-colors duration-200 ${
+                `flex flex-col items-center justify-center gap-0.5 min-w-[64px] min-h-[48px] rounded-lg px-3 py-2 transition-colors duration-200 ${
                   isActive
                     ? 'text-primary'
                     : 'text-muted-foreground active:text-foreground'

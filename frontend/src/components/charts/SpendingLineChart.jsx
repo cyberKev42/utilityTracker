@@ -24,7 +24,7 @@ function formatMonth(monthStr) {
 function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-popover border border-border rounded-lg px-3 py-2 shadow-md">
+    <div className="bg-popover border border-border rounded-lg px-3 py-2.5 shadow-md">
       <p className="text-xs text-muted-foreground mb-1">{formatMonth(label)}</p>
       <p className="text-sm font-semibold text-foreground tabular-nums">
         {Number(payload[0].value).toLocaleString(undefined, {
@@ -50,9 +50,9 @@ export default function SpendingLineChart({ data }) {
   const sorted = [...data].sort((a, b) => a.month.localeCompare(b.month));
 
   return (
-    <div className="w-full h-[260px] sm:h-[300px]">
+    <div className="w-full h-[240px] sm:h-[300px] -ml-2 sm:ml-0">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={sorted} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+        <LineChart data={sorted} margin={{ top: 8, right: 12, left: -12, bottom: 4 }}>
           <CartesianGrid
             strokeDasharray="3 3"
             stroke={COLORS.border}
@@ -61,17 +61,18 @@ export default function SpendingLineChart({ data }) {
           <XAxis
             dataKey="month"
             tickFormatter={formatMonth}
-            tick={{ fontSize: 11, fill: COLORS.muted }}
+            tick={{ fontSize: 10, fill: COLORS.muted }}
             tickLine={false}
             axisLine={false}
             dy={8}
+            interval="preserveStartEnd"
           />
           <YAxis
-            tick={{ fontSize: 11, fill: COLORS.muted }}
+            tick={{ fontSize: 10, fill: COLORS.muted }}
             tickLine={false}
             axisLine={false}
             tickFormatter={(v) => v.toLocaleString()}
-            width={50}
+            width={45}
           />
           <Tooltip content={<CustomTooltip />} />
           <Line
@@ -79,8 +80,8 @@ export default function SpendingLineChart({ data }) {
             dataKey="total_cost"
             stroke={COLORS.primary}
             strokeWidth={2.5}
-            dot={{ r: 4, fill: COLORS.primary, strokeWidth: 0 }}
-            activeDot={{ r: 6, strokeWidth: 0 }}
+            dot={{ r: 5, fill: COLORS.primary, strokeWidth: 0 }}
+            activeDot={{ r: 8, strokeWidth: 2, stroke: COLORS.primary, fill: 'hsl(var(--background))' }}
           />
         </LineChart>
       </ResponsiveContainer>

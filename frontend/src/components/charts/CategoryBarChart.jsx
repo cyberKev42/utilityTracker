@@ -23,7 +23,7 @@ function CustomTooltip({ active, payload }) {
   if (!active || !payload?.length) return null;
   const { translatedName, total_cost, entry_count, avg_cost } = payload[0].payload;
   return (
-    <div className="bg-popover border border-border rounded-lg px-3 py-2 shadow-md space-y-1">
+    <div className="bg-popover border border-border rounded-lg px-3 py-2.5 shadow-md space-y-1">
       <p className="text-xs font-medium text-foreground">{translatedName}</p>
       <p className="text-sm font-semibold text-foreground tabular-nums">
         {Number(total_cost).toLocaleString(undefined, {
@@ -59,9 +59,9 @@ export default function CategoryBarChart({ data }) {
   }));
 
   return (
-    <div className="w-full h-[260px] sm:h-[300px]">
+    <div className="w-full h-[240px] sm:h-[300px] -ml-2 sm:ml-0">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={chartData} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+        <BarChart data={chartData} margin={{ top: 8, right: 12, left: -12, bottom: 4 }} barGap={8}>
           <CartesianGrid
             strokeDasharray="3 3"
             stroke={BORDER}
@@ -69,20 +69,20 @@ export default function CategoryBarChart({ data }) {
           />
           <XAxis
             dataKey="translatedName"
-            tick={{ fontSize: 12, fill: MUTED }}
+            tick={{ fontSize: 11, fill: MUTED }}
             tickLine={false}
             axisLine={false}
             dy={8}
           />
           <YAxis
-            tick={{ fontSize: 11, fill: MUTED }}
+            tick={{ fontSize: 10, fill: MUTED }}
             tickLine={false}
             axisLine={false}
             tickFormatter={(v) => v.toLocaleString()}
-            width={50}
+            width={45}
           />
           <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--muted) / 0.3)' }} />
-          <Bar dataKey="total_cost" radius={[6, 6, 0, 0]} maxBarSize={64}>
+          <Bar dataKey="total_cost" radius={[6, 6, 0, 0]} maxBarSize={56}>
             {chartData.map((entry) => (
               <Cell
                 key={entry.type}

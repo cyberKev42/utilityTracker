@@ -143,7 +143,7 @@ export default function Entries() {
               variant={filtersOpen ? 'secondary' : 'outline'}
               size="sm"
               onClick={() => setFiltersOpen(!filtersOpen)}
-              className="gap-1.5"
+              className="gap-1.5 h-11"
             >
               <HiOutlineFunnel className="h-4 w-4" />
               <span className="hidden sm:inline">{t('entries.filterByType')}</span>
@@ -156,7 +156,7 @@ export default function Entries() {
                 variant="ghost"
                 size="sm"
                 onClick={clearFilters}
-                className="gap-1 text-muted-foreground"
+                className="gap-1 text-muted-foreground h-11"
               >
                 <HiOutlineXMark className="h-4 w-4" />
                 {t('entries.clearFilters')}
@@ -178,7 +178,7 @@ export default function Entries() {
                     <select
                       value={filterType}
                       onChange={(e) => setFilterType(e.target.value)}
-                      className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="w-full h-12 rounded-md border border-input bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                     >
                       <option value="">{t('entries.filterByType')}</option>
                       {TYPES.map((type) => (
@@ -196,7 +196,7 @@ export default function Entries() {
                       type="date"
                       value={filterFrom}
                       onChange={(e) => setFilterFrom(e.target.value)}
-                      className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="w-full h-12 rounded-md border border-input bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                     />
                   </div>
                   <div>
@@ -207,7 +207,7 @@ export default function Entries() {
                       type="date"
                       value={filterTo}
                       onChange={(e) => setFilterTo(e.target.value)}
-                      className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="w-full h-12 rounded-md border border-input bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                     />
                   </div>
                 </div>
@@ -228,7 +228,7 @@ export default function Entries() {
                 {t('entries.noEntries')}
               </p>
               <Link to="/add-entry">
-                <Button size="sm">{t('entries.addFirst')}</Button>
+                <Button className="h-11 px-6">{t('entries.addFirst')}</Button>
               </Link>
             </div>
           </CardContent>
@@ -241,7 +241,7 @@ export default function Entries() {
             <div className="flex flex-col items-center text-center py-8 space-y-3">
               <HiOutlineFunnel className="h-8 w-8 text-muted-foreground" />
               <p className="text-sm text-muted-foreground">{t('entries.noResults')}</p>
-              <Button variant="outline" size="sm" onClick={clearFilters}>
+              <Button variant="outline" className="h-11 px-6" onClick={clearFilters}>
                 {t('entries.clearFilters')}
               </Button>
             </div>
@@ -359,10 +359,10 @@ export default function Entries() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-10 w-10 p-0 text-muted-foreground hover:text-destructive shrink-0"
+                            className="h-11 w-11 p-0 text-muted-foreground hover:text-destructive shrink-0"
                             onClick={() => setDeleteTarget(entry)}
                           >
-                            <HiOutlineTrash className="h-4.5 w-4.5" />
+                            <HiOutlineTrash className="h-5 w-5" />
                           </Button>
                         </div>
                       </div>
@@ -383,7 +383,7 @@ export default function Entries() {
           </DialogHeader>
           <DialogFooter className="gap-2 sm:gap-0">
             <DialogClose asChild>
-              <Button variant="outline" disabled={deleting}>
+              <Button variant="outline" disabled={deleting} className="h-11">
                 {t('entries.deleteCancel')}
               </Button>
             </DialogClose>
@@ -391,8 +391,16 @@ export default function Entries() {
               variant="destructive"
               onClick={handleDelete}
               disabled={deleting}
+              className="h-11"
             >
-              {deleting ? t('entries.deleting') : t('entries.deleteConfirm')}
+              {deleting ? (
+                <span className="flex items-center gap-2">
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                  {t('entries.deleting')}
+                </span>
+              ) : (
+                t('entries.deleteConfirm')
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -18,7 +18,7 @@ function CustomTooltip({ active, payload }) {
   if (!active || !payload?.length) return null;
   const { name, value, percent } = payload[0];
   return (
-    <div className="bg-popover border border-border rounded-lg px-3 py-2 shadow-md">
+    <div className="bg-popover border border-border rounded-lg px-3 py-2.5 shadow-md">
       <p className="text-xs font-medium text-foreground">{name}</p>
       <p className="text-sm font-semibold text-foreground tabular-nums">
         {Number(value).toLocaleString(undefined, {
@@ -35,11 +35,11 @@ function CustomTooltip({ active, payload }) {
 
 function CustomLegend({ payload }) {
   return (
-    <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-2">
+    <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 mt-3">
       {payload.map((entry) => (
-        <div key={entry.value} className="flex items-center gap-1.5">
+        <div key={entry.value} className="flex items-center gap-2 min-h-[28px]">
           <span
-            className="inline-block h-2.5 w-2.5 rounded-full shrink-0"
+            className="inline-block h-3 w-3 rounded-full shrink-0"
             style={{ backgroundColor: entry.color }}
           />
           <span className="text-xs text-muted-foreground">{entry.value}</span>
@@ -79,7 +79,7 @@ export default function DistributionPieChart({ data }) {
     }));
 
   return (
-    <div className="w-full h-[280px] sm:h-[320px]">
+    <div className="w-full h-[260px] sm:h-[320px]">
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
@@ -87,9 +87,9 @@ export default function DistributionPieChart({ data }) {
             dataKey="value"
             nameKey="name"
             cx="50%"
-            cy="45%"
-            innerRadius="45%"
-            outerRadius="72%"
+            cy="42%"
+            innerRadius="40%"
+            outerRadius="68%"
             paddingAngle={3}
             strokeWidth={0}
           >
