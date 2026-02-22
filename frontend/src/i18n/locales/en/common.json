@@ -145,6 +145,13 @@
     "title": "Settings",
     "description": "Manage your account and preferences.",
     "account": "Account",
-    "language": "Language"
+    "email": "Email address",
+    "language": "Language",
+    "languageDescription": "Choose your preferred display language.",
+    "english": "English",
+    "german": "German",
+    "logoutTitle": "Sign out",
+    "logoutDescription": "End your current session and return to the login screen.",
+    "logoutButton": "Sign out"
   }
 }

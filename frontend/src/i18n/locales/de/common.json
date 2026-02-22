@@ -144,6 +144,13 @@
     "title": "Einstellungen",
     "description": "Konto und Einstellungen verwalten.",
     "account": "Konto",
-    "language": "Sprache"
+    "email": "E-Mail-Adresse",
+    "language": "Sprache",
+    "languageDescription": "Wählen Sie Ihre bevorzugte Anzeigesprache.",
+    "english": "English",
+    "german": "Deutsch",
+    "logoutTitle": "Abmelden",
+    "logoutDescription": "Aktuelle Sitzung beenden und zum Anmeldebildschirm zurückkehren.",
+    "logoutButton": "Abmelden"
   }
 }
