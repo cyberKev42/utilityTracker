@@ -40,7 +40,21 @@
   },
   "dashboard": {
     "title": "Dashboard",
-    "description": "Overview of your utility consumption."
+    "description": "Overview of your utility consumption.",
+    "totalSpending": "Total Spending",
+    "electricity": "Electricity",
+    "water": "Water",
+    "fuel": "Fuel",
+    "entries_one": "{{count}} entry",
+    "entries_other": "{{count}} entries",
+    "noEntries": "No entries yet",
+    "recentEntries": "Recent Entries",
+    "noRecentEntries": "No entries recorded yet. Start tracking your utility consumption.",
+    "addFirst": "Add your first entry",
+    "viewAll": "View all entries",
+    "usage": "Usage",
+    "cost": "Cost",
+    "loadingError": "Failed to load dashboard data."
   },
   "addEntry": {
     "title": "Add Entry",

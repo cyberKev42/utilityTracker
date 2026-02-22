@@ -40,7 +40,21 @@
   },
   "dashboard": {
     "title": "Dashboard",
-    "description": "Überblick über Ihren Verbrauch."
+    "description": "Überblick über Ihren Verbrauch.",
+    "totalSpending": "Gesamtausgaben",
+    "electricity": "Strom",
+    "water": "Wasser",
+    "fuel": "Brennstoff",
+    "entries_one": "{{count}} Eintrag",
+    "entries_other": "{{count}} Einträge",
+    "noEntries": "Keine Einträge",
+    "recentEntries": "Letzte Einträge",
+    "noRecentEntries": "Noch keine Einträge vorhanden. Erfassen Sie Ihren Verbrauch.",
+    "addFirst": "Ersten Eintrag hinzufügen",
+    "viewAll": "Alle Einträge anzeigen",
+    "usage": "Verbrauch",
+    "cost": "Kosten",
+    "loadingError": "Dashboard-Daten konnten nicht geladen werden."
   },
   "addEntry": {
     "title": "Eintrag hinzufügen",
