@@ -4,8 +4,10 @@
   },
   "nav": {
     "dashboard": "Dashboard",
+    "addEntry": "Add Entry",
     "entries": "Entries",
     "statistics": "Statistics",
+    "settings": "Settings",
     "logout": "Log out"
   },
   "auth": {
@@ -23,6 +25,10 @@
     "title": "Dashboard",
     "description": "Overview of your utility consumption."
   },
+  "addEntry": {
+    "title": "Add Entry",
+    "description": "Record a new utility entry."
+  },
   "entries": {
     "title": "Utility Entries",
     "description": "Manage your utility entries."
@@ -30,5 +36,11 @@
   "statistics": {
     "title": "Statistics",
     "description": "View your utility usage statistics."
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Manage your account and preferences.",
+    "account": "Account",
+    "language": "Language"
   }
 }

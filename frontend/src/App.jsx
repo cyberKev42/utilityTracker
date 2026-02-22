@@ -7,8 +7,10 @@ import { AuthLayout } from './layouts/AuthLayout';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import AddEntry from './pages/AddEntry';
 import Entries from './pages/Entries';
 import Statistics from './pages/Statistics';
+import Settings from './pages/Settings';
 
 function App() {
   return (
@@ -28,8 +30,10 @@ function App() {
               }
             >
               <Route path="/" element={<Dashboard />} />
+              <Route path="/add-entry" element={<AddEntry />} />
               <Route path="/entries" element={<Entries />} />
               <Route path="/statistics" element={<Statistics />} />
+              <Route path="/settings" element={<Settings />} />
             </Route>
           </Routes>
         </BrowserRouter>

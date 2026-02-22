@@ -4,8 +4,10 @@
   },
   "nav": {
     "dashboard": "Dashboard",
+    "addEntry": "Eintrag",
     "entries": "Einträge",
     "statistics": "Statistiken",
+    "settings": "Einstellungen",
     "logout": "Abmelden"
   },
   "auth": {
@@ -23,6 +25,10 @@
     "title": "Dashboard",
     "description": "Überblick über Ihren Verbrauch."
   },
+  "addEntry": {
+    "title": "Eintrag hinzufügen",
+    "description": "Neuen Verbrauchseintrag erfassen."
+  },
   "entries": {
     "title": "Verbrauchseinträge",
     "description": "Verwalten Sie Ihre Verbrauchseinträge."
@@ -30,5 +36,11 @@
   "statistics": {
     "title": "Statistiken",
     "description": "Sehen Sie Ihre Verbrauchsstatistiken ein."
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "description": "Konto und Einstellungen verwalten.",
+    "account": "Konto",
+    "language": "Sprache"
   }
 }
