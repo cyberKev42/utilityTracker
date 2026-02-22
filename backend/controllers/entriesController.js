@@ -1,6 +1,8 @@
 import * as entriesService from '../services/entriesService.js';
 
 const VALID_TYPES = ['electricity', 'water', 'fuel'];
+const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export async function create(req, res) {
   try {
@@ -30,8 +32,7 @@ export async function create(req, res) {
       return res.status(400).json({ error: 'unit must be a non-empty string' });
     }
 
-    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-    if (!dateRegex.test(date) || isNaN(new Date(date).getTime())) {
+    if (!DATE_REGEX.test(date) || isNaN(new Date(date).getTime())) {
       return res.status(400).json({ error: 'date must be a valid date in YYYY-MM-DD format' });
     }
 
@@ -51,7 +52,37 @@ export async function create(req, res) {
 
 export async function getAll(req, res) {
   try {
-    const entries = await entriesService.getEntries(req.user.id);
+    const { type, from, to } = req.query;
+    const filters = {};
+
+    if (type) {
+      if (!VALID_TYPES.includes(type)) {
+        return res.status(400).json({
+          error: `Invalid type filter. Must be one of: ${VALID_TYPES.join(', ')}`,
+        });
+      }
+      filters.type = type;
+    }
+
+    if (from) {
+      if (!DATE_REGEX.test(from) || isNaN(new Date(from).getTime())) {
+        return res.status(400).json({ error: 'Invalid "from" date. Use YYYY-MM-DD format' });
+      }
+      filters.from = from;
+    }
+
+    if (to) {
+      if (!DATE_REGEX.test(to) || isNaN(new Date(to).getTime())) {
+        return res.status(400).json({ error: 'Invalid "to" date. Use YYYY-MM-DD format' });
+      }
+      filters.to = to;
+    }
+
+    if (filters.from && filters.to && new Date(filters.from) > new Date(filters.to)) {
+      return res.status(400).json({ error: '"from" date must be before or equal to "to" date' });
+    }
+
+    const entries = await entriesService.getEntries(req.user.id, filters);
     res.json(entries);
   } catch (error) {
     res.status(500).json({ error: error.message || 'Failed to fetch entries' });
@@ -62,8 +93,8 @@ export async function remove(req, res) {
   try {
     const { id } = req.params;
 
-    if (!id) {
-      return res.status(400).json({ error: 'Entry ID is required' });
+    if (!id || !UUID_REGEX.test(id)) {
+      return res.status(400).json({ error: 'A valid entry ID is required' });
     }
 
     await entriesService.deleteEntry(req.user.id, id);

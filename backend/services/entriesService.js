@@ -16,13 +16,37 @@ export async function createEntry(userId, entryData) {
   return result.rows[0];
 }
 
-export async function getEntries(userId) {
+export async function getEntries(userId, filters = {}) {
   const pool = getDb();
   if (!pool) throw new Error('Database not configured');
 
+  const conditions = ['user_id = $1'];
+  const params = [userId];
+  let paramIndex = 2;
+
+  if (filters.type) {
+    conditions.push(`type = $${paramIndex}`);
+    params.push(filters.type);
+    paramIndex++;
+  }
+
+  if (filters.from) {
+    conditions.push(`date >= $${paramIndex}`);
+    params.push(filters.from);
+    paramIndex++;
+  }
+
+  if (filters.to) {
+    conditions.push(`date <= $${paramIndex}`);
+    params.push(filters.to);
+    paramIndex++;
+  }
+
+  const where = conditions.join(' AND ');
+
   const result = await pool.query(
-    'SELECT * FROM utility_entries WHERE user_id = $1 ORDER BY date DESC',
-    [userId]
+    `SELECT * FROM utility_entries WHERE ${where} ORDER BY date DESC`,
+    params
   );
 
   return result.rows;

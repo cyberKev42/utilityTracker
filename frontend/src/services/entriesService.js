@@ -4,8 +4,13 @@ export async function createEntry(entryData) {
   return api.post('/api/entries', entryData);
 }
 
-export async function getEntries() {
-  return api.get('/api/entries');
+export async function getEntries(filters = {}) {
+  const params = new URLSearchParams();
+  if (filters.type) params.set('type', filters.type);
+  if (filters.from) params.set('from', filters.from);
+  if (filters.to) params.set('to', filters.to);
+  const query = params.toString();
+  return api.get(`/api/entries${query ? `?${query}` : ''}`);
 }
 
 export async function getStats() {
