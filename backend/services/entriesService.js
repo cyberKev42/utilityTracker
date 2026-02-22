@@ -72,21 +72,53 @@ export async function getStats(userId) {
   const pool = getDb();
   if (!pool) throw new Error('Database not configured');
 
-  const result = await pool.query(
-    `SELECT
-       type,
-       COUNT(*)::int as entry_count,
-       SUM(usage_amount)::float as total_usage,
-       SUM(cost_amount)::float as total_cost,
-       AVG(usage_amount)::float as avg_usage,
-       AVG(cost_amount)::float as avg_cost,
-       MIN(date) as first_entry,
-       MAX(date) as last_entry
-     FROM utility_entries
-     WHERE user_id = $1
-     GROUP BY type`,
-    [userId]
-  );
+  const [totalsResult, byTypeResult, monthlyResult] = await Promise.all([
+    pool.query(
+      `SELECT
+         COUNT(*)::int AS entry_count,
+         COALESCE(SUM(cost_amount), 0)::float AS total_cost,
+         COALESCE(SUM(usage_amount), 0)::float AS total_usage,
+         COALESCE(AVG(cost_amount), 0)::float AS avg_cost,
+         COALESCE(AVG(usage_amount), 0)::float AS avg_usage,
+         MIN(date) AS first_entry,
+         MAX(date) AS last_entry
+       FROM utility_entries
+       WHERE user_id = $1`,
+      [userId]
+    ),
+    pool.query(
+      `SELECT
+         type,
+         COUNT(*)::int AS entry_count,
+         COALESCE(SUM(cost_amount), 0)::float AS total_cost,
+         COALESCE(SUM(usage_amount), 0)::float AS total_usage,
+         COALESCE(AVG(cost_amount), 0)::float AS avg_cost,
+         COALESCE(AVG(usage_amount), 0)::float AS avg_usage,
+         MIN(date) AS first_entry,
+         MAX(date) AS last_entry
+       FROM utility_entries
+       WHERE user_id = $1
+       GROUP BY type
+       ORDER BY type`,
+      [userId]
+    ),
+    pool.query(
+      `SELECT
+         TO_CHAR(date, 'YYYY-MM') AS month,
+         COUNT(*)::int AS entry_count,
+         COALESCE(SUM(cost_amount), 0)::float AS total_cost,
+         COALESCE(SUM(usage_amount), 0)::float AS total_usage
+       FROM utility_entries
+       WHERE user_id = $1
+       GROUP BY TO_CHAR(date, 'YYYY-MM')
+       ORDER BY month DESC`,
+      [userId]
+    ),
+  ]);
 
-  return result.rows;
+  return {
+    totals: totalsResult.rows[0],
+    byType: byTypeResult.rows,
+    monthly: monthlyResult.rows,
+  };
 }
