@@ -4,26 +4,26 @@
 
 @layer base {
   :root {
-    --background: 0 0% 4%;
-    --foreground: 0 0% 100%;
-    --card: 0 0% 7%;
-    --card-foreground: 0 0% 100%;
-    --popover: 0 0% 10%;
-    --popover-foreground: 0 0% 100%;
+    --background: 0 0% 3.5%;
+    --foreground: 0 0% 93%;
+    --card: 0 0% 6.5%;
+    --card-foreground: 0 0% 93%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 93%;
     --primary: 217 91% 60%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 10%;
-    --secondary-foreground: 240 5% 65%;
-    --muted: 0 0% 10%;
-    --muted-foreground: 240 5% 65%;
-    --accent: 0 0% 13%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
+    --secondary: 0 0% 9%;
+    --secondary-foreground: 0 0% 56%;
+    --muted: 0 0% 9%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 0 0% 11%;
+    --accent-foreground: 0 0% 93%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 15%;
-    --input: 0 0% 15%;
+    --border: 0 0% 12%;
+    --input: 0 0% 12%;
     --ring: 217 91% 60%;
-    --radius: 0.75rem;
+    --radius: 0.625rem;
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
   }
@@ -49,6 +49,7 @@
     overscroll-behavior-y: contain;
     min-height: 100%;
     min-height: 100dvh;
+    letter-spacing: -0.011em;
   }
 
   #root {
@@ -73,7 +74,7 @@
   }
 
   ::selection {
-    background: hsl(217 91% 60% / 0.3);
+    background: hsl(217 91% 60% / 0.25);
   }
 
   @media (max-width: 1023px) {
