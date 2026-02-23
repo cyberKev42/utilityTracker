@@ -8,19 +8,10 @@ import entriesRoutes from './routes/entries.js';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 4000;
-
-const allowedOrigins = [
-  process.env.FRONTEND_URL,
-].filter(Boolean);
+const PORT = process.env.PORT || 3000;
 
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-    if (origin.includes('.up.railway.app')) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
-    callback(new Error('Not allowed by CORS'));
-  },
+  origin: true,
   credentials: true,
 }));
 
