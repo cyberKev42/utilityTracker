@@ -23,6 +23,11 @@ const fadeUp = {
   animate: { opacity: 1, y: 0, transition: { duration: 0.25, ease: [0.25, 0.1, 0.25, 1] } },
 };
 
+const cardHover = {
+  y: -2,
+  transition: { duration: 0.15, ease: 'easeOut' },
+};
+
 export default function Statistics() {
   const { t } = useTranslation();
   const [stats, setStats] = useState(null);
@@ -106,7 +111,7 @@ export default function Statistics() {
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
-        <motion.div variants={fadeUp} className="lg:col-span-2">
+        <motion.div variants={fadeUp} whileHover={cardHover} className="lg:col-span-2">
           <Card>
             <CardContent className="p-5 px-3 sm:px-5">
               <h2 className="text-sm font-semibold text-foreground mb-0.5">
@@ -120,7 +125,7 @@ export default function Statistics() {
           </Card>
         </motion.div>
 
-        <motion.div variants={fadeUp}>
+        <motion.div variants={fadeUp} whileHover={cardHover}>
           <Card>
             <CardContent className="p-5 px-3 sm:px-5">
               <h2 className="text-sm font-semibold text-foreground mb-0.5">
@@ -134,7 +139,7 @@ export default function Statistics() {
           </Card>
         </motion.div>
 
-        <motion.div variants={fadeUp}>
+        <motion.div variants={fadeUp} whileHover={cardHover}>
           <Card>
             <CardContent className="p-5 px-3 sm:px-5">
               <h2 className="text-sm font-semibold text-foreground mb-0.5">

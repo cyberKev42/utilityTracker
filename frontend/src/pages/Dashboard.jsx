@@ -30,6 +30,11 @@ const fadeUp = {
   animate: { opacity: 1, y: 0, transition: { duration: 0.25, ease: [0.25, 0.1, 0.25, 1] } },
 };
 
+const cardHover = {
+  y: -2,
+  transition: { duration: 0.15, ease: 'easeOut' },
+};
+
 function formatCurrency(value) {
   return new Intl.NumberFormat(undefined, {
     minimumFractionDigits: 2,
@@ -107,7 +112,7 @@ export default function Dashboard() {
       </motion.div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-        <motion.div variants={fadeUp} className="sm:col-span-2 lg:col-span-1">
+        <motion.div variants={fadeUp} whileHover={cardHover} className="sm:col-span-2 lg:col-span-1">
           <Card className="h-full hover:border-border/60 transition-colors duration-200">
             <CardContent className="p-5">
               <div className="flex items-center gap-3 mb-3">
@@ -135,7 +140,7 @@ export default function Dashboard() {
           const config = TYPE_CONFIG[type];
           const Icon = config.icon;
           return (
-            <motion.div key={type} variants={fadeUp}>
+            <motion.div key={type} variants={fadeUp} whileHover={cardHover}>
               <Card className="h-full hover:border-border/60 transition-colors duration-200">
                 <CardContent className="p-5">
                   <div className="flex items-center gap-3 mb-3">
