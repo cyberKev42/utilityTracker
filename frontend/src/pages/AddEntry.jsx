@@ -173,9 +173,9 @@ export default function AddEntry() {
 
   return (
     <div className="max-w-lg mx-auto">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-foreground">{t('addEntry.title')}</h1>
-        <p className="text-muted-foreground mt-1">{t('addEntry.description')}</p>
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-foreground tracking-tight">{t('addEntry.title')}</h1>
+        <p className="text-sm text-muted-foreground mt-1.5">{t('addEntry.description')}</p>
       </div>
 
       <Card>

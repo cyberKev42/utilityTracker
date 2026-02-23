@@ -54,10 +54,10 @@ export default function Statistics() {
 
   if (isEmpty) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-8">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">{t('statistics.title')}</h1>
-          <p className="text-muted-foreground mt-1">{t('statistics.description')}</p>
+          <h1 className="text-2xl font-bold text-foreground tracking-tight">{t('statistics.title')}</h1>
+          <p className="text-sm text-muted-foreground mt-1.5">{t('statistics.description')}</p>
         </div>
         <Card>
           <CardContent className="pt-6">
@@ -79,13 +79,13 @@ export default function Statistics() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-foreground">{t('statistics.title')}</h1>
-        <p className="text-muted-foreground mt-1">{t('statistics.description')}</p>
+        <h1 className="text-2xl font-bold text-foreground tracking-tight">{t('statistics.title')}</h1>
+        <p className="text-sm text-muted-foreground mt-1.5">{t('statistics.description')}</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
         <Card className="lg:col-span-2">
           <CardContent className="pt-5 px-3 sm:px-6">
             <h2 className="text-base font-semibold text-foreground mb-1">

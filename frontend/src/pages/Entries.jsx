@@ -115,8 +115,8 @@ export default function Entries() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">{t('entries.title')}</h1>
-          <p className="text-muted-foreground mt-1">{t('entries.description')}</p>
+          <h1 className="text-2xl font-bold text-foreground tracking-tight">{t('entries.title')}</h1>
+          <p className="text-sm text-muted-foreground mt-1.5">{t('entries.description')}</p>
         </div>
         <div className="flex items-start gap-2 p-4 rounded-lg bg-destructive/10 border border-destructive/20">
           <HiExclamationCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
@@ -130,10 +130,10 @@ export default function Entries() {
   const showNoResults = !loading && entries.length === 0 && hasActiveFilters;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-foreground">{t('entries.title')}</h1>
-        <p className="text-muted-foreground mt-1">{t('entries.description')}</p>
+        <h1 className="text-2xl font-bold text-foreground tracking-tight">{t('entries.title')}</h1>
+        <p className="text-sm text-muted-foreground mt-1.5">{t('entries.description')}</p>
       </div>
 
       {!showEmpty && (

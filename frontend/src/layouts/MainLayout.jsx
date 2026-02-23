@@ -1,9 +1,8 @@
-import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/useAuth';
 import { Button } from '../components/ui/button';
 import { LanguageSwitcher } from '../components/LanguageSwitcher';
-import { Separator } from '../components/ui/separator';
 import {
   HiOutlineHome,
   HiOutlinePlusCircle,
@@ -23,6 +22,7 @@ export function MainLayout() {
   const { t } = useTranslation();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
@@ -31,50 +31,56 @@ export function MainLayout() {
 
   return (
     <div className="min-h-screen bg-background">
-      <aside className="hidden lg:fixed lg:inset-y-0 lg:z-40 lg:flex lg:w-64 lg:flex-col">
-        <div className="flex grow flex-col border-r border-border bg-card px-4 py-6">
-          <div className="px-2 mb-8">
-            <span className="text-xl font-bold text-foreground tracking-tight">
-              {t('app.name')}
-            </span>
+      <aside className="hidden lg:fixed lg:inset-y-0 lg:z-40 lg:flex lg:w-[280px] lg:flex-col">
+        <div className="flex grow flex-col border-r border-border/60 bg-card">
+          <div className="flex items-center h-16 px-6 border-b border-border/60">
+            <div className="flex items-center gap-2.5">
+              <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
+                <span className="text-sm font-bold text-primary-foreground">U</span>
+              </div>
+              <span className="text-base font-semibold text-foreground tracking-tight">
+                {t('app.name')}
+              </span>
+            </div>
           </div>
 
-          <nav className="flex flex-1 flex-col gap-1">
+          <nav className="flex flex-1 flex-col gap-1 px-3 pt-6">
             {NAV_ITEMS.map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}
                 end={item.to === '/'}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-colors duration-200 ${
+                  `group flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium transition-all duration-200 ${
                     isActive
                       ? 'bg-primary/10 text-primary'
                       : 'text-muted-foreground hover:text-foreground hover:bg-accent'
                   }`
                 }
               >
-                <item.icon className="h-5 w-5 shrink-0" />
+                <item.icon className="h-[18px] w-[18px] shrink-0" />
                 {t(item.labelKey)}
               </NavLink>
             ))}
           </nav>
 
-          <div className="mt-auto space-y-4">
-            <Separator />
-            <div className="flex items-center justify-between px-2">
-              <LanguageSwitcher />
+          <div className="px-3 pb-4 space-y-3">
+            <div className="border-t border-border/60 pt-4">
+              <div className="flex items-center justify-between px-3 mb-3">
+                <LanguageSwitcher />
+              </div>
             </div>
-            <div className="px-2">
-              <p className="text-xs text-muted-foreground truncate mb-3">
+            <div className="rounded-lg bg-secondary/50 p-3">
+              <p className="text-[11px] text-muted-foreground truncate mb-2.5">
                 {user?.email}
               </p>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={handleLogout}
-                className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground"
+                className="w-full justify-start gap-2.5 h-9 text-[13px] text-muted-foreground hover:text-foreground px-2"
               >
-                <HiOutlineArrowRightOnRectangle className="h-5 w-5 shrink-0" />
+                <HiOutlineArrowRightOnRectangle className="h-4 w-4 shrink-0" />
                 {t('nav.logout')}
               </Button>
             </div>
@@ -82,40 +88,53 @@ export function MainLayout() {
         </div>
       </aside>
 
-      <div className="lg:pl-64">
-        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 lg:hidden">
-          <span className="text-lg font-bold text-foreground tracking-tight">
-            {t('app.name')}
-          </span>
+      <div className="lg:pl-[280px]">
+        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border/60 bg-background/80 backdrop-blur-xl px-4 sm:px-6 lg:hidden">
+          <div className="flex items-center gap-2.5">
+            <div className="h-7 w-7 rounded-md bg-primary flex items-center justify-center">
+              <span className="text-xs font-bold text-primary-foreground">U</span>
+            </div>
+            <span className="text-base font-semibold text-foreground tracking-tight">
+              {t('app.name')}
+            </span>
+          </div>
           <LanguageSwitcher />
         </header>
 
-        <main className="px-4 py-5 lg:py-6 lg:px-8 pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] lg:pb-6">
+        <main className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-6 lg:py-8 pb-[calc(5rem+env(safe-area-inset-bottom,0px))] lg:pb-8">
           <Outlet />
         </main>
       </div>
 
-      <nav className="fixed bottom-0 inset-x-0 z-40 border-t border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 lg:hidden" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
-        <div className="flex items-center justify-around h-16 px-2">
-          {NAV_ITEMS.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.to === '/'}
-              className={({ isActive }) =>
-                `flex flex-col items-center justify-center gap-0.5 min-w-[64px] min-h-[48px] rounded-lg px-3 py-2 transition-colors duration-200 ${
-                  isActive
-                    ? 'text-primary'
-                    : 'text-muted-foreground active:text-foreground'
-                }`
-              }
-            >
-              <item.icon className="h-6 w-6" />
-              <span className="text-[10px] font-medium leading-tight">
-                {t(item.labelKey)}
-              </span>
-            </NavLink>
-          ))}
+      <nav
+        className="fixed bottom-0 inset-x-0 z-40 border-t border-border/60 bg-card/80 backdrop-blur-xl lg:hidden"
+        style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+      >
+        <div className="flex items-center justify-around h-[60px] px-1">
+          {NAV_ITEMS.map((item) => {
+            const isActive = item.to === '/'
+              ? location.pathname === '/'
+              : location.pathname.startsWith(item.to);
+            return (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.to === '/'}
+                className="flex flex-col items-center justify-center gap-1 min-w-[60px] min-h-[48px] rounded-xl px-3 py-1.5 transition-colors duration-200"
+              >
+                <div className="relative">
+                  <item.icon className={`h-[22px] w-[22px] transition-colors duration-200 ${
+                    isActive ? 'text-primary' : 'text-muted-foreground'
+                  }`} />
+                </div>
+                <span className={`text-[10px] font-medium leading-none transition-colors duration-200 ${
+                  isActive ? 'text-primary' : 'text-muted-foreground'
+                }`}>
+                  {t(item.labelKey)}
+                </span>
+              </NavLink>
+            );
+          })}
         </div>
       </nav>
     </div>
