@@ -77,7 +77,7 @@ export default function Statistics() {
 
   if (isEmpty) {
     return (
-      <motion.div variants={stagger} initial="initial" animate="animate" className="space-y-8">
+      <motion.div variants={stagger} initial="initial" animate="animate" className="space-y-6">
         <motion.div variants={fadeUp}>
           <h1 className="text-xl font-semibold text-foreground tracking-tight">{t('statistics.title')}</h1>
           <p className="text-[13px] text-muted-foreground mt-1">{t('statistics.description')}</p>
@@ -85,7 +85,7 @@ export default function Statistics() {
         <motion.div variants={fadeUp}>
           <Card>
             <CardContent className="p-6">
-              <div className="flex flex-col items-center text-center py-10 space-y-4">
+              <div className="flex flex-col items-center text-center py-8 space-y-4">
                 <div className="h-12 w-12 rounded-xl bg-muted flex items-center justify-center">
                   <HiOutlineChartBar className="h-6 w-6 text-muted-foreground" />
                 </div>
@@ -104,20 +104,20 @@ export default function Statistics() {
   }
 
   return (
-    <motion.div variants={stagger} initial="initial" animate="animate" className="space-y-8">
+    <motion.div variants={stagger} initial="initial" animate="animate" className="space-y-6">
       <motion.div variants={fadeUp}>
         <h1 className="text-xl font-semibold text-foreground tracking-tight">{t('statistics.title')}</h1>
         <p className="text-[13px] text-muted-foreground mt-1">{t('statistics.description')}</p>
       </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         <motion.div variants={fadeUp} whileHover={cardHover} className="lg:col-span-2">
           <Card>
             <CardContent className="p-5 px-3 sm:px-5">
               <h2 className="text-sm font-semibold text-foreground mb-0.5">
                 {t('statistics.spendingOverTime')}
               </h2>
-              <p className="text-xs text-muted-foreground mb-5">
+              <p className="text-xs text-muted-foreground mb-4">
                 {t('statistics.spendingOverTimeDesc')}
               </p>
               <SpendingLineChart data={stats.monthly} />
@@ -131,7 +131,7 @@ export default function Statistics() {
               <h2 className="text-sm font-semibold text-foreground mb-0.5">
                 {t('statistics.spendingByCategory')}
               </h2>
-              <p className="text-xs text-muted-foreground mb-5">
+              <p className="text-xs text-muted-foreground mb-4">
                 {t('statistics.spendingByCategoryDesc')}
               </p>
               <CategoryBarChart data={stats.byType} />
@@ -145,7 +145,7 @@ export default function Statistics() {
               <h2 className="text-sm font-semibold text-foreground mb-0.5">
                 {t('statistics.costDistribution')}
               </h2>
-              <p className="text-xs text-muted-foreground mb-5">
+              <p className="text-xs text-muted-foreground mb-4">
                 {t('statistics.costDistributionDesc')}
               </p>
               <DistributionPieChart data={stats.byType} />

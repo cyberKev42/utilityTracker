@@ -105,7 +105,7 @@ export default function Dashboard() {
   }
 
   return (
-    <motion.div variants={stagger} initial="initial" animate="animate" className="space-y-8">
+    <motion.div variants={stagger} initial="initial" animate="animate" className="space-y-6">
       <motion.div variants={fadeUp}>
         <h1 className="text-xl font-semibold text-foreground tracking-tight">{t('dashboard.title')}</h1>
         <p className="text-[13px] text-muted-foreground mt-1">{t('dashboard.description')}</p>
