@@ -70,11 +70,11 @@ export default function Settings() {
                   key={lang.code}
                   onClick={() => changeLanguage(lang.code)}
                   className={`
-                    flex items-center gap-3 rounded-xl border px-4 py-3.5
-                    transition-all duration-200
+                    flex items-center gap-3 rounded-xl border px-4 py-3.5 min-h-[52px]
+                    transition-all duration-200 active:scale-[0.98]
                     ${isActive
                       ? 'border-primary bg-primary/5 ring-1 ring-primary/20'
-                      : 'border-border/50 bg-secondary hover:border-border hover:bg-accent'
+                      : 'border-border/50 bg-secondary active:bg-accent sm:hover:border-border sm:hover:bg-accent'
                     }
                   `}
                 >
@@ -108,7 +108,7 @@ export default function Settings() {
           <Button
             variant="destructive"
             onClick={handleLogout}
-            className="w-full sm:w-auto h-11"
+            className="w-full h-12 sm:w-auto sm:h-11"
           >
             <HiOutlineArrowRightOnRectangle className="h-4 w-4 mr-2" />
             {t('settings.logoutButton')}

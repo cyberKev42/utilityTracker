@@ -147,7 +147,7 @@ export default function Dashboard() {
           </h2>
           {recentEntries.length > 0 && (
             <Link to="/entries">
-              <Button variant="ghost" size="sm" className="text-muted-foreground h-9 text-[13px]">
+              <Button variant="ghost" size="sm" className="text-muted-foreground h-11 text-[13px]">
                 {t('dashboard.viewAll')}
               </Button>
             </Link>
@@ -180,7 +180,7 @@ export default function Dashboard() {
                   return (
                     <div
                       key={entry.id}
-                      className="flex items-center gap-3 py-3.5 px-5 hover:bg-accent/50 transition-colors duration-150"
+                      className="flex items-center gap-3 min-h-[56px] py-3 px-4 sm:px-5 active:bg-accent/50 sm:hover:bg-accent/50 transition-colors duration-150"
                     >
                       <div className={`h-9 w-9 rounded-lg ${config.bgClass} flex items-center justify-center shrink-0`}>
                         <Icon className={`h-4 w-4 ${config.colorClass}`} />

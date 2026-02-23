@@ -30,7 +30,7 @@ export function MainLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-[100dvh] bg-background">
       <aside className="hidden lg:fixed lg:inset-y-0 lg:z-40 lg:flex lg:w-[280px] lg:flex-col">
         <div className="flex grow flex-col border-r border-border/60 bg-card">
           <div className="flex items-center h-16 px-6 border-b border-border/60">
@@ -88,8 +88,11 @@ export function MainLayout() {
         </div>
       </aside>
 
-      <div className="lg:pl-[280px]">
-        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border/60 bg-background/80 backdrop-blur-xl px-4 sm:px-6 lg:hidden">
+      <div className="lg:pl-[280px] flex flex-col min-h-[100dvh]">
+        <header
+          className="sticky top-0 z-30 flex items-center justify-between border-b border-border/60 bg-background/80 backdrop-blur-xl px-4 sm:px-6 lg:hidden"
+          style={{ height: 'calc(3.5rem + var(--safe-top, 0px))', paddingTop: 'var(--safe-top, 0px)' }}
+        >
           <div className="flex items-center gap-2.5">
             <div className="h-7 w-7 rounded-md bg-primary flex items-center justify-center">
               <span className="text-xs font-bold text-primary-foreground">U</span>
@@ -101,16 +104,16 @@ export function MainLayout() {
           <LanguageSwitcher />
         </header>
 
-        <main className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-6 lg:py-8 pb-[calc(5rem+env(safe-area-inset-bottom,0px))] lg:pb-8">
+        <main className="flex-1 mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 py-5 sm:py-6 lg:py-8 pb-[calc(5.5rem+var(--safe-bottom,0px))] lg:pb-8">
           <Outlet />
         </main>
       </div>
 
       <nav
         className="fixed bottom-0 inset-x-0 z-40 border-t border-border/60 bg-card/80 backdrop-blur-xl lg:hidden"
-        style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+        style={{ paddingBottom: 'var(--safe-bottom, 0px)' }}
       >
-        <div className="flex items-center justify-around h-[60px] px-1">
+        <div className="flex items-stretch justify-around h-[62px]">
           {NAV_ITEMS.map((item) => {
             const isActive = item.to === '/'
               ? location.pathname === '/'
@@ -120,13 +123,14 @@ export function MainLayout() {
                 key={item.to}
                 to={item.to}
                 end={item.to === '/'}
-                className="flex flex-col items-center justify-center gap-1 min-w-[60px] min-h-[48px] rounded-xl px-3 py-1.5 transition-colors duration-200"
+                className="flex flex-col items-center justify-center gap-1 flex-1 min-h-[48px] relative transition-colors duration-200"
               >
-                <div className="relative">
-                  <item.icon className={`h-[22px] w-[22px] transition-colors duration-200 ${
-                    isActive ? 'text-primary' : 'text-muted-foreground'
-                  }`} />
-                </div>
+                {isActive && (
+                  <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-[2px] rounded-full bg-primary" />
+                )}
+                <item.icon className={`h-[22px] w-[22px] transition-colors duration-200 ${
+                  isActive ? 'text-primary' : 'text-muted-foreground'
+                }`} />
                 <span className={`text-[10px] font-medium leading-none transition-colors duration-200 ${
                   isActive ? 'text-primary' : 'text-muted-foreground'
                 }`}>

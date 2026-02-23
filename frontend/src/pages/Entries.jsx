@@ -332,10 +332,10 @@ export default function Entries() {
               const config = TYPE_CONFIG[entry.type];
               const Icon = config.icon;
               return (
-                <Card key={entry.id} className="hover:border-border/80">
+                <Card key={entry.id} className="active:bg-accent/30 transition-colors">
                   <CardContent className="p-4">
                     <div className="flex items-start gap-3">
-                      <div className={`h-10 w-10 rounded-xl ${config.bgClass} flex items-center justify-center shrink-0 mt-0.5`}>
+                      <div className={`h-11 w-11 rounded-xl ${config.bgClass} flex items-center justify-center shrink-0`}>
                         <Icon className={`h-5 w-5 ${config.colorClass}`} />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -381,9 +381,9 @@ export default function Entries() {
             <DialogTitle>{t('entries.deleteConfirmTitle')}</DialogTitle>
             <DialogDescription>{t('entries.deleteConfirmMessage')}</DialogDescription>
           </DialogHeader>
-          <DialogFooter className="gap-2 sm:gap-0">
+          <DialogFooter className="gap-2 sm:gap-2">
             <DialogClose asChild>
-              <Button variant="outline" disabled={deleting} className="h-11">
+              <Button variant="outline" disabled={deleting} className="h-12 sm:h-11">
                 {t('entries.deleteCancel')}
               </Button>
             </DialogClose>
@@ -391,7 +391,7 @@ export default function Entries() {
               variant="destructive"
               onClick={handleDelete}
               disabled={deleting}
-              className="h-11"
+              className="h-12 sm:h-11"
             >
               {deleting ? (
                 <span className="flex items-center gap-2">

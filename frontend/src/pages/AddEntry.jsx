@@ -199,10 +199,10 @@ export default function AddEntry() {
                       type="button"
                       onClick={() => handleTypeSelect(item.value)}
                       onBlur={() => handleBlur('type')}
-                      className={`flex flex-col items-center justify-center gap-2 rounded-xl border p-4 min-h-[84px] transition-all duration-200 ${
+                      className={`flex flex-col items-center justify-center gap-2 rounded-xl border p-4 min-h-[84px] transition-all duration-200 active:scale-[0.97] ${
                         selected
                           ? 'border-primary bg-primary/10 text-primary ring-1 ring-primary/20'
-                          : 'border-border/50 bg-secondary text-muted-foreground hover:border-border hover:text-foreground'
+                          : 'border-border/50 bg-secondary text-muted-foreground active:bg-accent sm:hover:border-border sm:hover:text-foreground'
                       }`}
                     >
                       <item.icon className="h-6 w-6" />

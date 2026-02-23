@@ -88,7 +88,7 @@ export default function Login() {
       </div>
 
       <Card>
-        <CardContent className="pt-6">
+        <CardContent className="p-5 sm:p-6">
           <div className="mb-6">
             <h2 className="text-xl font-semibold text-foreground">{t('auth.signIn')}</h2>
             <p className="text-sm text-muted-foreground mt-1">
@@ -177,11 +177,11 @@ export default function Login() {
             </Button>
           </form>
 
-          <p className="text-center text-sm text-muted-foreground mt-6">
+          <p className="text-center text-sm text-muted-foreground mt-6 py-2">
             {t('auth.noAccount')}{' '}
             <Link
               to="/register"
-              className="font-medium text-primary hover:underline transition-colors"
+              className="font-medium text-primary hover:underline transition-colors inline-block py-1"
             >
               {t('auth.createOne')}
             </Link>
