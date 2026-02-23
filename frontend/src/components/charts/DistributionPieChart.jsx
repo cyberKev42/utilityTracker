@@ -18,15 +18,15 @@ function CustomTooltip({ active, payload }) {
   if (!active || !payload?.length) return null;
   const { name, value, percent } = payload[0];
   return (
-    <div className="bg-popover border border-border rounded-lg px-3 py-2.5 shadow-md">
-      <p className="text-xs font-medium text-foreground">{name}</p>
+    <div className="bg-popover border border-border/60 rounded-lg px-3 py-2 shadow-lg">
+      <p className="text-[11px] font-medium text-foreground">{name}</p>
       <p className="text-sm font-semibold text-foreground tabular-nums">
         {Number(value).toLocaleString(undefined, {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         })}
       </p>
-      <p className="text-xs text-muted-foreground tabular-nums">
+      <p className="text-[11px] text-muted-foreground tabular-nums">
         {(percent * 100).toFixed(1)}%
       </p>
     </div>
@@ -39,7 +39,7 @@ function CustomLegend({ payload }) {
       {payload.map((entry) => (
         <div key={entry.value} className="flex items-center gap-2 min-h-[28px]">
           <span
-            className="inline-block h-3 w-3 rounded-full shrink-0"
+            className="inline-block h-2.5 w-2.5 rounded-full shrink-0"
             style={{ backgroundColor: entry.color }}
           />
           <span className="text-xs text-muted-foreground">{entry.value}</span>
@@ -92,6 +92,8 @@ export default function DistributionPieChart({ data }) {
             outerRadius="68%"
             paddingAngle={3}
             strokeWidth={0}
+            animationDuration={600}
+            animationEasing="ease-out"
           >
             {chartData.map((entry) => (
               <Cell

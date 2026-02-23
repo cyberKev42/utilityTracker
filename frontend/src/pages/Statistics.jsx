@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { getStats } from '../services/entriesService';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
+import { motion } from 'framer-motion';
 import {
   HiExclamationCircle,
   HiOutlineChartBar,
@@ -12,6 +13,15 @@ import {
 import SpendingLineChart from '../components/charts/SpendingLineChart';
 import CategoryBarChart from '../components/charts/CategoryBarChart';
 import DistributionPieChart from '../components/charts/DistributionPieChart';
+
+const stagger = {
+  animate: { transition: { staggerChildren: 0.08 } },
+};
+
+const fadeUp = {
+  initial: { opacity: 0, y: 10 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.25, ease: [0.25, 0.1, 0.25, 1] } },
+};
 
 export default function Statistics() {
   const { t } = useTranslation();
@@ -36,17 +46,25 @@ export default function Statistics() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent"
+        />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex items-start gap-2 p-4 rounded-xl bg-destructive/10 border border-destructive/20">
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex items-start gap-2 p-4 rounded-xl bg-destructive/10 border border-destructive/20"
+      >
         <HiExclamationCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
         <p className="text-sm text-destructive">{t('dashboard.loadingError')}</p>
-      </div>
+      </motion.div>
     );
   }
 
@@ -54,74 +72,82 @@ export default function Statistics() {
 
   if (isEmpty) {
     return (
-      <div className="space-y-8">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground tracking-tight">{t('statistics.title')}</h1>
-          <p className="text-sm text-muted-foreground mt-1.5">{t('statistics.description')}</p>
-        </div>
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex flex-col items-center text-center py-10 space-y-4">
-              <div className="h-14 w-14 rounded-2xl bg-muted flex items-center justify-center">
-                <HiOutlineChartBar className="h-7 w-7 text-muted-foreground" />
+      <motion.div variants={stagger} initial="initial" animate="animate" className="space-y-8">
+        <motion.div variants={fadeUp}>
+          <h1 className="text-xl font-semibold text-foreground tracking-tight">{t('statistics.title')}</h1>
+          <p className="text-[13px] text-muted-foreground mt-1">{t('statistics.description')}</p>
+        </motion.div>
+        <motion.div variants={fadeUp}>
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex flex-col items-center text-center py-10 space-y-4">
+                <div className="h-12 w-12 rounded-xl bg-muted flex items-center justify-center">
+                  <HiOutlineChartBar className="h-6 w-6 text-muted-foreground" />
+                </div>
+                <p className="text-sm text-muted-foreground max-w-xs">
+                  {t('statistics.noData')}
+                </p>
+                <Link to="/add-entry">
+                  <Button size="lg">{t('statistics.addEntries')}</Button>
+                </Link>
               </div>
-              <p className="text-sm text-muted-foreground max-w-xs">
-                {t('statistics.noData')}
-              </p>
-              <Link to="/add-entry">
-                <Button className="h-11 px-6">{t('statistics.addEntries')}</Button>
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </motion.div>
     );
   }
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground tracking-tight">{t('statistics.title')}</h1>
-        <p className="text-sm text-muted-foreground mt-1.5">{t('statistics.description')}</p>
+    <motion.div variants={stagger} initial="initial" animate="animate" className="space-y-8">
+      <motion.div variants={fadeUp}>
+        <h1 className="text-xl font-semibold text-foreground tracking-tight">{t('statistics.title')}</h1>
+        <p className="text-[13px] text-muted-foreground mt-1">{t('statistics.description')}</p>
+      </motion.div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
+        <motion.div variants={fadeUp} className="lg:col-span-2">
+          <Card>
+            <CardContent className="p-5 px-3 sm:px-5">
+              <h2 className="text-sm font-semibold text-foreground mb-0.5">
+                {t('statistics.spendingOverTime')}
+              </h2>
+              <p className="text-xs text-muted-foreground mb-5">
+                {t('statistics.spendingOverTimeDesc')}
+              </p>
+              <SpendingLineChart data={stats.monthly} />
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        <motion.div variants={fadeUp}>
+          <Card>
+            <CardContent className="p-5 px-3 sm:px-5">
+              <h2 className="text-sm font-semibold text-foreground mb-0.5">
+                {t('statistics.spendingByCategory')}
+              </h2>
+              <p className="text-xs text-muted-foreground mb-5">
+                {t('statistics.spendingByCategoryDesc')}
+              </p>
+              <CategoryBarChart data={stats.byType} />
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        <motion.div variants={fadeUp}>
+          <Card>
+            <CardContent className="p-5 px-3 sm:px-5">
+              <h2 className="text-sm font-semibold text-foreground mb-0.5">
+                {t('statistics.costDistribution')}
+              </h2>
+              <p className="text-xs text-muted-foreground mb-5">
+                {t('statistics.costDistributionDesc')}
+              </p>
+              <DistributionPieChart data={stats.byType} />
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
-        <Card className="lg:col-span-2">
-          <CardContent className="p-5 px-3 sm:px-5">
-            <h2 className="text-[15px] font-semibold text-foreground mb-0.5">
-              {t('statistics.spendingOverTime')}
-            </h2>
-            <p className="text-xs text-muted-foreground mb-5">
-              {t('statistics.spendingOverTimeDesc')}
-            </p>
-            <SpendingLineChart data={stats.monthly} />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-5 px-3 sm:px-5">
-            <h2 className="text-[15px] font-semibold text-foreground mb-0.5">
-              {t('statistics.spendingByCategory')}
-            </h2>
-            <p className="text-xs text-muted-foreground mb-5">
-              {t('statistics.spendingByCategoryDesc')}
-            </p>
-            <CategoryBarChart data={stats.byType} />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-5 px-3 sm:px-5">
-            <h2 className="text-[15px] font-semibold text-foreground mb-0.5">
-              {t('statistics.costDistribution')}
-            </h2>
-            <p className="text-xs text-muted-foreground mb-5">
-              {t('statistics.costDistributionDesc')}
-            </p>
-            <DistributionPieChart data={stats.byType} />
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+    </motion.div>
   );
 }

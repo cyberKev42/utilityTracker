@@ -23,15 +23,15 @@ function CustomTooltip({ active, payload }) {
   if (!active || !payload?.length) return null;
   const { translatedName, total_cost, entry_count, avg_cost } = payload[0].payload;
   return (
-    <div className="bg-popover border border-border rounded-lg px-3 py-2.5 shadow-md space-y-1">
-      <p className="text-xs font-medium text-foreground">{translatedName}</p>
+    <div className="bg-popover border border-border/60 rounded-lg px-3 py-2 shadow-lg space-y-0.5">
+      <p className="text-[11px] font-medium text-foreground">{translatedName}</p>
       <p className="text-sm font-semibold text-foreground tabular-nums">
         {Number(total_cost).toLocaleString(undefined, {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         })}
       </p>
-      <p className="text-xs text-muted-foreground tabular-nums">
+      <p className="text-[11px] text-muted-foreground tabular-nums">
         {entry_count} entries &middot; avg{' '}
         {Number(avg_cost).toLocaleString(undefined, {
           minimumFractionDigits: 2,
@@ -65,6 +65,7 @@ export default function CategoryBarChart({ data }) {
           <CartesianGrid
             strokeDasharray="3 3"
             stroke={BORDER}
+            strokeOpacity={0.5}
             vertical={false}
           />
           <XAxis
@@ -81,8 +82,14 @@ export default function CategoryBarChart({ data }) {
             tickFormatter={(v) => v.toLocaleString()}
             width={45}
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--muted) / 0.3)' }} />
-          <Bar dataKey="total_cost" radius={[6, 6, 0, 0]} maxBarSize={56}>
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--muted) / 0.2)' }} />
+          <Bar
+            dataKey="total_cost"
+            radius={[6, 6, 0, 0]}
+            maxBarSize={56}
+            animationDuration={600}
+            animationEasing="ease-out"
+          >
             {chartData.map((entry) => (
               <Cell
                 key={entry.type}

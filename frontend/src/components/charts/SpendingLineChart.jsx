@@ -24,8 +24,8 @@ function formatMonth(monthStr) {
 function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-popover border border-border rounded-lg px-3 py-2.5 shadow-md">
-      <p className="text-xs text-muted-foreground mb-1">{formatMonth(label)}</p>
+    <div className="bg-popover border border-border/60 rounded-lg px-3 py-2 shadow-lg">
+      <p className="text-[11px] text-muted-foreground mb-0.5">{formatMonth(label)}</p>
       <p className="text-sm font-semibold text-foreground tabular-nums">
         {Number(payload[0].value).toLocaleString(undefined, {
           minimumFractionDigits: 2,
@@ -56,6 +56,7 @@ export default function SpendingLineChart({ data }) {
           <CartesianGrid
             strokeDasharray="3 3"
             stroke={COLORS.border}
+            strokeOpacity={0.5}
             vertical={false}
           />
           <XAxis
@@ -79,9 +80,11 @@ export default function SpendingLineChart({ data }) {
             type="monotone"
             dataKey="total_cost"
             stroke={COLORS.primary}
-            strokeWidth={2.5}
-            dot={{ r: 5, fill: COLORS.primary, strokeWidth: 0 }}
-            activeDot={{ r: 8, strokeWidth: 2, stroke: COLORS.primary, fill: 'hsl(var(--background))' }}
+            strokeWidth={2}
+            dot={{ r: 4, fill: COLORS.primary, strokeWidth: 0 }}
+            activeDot={{ r: 6, strokeWidth: 2, stroke: COLORS.primary, fill: 'hsl(var(--background))' }}
+            animationDuration={600}
+            animationEasing="ease-out"
           />
         </LineChart>
       </ResponsiveContainer>

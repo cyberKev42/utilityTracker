@@ -5,6 +5,7 @@ import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Button } from '../components/ui/button';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   HiOutlineBolt,
   HiOutlineBeaker,
@@ -15,9 +16,14 @@ import {
 
 const TYPES = [
   { value: 'electricity', icon: HiOutlineBolt, defaultUnit: 'kWh' },
-  { value: 'water', icon: HiOutlineBeaker, defaultUnit: 'm³' },
+  { value: 'water', icon: HiOutlineBeaker, defaultUnit: 'm\u00B3' },
   { value: 'fuel', icon: HiOutlineFire, defaultUnit: 'L' },
 ];
+
+const fadeUp = {
+  initial: { opacity: 0, y: 10 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.25, ease: [0.25, 0.1, 0.25, 1] } },
+};
 
 function todayISO() {
   const d = new Date();
@@ -152,176 +158,205 @@ export default function AddEntry() {
   if (success) {
     return (
       <div className="max-w-lg mx-auto">
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex flex-col items-center text-center py-8 space-y-4">
-              <div className="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center">
-                <HiOutlineCheckCircle className="h-10 w-10 text-primary" />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+        >
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex flex-col items-center text-center py-8 space-y-4">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.1, type: 'spring', stiffness: 400, damping: 20 }}
+                  className="h-14 w-14 rounded-xl bg-primary/10 flex items-center justify-center"
+                >
+                  <HiOutlineCheckCircle className="h-8 w-8 text-primary" />
+                </motion.div>
+                <p className="text-lg font-semibold text-foreground">
+                  {t('addEntry.success')}
+                </p>
+                <Button onClick={resetForm} size="lg">
+                  {t('addEntry.addAnother')}
+                </Button>
               </div>
-              <p className="text-lg font-semibold text-foreground">
-                {t('addEntry.success')}
-              </p>
-              <Button onClick={resetForm} className="h-12 px-8 text-base">
-                {t('addEntry.addAnother')}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
     );
   }
 
   return (
     <div className="max-w-lg mx-auto">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-foreground tracking-tight">{t('addEntry.title')}</h1>
-        <p className="text-sm text-muted-foreground mt-1.5">{t('addEntry.description')}</p>
-      </div>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
+      >
+        <div className="mb-8">
+          <h1 className="text-xl font-semibold text-foreground tracking-tight">{t('addEntry.title')}</h1>
+          <p className="text-[13px] text-muted-foreground mt-1">{t('addEntry.description')}</p>
+        </div>
 
-      <Card>
-        <CardContent className="p-5 sm:p-6">
-          {serverError && (
-            <div className="flex items-start gap-2 p-3 mb-5 rounded-lg bg-destructive/10 border border-destructive/20">
-              <HiExclamationCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
-              <p className="text-sm text-destructive">{serverError}</p>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-            <div className="space-y-2.5">
-              <Label>{t('addEntry.type')}</Label>
-              <div className="grid grid-cols-3 gap-2.5">
-                {TYPES.map((item) => {
-                  const selected = type === item.value;
-                  return (
-                    <button
-                      key={item.value}
-                      type="button"
-                      onClick={() => handleTypeSelect(item.value)}
-                      onBlur={() => handleBlur('type')}
-                      className={`flex flex-col items-center justify-center gap-2 rounded-xl border p-4 min-h-[84px] transition-all duration-200 active:scale-[0.97] ${
-                        selected
-                          ? 'border-primary bg-primary/10 text-primary ring-1 ring-primary/20'
-                          : 'border-border/50 bg-secondary text-muted-foreground active:bg-accent sm:hover:border-border sm:hover:text-foreground'
-                      }`}
-                    >
-                      <item.icon className="h-6 w-6" />
-                      <span className="text-xs font-medium">
-                        {t(`addEntry.types.${item.value}`)}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-              {touched.type && fieldErrors.type && (
-                <p className="text-xs text-destructive">{fieldErrors.type}</p>
+        <Card>
+          <CardContent className="p-5 sm:p-6">
+            <AnimatePresence>
+              {serverError && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="overflow-hidden"
+                >
+                  <div className="flex items-start gap-2 p-3 mb-5 rounded-lg bg-destructive/10 border border-destructive/20">
+                    <HiExclamationCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                    <p className="text-sm text-destructive">{serverError}</p>
+                  </div>
+                </motion.div>
               )}
-            </div>
+            </AnimatePresence>
 
-            <div className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="space-y-5" noValidate>
               <div className="space-y-2">
-                <Label htmlFor="usageAmount">{t('addEntry.usageAmount')}</Label>
+                <Label>{t('addEntry.type')}</Label>
+                <div className="grid grid-cols-3 gap-2.5">
+                  {TYPES.map((item) => {
+                    const selected = type === item.value;
+                    return (
+                      <motion.button
+                        key={item.value}
+                        type="button"
+                        whileTap={{ scale: 0.97 }}
+                        onClick={() => handleTypeSelect(item.value)}
+                        onBlur={() => handleBlur('type')}
+                        className={`flex flex-col items-center justify-center gap-2 rounded-xl border p-4 min-h-[80px] transition-colors duration-150 ${
+                          selected
+                            ? 'border-primary bg-primary/10 text-primary ring-1 ring-primary/20'
+                            : 'border-border/40 bg-card text-muted-foreground active:bg-accent sm:hover:border-border/60 sm:hover:text-foreground'
+                        }`}
+                      >
+                        <item.icon className="h-6 w-6" />
+                        <span className="text-xs font-medium">
+                          {t(`addEntry.types.${item.value}`)}
+                        </span>
+                      </motion.button>
+                    );
+                  })}
+                </div>
+                {touched.type && fieldErrors.type && (
+                  <p className="text-xs text-destructive">{fieldErrors.type}</p>
+                )}
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label htmlFor="usageAmount">{t('addEntry.usageAmount')}</Label>
+                  <Input
+                    id="usageAmount"
+                    type="number"
+                    inputMode="decimal"
+                    step="any"
+                    min="0"
+                    placeholder={t('addEntry.usageAmountPlaceholder')}
+                    value={usageAmount}
+                    onChange={(e) => handleFieldChange('usageAmount', e.target.value)}
+                    onBlur={() => handleBlur('usageAmount')}
+                    className={`h-11 ${
+                      touched.usageAmount && fieldErrors.usageAmount
+                        ? 'border-destructive focus-visible:ring-destructive'
+                        : ''
+                    }`}
+                  />
+                  {touched.usageAmount && fieldErrors.usageAmount && (
+                    <p className="text-xs text-destructive">{fieldErrors.usageAmount}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="unit">{t('addEntry.unit')}</Label>
+                  <Input
+                    id="unit"
+                    type="text"
+                    placeholder={t('addEntry.unitPlaceholder')}
+                    value={unit}
+                    onChange={(e) => handleFieldChange('unit', e.target.value)}
+                    onBlur={() => handleBlur('unit')}
+                    className={`h-11 ${
+                      touched.unit && fieldErrors.unit
+                        ? 'border-destructive focus-visible:ring-destructive'
+                        : ''
+                    }`}
+                  />
+                  {touched.unit && fieldErrors.unit && (
+                    <p className="text-xs text-destructive">{fieldErrors.unit}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="costAmount">{t('addEntry.costAmount')}</Label>
                 <Input
-                  id="usageAmount"
+                  id="costAmount"
                   type="number"
                   inputMode="decimal"
                   step="any"
                   min="0"
-                  placeholder={t('addEntry.usageAmountPlaceholder')}
-                  value={usageAmount}
-                  onChange={(e) => handleFieldChange('usageAmount', e.target.value)}
-                  onBlur={() => handleBlur('usageAmount')}
-                  className={`h-12 text-base ${
-                    touched.usageAmount && fieldErrors.usageAmount
+                  placeholder={t('addEntry.costAmountPlaceholder')}
+                  value={costAmount}
+                  onChange={(e) => handleFieldChange('costAmount', e.target.value)}
+                  onBlur={() => handleBlur('costAmount')}
+                  className={`h-11 ${
+                    touched.costAmount && fieldErrors.costAmount
                       ? 'border-destructive focus-visible:ring-destructive'
                       : ''
                   }`}
                 />
-                {touched.usageAmount && fieldErrors.usageAmount && (
-                  <p className="text-xs text-destructive">{fieldErrors.usageAmount}</p>
+                {touched.costAmount && fieldErrors.costAmount && (
+                  <p className="text-xs text-destructive">{fieldErrors.costAmount}</p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="unit">{t('addEntry.unit')}</Label>
+                <Label htmlFor="date">{t('addEntry.date')}</Label>
                 <Input
-                  id="unit"
-                  type="text"
-                  placeholder={t('addEntry.unitPlaceholder')}
-                  value={unit}
-                  onChange={(e) => handleFieldChange('unit', e.target.value)}
-                  onBlur={() => handleBlur('unit')}
-                  className={`h-12 text-base ${
-                    touched.unit && fieldErrors.unit
+                  id="date"
+                  type="date"
+                  value={date}
+                  onChange={(e) => handleFieldChange('date', e.target.value)}
+                  onBlur={() => handleBlur('date')}
+                  className={`h-11 ${
+                    touched.date && fieldErrors.date
                       ? 'border-destructive focus-visible:ring-destructive'
                       : ''
                   }`}
                 />
-                {touched.unit && fieldErrors.unit && (
-                  <p className="text-xs text-destructive">{fieldErrors.unit}</p>
+                {touched.date && fieldErrors.date && (
+                  <p className="text-xs text-destructive">{fieldErrors.date}</p>
                 )}
               </div>
-            </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="costAmount">{t('addEntry.costAmount')}</Label>
-              <Input
-                id="costAmount"
-                type="number"
-                inputMode="decimal"
-                step="any"
-                min="0"
-                placeholder={t('addEntry.costAmountPlaceholder')}
-                value={costAmount}
-                onChange={(e) => handleFieldChange('costAmount', e.target.value)}
-                onBlur={() => handleBlur('costAmount')}
-                className={`h-12 text-base ${
-                  touched.costAmount && fieldErrors.costAmount
-                    ? 'border-destructive focus-visible:ring-destructive'
-                    : ''
-                }`}
-              />
-              {touched.costAmount && fieldErrors.costAmount && (
-                <p className="text-xs text-destructive">{fieldErrors.costAmount}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="date">{t('addEntry.date')}</Label>
-              <Input
-                id="date"
-                type="date"
-                value={date}
-                onChange={(e) => handleFieldChange('date', e.target.value)}
-                onBlur={() => handleBlur('date')}
-                className={`h-12 text-base ${
-                  touched.date && fieldErrors.date
-                    ? 'border-destructive focus-visible:ring-destructive'
-                    : ''
-                }`}
-              />
-              {touched.date && fieldErrors.date && (
-                <p className="text-xs text-destructive">{fieldErrors.date}</p>
-              )}
-            </div>
-
-            <Button
-              type="submit"
-              className="w-full h-12 text-base font-medium"
-              disabled={loading}
-            >
-              {loading ? (
-                <span className="flex items-center gap-2">
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                  {t('addEntry.submitting')}
-                </span>
-              ) : (
-                t('addEntry.submit')
-              )}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+              <motion.div whileTap={{ scale: 0.98 }}>
+                <Button
+                  type="submit"
+                  className="w-full h-11 font-medium"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <span className="flex items-center gap-2">
+                      <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                      {t('addEntry.submitting')}
+                    </span>
+                  ) : (
+                    t('addEntry.submit')
+                  )}
+                </Button>
+              </motion.div>
+            </form>
+          </CardContent>
+        </Card>
+      </motion.div>
     </div>
   );
 }

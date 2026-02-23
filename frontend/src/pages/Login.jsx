@@ -6,6 +6,7 @@ import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Button } from '../components/ui/button';
+import { motion, AnimatePresence } from 'framer-motion';
 import { HiOutlineEye, HiOutlineEyeSlash, HiExclamationCircle } from 'react-icons/hi2';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -79,10 +80,15 @@ export default function Login() {
   return (
     <>
       <div className="text-center mb-8">
-        <h1 className="text-2xl font-bold text-foreground tracking-tight">
+        <div className="flex items-center justify-center gap-2 mb-3">
+          <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
+            <span className="text-sm font-bold text-primary-foreground">U</span>
+          </div>
+        </div>
+        <h1 className="text-xl font-semibold text-foreground tracking-tight">
           {t('app.name')}
         </h1>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-[13px] text-muted-foreground mt-1">
           {t('app.tagline')}
         </p>
       </div>
@@ -90,20 +96,29 @@ export default function Login() {
       <Card>
         <CardContent className="p-5 sm:p-6">
           <div className="mb-6">
-            <h2 className="text-xl font-semibold text-foreground">{t('auth.signIn')}</h2>
-            <p className="text-sm text-muted-foreground mt-1">
+            <h2 className="text-lg font-semibold text-foreground">{t('auth.signIn')}</h2>
+            <p className="text-[13px] text-muted-foreground mt-1">
               {t('auth.signInSubtitle')}
             </p>
           </div>
 
-          {error && (
-            <div className="flex items-start gap-2 p-3 mb-4 rounded-lg bg-destructive/10 border border-destructive/20">
-              <HiExclamationCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
-              <p className="text-sm text-destructive">{error}</p>
-            </div>
-          )}
+          <AnimatePresence>
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="flex items-start gap-2 p-3 mb-4 rounded-lg bg-destructive/10 border border-destructive/20">
+                  <HiExclamationCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                  <p className="text-sm text-destructive">{error}</p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-          <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+          <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             <div className="space-y-2">
               <Label htmlFor="email">{t('auth.email')}</Label>
               <Input
@@ -115,7 +130,7 @@ export default function Login() {
                 onChange={(e) => handleChange('email', e.target.value)}
                 onBlur={() => handleBlur('email')}
                 autoComplete="email"
-                className={`h-12 text-base ${
+                className={`h-11 ${
                   touched.email && fieldErrors.email
                     ? 'border-destructive focus-visible:ring-destructive'
                     : ''
@@ -137,7 +152,7 @@ export default function Login() {
                   onChange={(e) => handleChange('password', e.target.value)}
                   onBlur={() => handleBlur('password')}
                   autoComplete="current-password"
-                  className={`h-12 text-base pr-12 ${
+                  className={`h-11 pr-11 ${
                     touched.password && fieldErrors.password
                       ? 'border-destructive focus-visible:ring-destructive'
                       : ''
@@ -146,13 +161,13 @@ export default function Login() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-0 top-0 h-12 w-12 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+                  className="absolute right-0 top-0 h-11 w-11 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
                   aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
                 >
                   {showPassword ? (
-                    <HiOutlineEyeSlash className="h-5 w-5" />
+                    <HiOutlineEyeSlash className="h-4 w-4" />
                   ) : (
-                    <HiOutlineEye className="h-5 w-5" />
+                    <HiOutlineEye className="h-4 w-4" />
                   )}
                 </button>
               </div>
@@ -161,23 +176,25 @@ export default function Login() {
               )}
             </div>
 
-            <Button
-              type="submit"
-              className="w-full h-12 text-base font-medium"
-              disabled={loading}
-            >
-              {loading ? (
-                <span className="flex items-center gap-2">
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                  {t('auth.signingIn')}
-                </span>
-              ) : (
-                t('auth.signIn')
-              )}
-            </Button>
+            <motion.div whileTap={{ scale: 0.98 }}>
+              <Button
+                type="submit"
+                className="w-full h-11 font-medium"
+                disabled={loading}
+              >
+                {loading ? (
+                  <span className="flex items-center gap-2">
+                    <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                    {t('auth.signingIn')}
+                  </span>
+                ) : (
+                  t('auth.signIn')
+                )}
+              </Button>
+            </motion.div>
           </form>
 
-          <p className="text-center text-sm text-muted-foreground mt-6 py-2">
+          <p className="text-center text-[13px] text-muted-foreground mt-6 py-2">
             {t('auth.noAccount')}{' '}
             <Link
               to="/register"
