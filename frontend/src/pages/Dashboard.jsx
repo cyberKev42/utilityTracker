@@ -74,7 +74,7 @@ export default function Dashboard() {
 
   if (error) {
     return (
-      <div className="flex items-start gap-2 p-4 rounded-lg bg-destructive/10 border border-destructive/20">
+      <div className="flex items-start gap-2 p-4 rounded-xl bg-destructive/10 border border-destructive/20">
         <HiExclamationCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
         <p className="text-sm text-destructive">{t('dashboard.loadingError')}</p>
       </div>
@@ -86,20 +86,20 @@ export default function Dashboard() {
     const config = TYPE_CONFIG[type];
     const Icon = config.icon;
     return (
-      <Card key={type}>
-        <CardContent className="pt-5 pb-5">
-          <div className="flex items-center gap-3 mb-3">
-            <div className={`h-10 w-10 rounded-lg ${config.bgClass} flex items-center justify-center`}>
+      <Card key={type} className="hover:border-border/80 hover:bg-card/80">
+        <CardContent className="p-5">
+          <div className="flex items-center gap-3 mb-4">
+            <div className={`h-10 w-10 rounded-xl ${config.bgClass} flex items-center justify-center`}>
               <Icon className={`h-5 w-5 ${config.colorClass}`} />
             </div>
-            <span className="text-sm font-medium text-muted-foreground">
+            <span className="text-[13px] font-medium text-muted-foreground">
               {t(`dashboard.${type}`)}
             </span>
           </div>
-          <p className="text-2xl font-bold text-foreground tabular-nums">
+          <p className="text-2xl font-bold text-foreground tabular-nums tracking-tight">
             {formatCurrency(stat?.total_cost)}
           </p>
-          <p className="text-xs text-muted-foreground mt-1">
+          <p className="text-xs text-muted-foreground mt-1.5">
             {stat
               ? t('dashboard.entries', { count: stat.entry_count })
               : t('dashboard.noEntries')}
@@ -117,20 +117,20 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <Card className="sm:col-span-2 lg:col-span-1">
-          <CardContent className="pt-5 pb-5">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+        <Card className="sm:col-span-2 lg:col-span-1 hover:border-border/80 hover:bg-card/80">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
                 <HiOutlineBanknotes className="h-5 w-5 text-primary" />
               </div>
-              <span className="text-sm font-medium text-muted-foreground">
+              <span className="text-[13px] font-medium text-muted-foreground">
                 {t('dashboard.totalSpending')}
               </span>
             </div>
-            <p className="text-2xl font-bold text-foreground tabular-nums">
+            <p className="text-2xl font-bold text-foreground tabular-nums tracking-tight">
               {formatCurrency(totalCost)}
             </p>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs text-muted-foreground mt-1.5">
               {totalCount > 0
                 ? t('dashboard.entries', { count: totalCount })
                 : t('dashboard.noEntries')}
@@ -147,7 +147,7 @@ export default function Dashboard() {
           </h2>
           {recentEntries.length > 0 && (
             <Link to="/entries">
-              <Button variant="ghost" size="sm" className="text-muted-foreground h-11">
+              <Button variant="ghost" size="sm" className="text-muted-foreground h-9 text-[13px]">
                 {t('dashboard.viewAll')}
               </Button>
             </Link>
@@ -156,9 +156,9 @@ export default function Dashboard() {
 
         {recentEntries.length === 0 ? (
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="p-6">
               <div className="flex flex-col items-center text-center py-8 space-y-4">
-                <div className="h-14 w-14 rounded-full bg-muted flex items-center justify-center">
+                <div className="h-14 w-14 rounded-2xl bg-muted flex items-center justify-center">
                   <HiOutlinePlusCircle className="h-7 w-7 text-muted-foreground" />
                 </div>
                 <p className="text-sm text-muted-foreground max-w-xs">
@@ -172,15 +172,15 @@ export default function Dashboard() {
           </Card>
         ) : (
           <Card>
-            <CardContent className="pt-4 pb-2 px-0 sm:px-6 sm:pt-4 sm:pb-2">
-              <div className="divide-y divide-border">
+            <CardContent className="p-0">
+              <div className="divide-y divide-border/50">
                 {recentEntries.map((entry) => {
                   const config = TYPE_CONFIG[entry.type];
                   const Icon = config.icon;
                   return (
                     <div
                       key={entry.id}
-                      className="flex items-center gap-3 py-3.5 px-4 sm:px-0"
+                      className="flex items-center gap-3 py-3.5 px-5 hover:bg-accent/50 transition-colors duration-150"
                     >
                       <div className={`h-9 w-9 rounded-lg ${config.bgClass} flex items-center justify-center shrink-0`}>
                         <Icon className={`h-4 w-4 ${config.colorClass}`} />

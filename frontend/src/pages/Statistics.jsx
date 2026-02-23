@@ -43,7 +43,7 @@ export default function Statistics() {
 
   if (error) {
     return (
-      <div className="flex items-start gap-2 p-4 rounded-lg bg-destructive/10 border border-destructive/20">
+      <div className="flex items-start gap-2 p-4 rounded-xl bg-destructive/10 border border-destructive/20">
         <HiExclamationCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
         <p className="text-sm text-destructive">{t('dashboard.loadingError')}</p>
       </div>
@@ -60,9 +60,9 @@ export default function Statistics() {
           <p className="text-sm text-muted-foreground mt-1.5">{t('statistics.description')}</p>
         </div>
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex flex-col items-center text-center py-10 space-y-4">
-              <div className="h-14 w-14 rounded-full bg-muted flex items-center justify-center">
+              <div className="h-14 w-14 rounded-2xl bg-muted flex items-center justify-center">
                 <HiOutlineChartBar className="h-7 w-7 text-muted-foreground" />
               </div>
               <p className="text-sm text-muted-foreground max-w-xs">
@@ -87,11 +87,11 @@ export default function Statistics() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
         <Card className="lg:col-span-2">
-          <CardContent className="pt-5 px-3 sm:px-6">
-            <h2 className="text-base font-semibold text-foreground mb-1">
+          <CardContent className="p-5 px-3 sm:px-5">
+            <h2 className="text-[15px] font-semibold text-foreground mb-0.5">
               {t('statistics.spendingOverTime')}
             </h2>
-            <p className="text-xs text-muted-foreground mb-4">
+            <p className="text-xs text-muted-foreground mb-5">
               {t('statistics.spendingOverTimeDesc')}
             </p>
             <SpendingLineChart data={stats.monthly} />
@@ -99,11 +99,11 @@ export default function Statistics() {
         </Card>
 
         <Card>
-          <CardContent className="pt-5 px-3 sm:px-6">
-            <h2 className="text-base font-semibold text-foreground mb-1">
+          <CardContent className="p-5 px-3 sm:px-5">
+            <h2 className="text-[15px] font-semibold text-foreground mb-0.5">
               {t('statistics.spendingByCategory')}
             </h2>
-            <p className="text-xs text-muted-foreground mb-4">
+            <p className="text-xs text-muted-foreground mb-5">
               {t('statistics.spendingByCategoryDesc')}
             </p>
             <CategoryBarChart data={stats.byType} />
@@ -111,11 +111,11 @@ export default function Statistics() {
         </Card>
 
         <Card>
-          <CardContent className="pt-5 px-3 sm:px-6">
-            <h2 className="text-base font-semibold text-foreground mb-1">
+          <CardContent className="p-5 px-3 sm:px-5">
+            <h2 className="text-[15px] font-semibold text-foreground mb-0.5">
               {t('statistics.costDistribution')}
             </h2>
-            <p className="text-xs text-muted-foreground mb-4">
+            <p className="text-xs text-muted-foreground mb-5">
               {t('statistics.costDistributionDesc')}
             </p>
             <DistributionPieChart data={stats.byType} />

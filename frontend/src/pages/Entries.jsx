@@ -118,7 +118,7 @@ export default function Entries() {
           <h1 className="text-2xl font-bold text-foreground tracking-tight">{t('entries.title')}</h1>
           <p className="text-sm text-muted-foreground mt-1.5">{t('entries.description')}</p>
         </div>
-        <div className="flex items-start gap-2 p-4 rounded-lg bg-destructive/10 border border-destructive/20">
+        <div className="flex items-start gap-2 p-4 rounded-xl bg-destructive/10 border border-destructive/20">
           <HiExclamationCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
           <p className="text-sm text-destructive">{t('entries.loadError')}</p>
         </div>
@@ -169,7 +169,7 @@ export default function Entries() {
 
           {filtersOpen && (
             <Card>
-              <CardContent className="pt-4 pb-4">
+              <CardContent className="p-5">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
                     <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
@@ -178,7 +178,7 @@ export default function Entries() {
                     <select
                       value={filterType}
                       onChange={(e) => setFilterType(e.target.value)}
-                      className="w-full h-12 rounded-md border border-input bg-secondary px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="w-full h-12 rounded-lg border border-input bg-secondary px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                     >
                       <option value="">{t('entries.filterByType')}</option>
                       {TYPES.map((type) => (
@@ -196,7 +196,7 @@ export default function Entries() {
                       type="date"
                       value={filterFrom}
                       onChange={(e) => setFilterFrom(e.target.value)}
-                      className="w-full h-12 rounded-md border border-input bg-secondary px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="w-full h-12 rounded-lg border border-input bg-secondary px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                     />
                   </div>
                   <div>
@@ -207,7 +207,7 @@ export default function Entries() {
                       type="date"
                       value={filterTo}
                       onChange={(e) => setFilterTo(e.target.value)}
-                      className="w-full h-12 rounded-md border border-input bg-secondary px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="w-full h-12 rounded-lg border border-input bg-secondary px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                     />
                   </div>
                 </div>
@@ -219,9 +219,9 @@ export default function Entries() {
 
       {showEmpty && (
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex flex-col items-center text-center py-10 space-y-4">
-              <div className="h-14 w-14 rounded-full bg-muted flex items-center justify-center">
+              <div className="h-14 w-14 rounded-2xl bg-muted flex items-center justify-center">
                 <HiOutlinePlusCircle className="h-7 w-7 text-muted-foreground" />
               </div>
               <p className="text-sm text-muted-foreground max-w-xs">
@@ -237,7 +237,7 @@ export default function Entries() {
 
       {showNoResults && (
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex flex-col items-center text-center py-8 space-y-3">
               <HiOutlineFunnel className="h-8 w-8 text-muted-foreground" />
               <p className="text-sm text-muted-foreground">{t('entries.noResults')}</p>
@@ -256,20 +256,20 @@ export default function Entries() {
               <CardContent className="p-0">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-border">
-                      <th className="text-left text-xs font-medium text-muted-foreground px-4 py-3">
+                    <tr className="border-b border-border/50">
+                      <th className="text-left text-xs font-medium text-muted-foreground px-5 py-3.5">
                         {t('entries.type')}
                       </th>
-                      <th className="text-left text-xs font-medium text-muted-foreground px-4 py-3">
+                      <th className="text-left text-xs font-medium text-muted-foreground px-5 py-3.5">
                         {t('entries.usage')}
                       </th>
-                      <th className="text-right text-xs font-medium text-muted-foreground px-4 py-3">
+                      <th className="text-right text-xs font-medium text-muted-foreground px-5 py-3.5">
                         {t('entries.cost')}
                       </th>
-                      <th className="text-left text-xs font-medium text-muted-foreground px-4 py-3">
+                      <th className="text-left text-xs font-medium text-muted-foreground px-5 py-3.5">
                         {t('entries.date')}
                       </th>
-                      <th className="text-right text-xs font-medium text-muted-foreground px-4 py-3 w-[60px]">
+                      <th className="text-right text-xs font-medium text-muted-foreground px-5 py-3.5 w-[60px]">
                         {t('entries.actions')}
                       </th>
                     </tr>
@@ -281,9 +281,9 @@ export default function Entries() {
                       return (
                         <tr
                           key={entry.id}
-                          className="border-b border-border last:border-b-0 hover:bg-muted/50 transition-colors"
+                          className="border-b border-border/50 last:border-b-0 hover:bg-accent/50 transition-colors duration-150"
                         >
-                          <td className="px-4 py-3">
+                          <td className="px-5 py-3.5">
                             <div className="flex items-center gap-2.5">
                               <div className={`h-8 w-8 rounded-lg ${config.bgClass} flex items-center justify-center shrink-0`}>
                                 <Icon className={`h-4 w-4 ${config.colorClass}`} />
@@ -293,22 +293,22 @@ export default function Entries() {
                               </span>
                             </div>
                           </td>
-                          <td className="px-4 py-3">
+                          <td className="px-5 py-3.5">
                             <span className="text-sm text-foreground tabular-nums">
                               {Number(entry.usage_amount).toLocaleString()} {entry.unit}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-right">
+                          <td className="px-5 py-3.5 text-right">
                             <span className="text-sm font-semibold text-foreground tabular-nums">
                               {formatCurrency(entry.cost_amount)}
                             </span>
                           </td>
-                          <td className="px-4 py-3">
+                          <td className="px-5 py-3.5">
                             <span className="text-sm text-muted-foreground">
                               {formatDate(entry.date)}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-right">
+                          <td className="px-5 py-3.5 text-right">
                             <Button
                               variant="ghost"
                               size="sm"
@@ -327,15 +327,15 @@ export default function Entries() {
             </Card>
           </div>
 
-          <div className="md:hidden space-y-2">
+          <div className="md:hidden space-y-2.5">
             {entries.map((entry) => {
               const config = TYPE_CONFIG[entry.type];
               const Icon = config.icon;
               return (
-                <Card key={entry.id}>
-                  <CardContent className="pt-4 pb-4">
+                <Card key={entry.id} className="hover:border-border/80">
+                  <CardContent className="p-4">
                     <div className="flex items-start gap-3">
-                      <div className={`h-10 w-10 rounded-lg ${config.bgClass} flex items-center justify-center shrink-0 mt-0.5`}>
+                      <div className={`h-10 w-10 rounded-xl ${config.bgClass} flex items-center justify-center shrink-0 mt-0.5`}>
                         <Icon className={`h-5 w-5 ${config.colorClass}`} />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -347,7 +347,7 @@ export default function Entries() {
                             {formatDate(entry.date)}
                           </span>
                         </div>
-                        <div className="flex items-center justify-between mt-2">
+                        <div className="flex items-center justify-between mt-2.5">
                           <div className="space-y-0.5">
                             <p className="text-xs text-muted-foreground">
                               {t('entries.usage')}: {Number(entry.usage_amount).toLocaleString()} {entry.unit}

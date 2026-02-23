@@ -153,9 +153,9 @@ export default function AddEntry() {
     return (
       <div className="max-w-lg mx-auto">
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex flex-col items-center text-center py-8 space-y-4">
-              <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
+              <div className="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center">
                 <HiOutlineCheckCircle className="h-10 w-10 text-primary" />
               </div>
               <p className="text-lg font-semibold text-foreground">
@@ -179,7 +179,7 @@ export default function AddEntry() {
       </div>
 
       <Card>
-        <CardContent className="pt-6">
+        <CardContent className="p-5 sm:p-6">
           {serverError && (
             <div className="flex items-start gap-2 p-3 mb-5 rounded-lg bg-destructive/10 border border-destructive/20">
               <HiExclamationCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
@@ -188,9 +188,9 @@ export default function AddEntry() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               <Label>{t('addEntry.type')}</Label>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 gap-2.5">
                 {TYPES.map((item) => {
                   const selected = type === item.value;
                   return (
@@ -199,10 +199,10 @@ export default function AddEntry() {
                       type="button"
                       onClick={() => handleTypeSelect(item.value)}
                       onBlur={() => handleBlur('type')}
-                      className={`flex flex-col items-center justify-center gap-1.5 rounded-lg border p-4 min-h-[80px] transition-colors duration-200 ${
+                      className={`flex flex-col items-center justify-center gap-2 rounded-xl border p-4 min-h-[84px] transition-all duration-200 ${
                         selected
-                          ? 'border-primary bg-primary/10 text-primary'
-                          : 'border-border bg-secondary text-muted-foreground hover:border-foreground/20 hover:text-foreground'
+                          ? 'border-primary bg-primary/10 text-primary ring-1 ring-primary/20'
+                          : 'border-border/50 bg-secondary text-muted-foreground hover:border-border hover:text-foreground'
                       }`}
                     >
                       <item.icon className="h-6 w-6" />

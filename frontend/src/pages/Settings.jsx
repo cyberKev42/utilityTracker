@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../hooks/useLanguage';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { Separator } from '../components/ui/separator';
 import {
   HiOutlineEnvelope,
   HiOutlineGlobeAlt,
@@ -28,16 +27,16 @@ export default function Settings() {
   };
 
   return (
-    <div className="max-w-2xl space-y-6">
+    <div className="max-w-2xl space-y-5">
       <div>
         <h1 className="text-2xl font-bold text-foreground tracking-tight">{t('settings.title')}</h1>
         <p className="text-sm text-muted-foreground mt-1.5">{t('settings.description')}</p>
       </div>
 
       <Card>
-        <CardContent className="pt-5">
+        <CardContent className="p-5">
           <div className="flex items-center gap-3 mb-4">
-            <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+            <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
               <HiOutlineEnvelope className="h-5 w-5 text-primary" />
             </div>
             <div>
@@ -45,16 +44,16 @@ export default function Settings() {
               <p className="text-xs text-muted-foreground">{t('settings.email')}</p>
             </div>
           </div>
-          <div className="rounded-lg bg-muted/50 border border-border px-4 py-3">
+          <div className="rounded-lg bg-secondary/80 border border-border/40 px-4 py-3">
             <p className="text-sm text-foreground break-all">{user?.email}</p>
           </div>
         </CardContent>
       </Card>
 
       <Card>
-        <CardContent className="pt-5">
-          <div className="flex items-center gap-3 mb-1">
-            <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+        <CardContent className="p-5">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
               <HiOutlineGlobeAlt className="h-5 w-5 text-primary" />
             </div>
             <div>
@@ -62,7 +61,7 @@ export default function Settings() {
               <p className="text-xs text-muted-foreground">{t('settings.languageDescription')}</p>
             </div>
           </div>
-          <div className="mt-4 grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             {supportedLanguages.map((lang) => {
               const isActive = language === lang.code;
               const flag = LANGUAGE_FLAGS[lang.code];
@@ -71,11 +70,11 @@ export default function Settings() {
                   key={lang.code}
                   onClick={() => changeLanguage(lang.code)}
                   className={`
-                    flex items-center gap-3 rounded-lg border px-4 py-3
-                    transition-colors duration-200
+                    flex items-center gap-3 rounded-xl border px-4 py-3.5
+                    transition-all duration-200
                     ${isActive
-                      ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                      : 'border-border bg-secondary hover:bg-accent'
+                      ? 'border-primary bg-primary/5 ring-1 ring-primary/20'
+                      : 'border-border/50 bg-secondary hover:border-border hover:bg-accent'
                     }
                   `}
                 >
@@ -96,9 +95,9 @@ export default function Settings() {
       </Card>
 
       <Card>
-        <CardContent className="pt-5">
-          <div className="flex items-center gap-3 mb-1">
-            <div className="h-10 w-10 rounded-lg bg-destructive/10 flex items-center justify-center shrink-0">
+        <CardContent className="p-5">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="h-10 w-10 rounded-xl bg-destructive/10 flex items-center justify-center shrink-0">
               <HiOutlineArrowRightOnRectangle className="h-5 w-5 text-destructive" />
             </div>
             <div>
@@ -106,7 +105,6 @@ export default function Settings() {
               <p className="text-xs text-muted-foreground">{t('settings.logoutDescription')}</p>
             </div>
           </div>
-          <Separator className="my-4" />
           <Button
             variant="destructive"
             onClick={handleLogout}
