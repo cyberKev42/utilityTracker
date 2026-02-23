@@ -16,22 +16,24 @@ const TYPE_COLORS = {
   fuel: '#f97316',
 };
 
-const MUTED = 'hsl(var(--muted-foreground))';
-const BORDER = 'hsl(var(--border))';
+const COLORS = {
+  muted: 'hsl(0, 0%, 45%)',
+  grid: 'hsl(0, 0%, 12%)',
+};
 
 function CustomTooltip({ active, payload }) {
   if (!active || !payload?.length) return null;
   const { translatedName, total_cost, entry_count, avg_cost } = payload[0].payload;
   return (
-    <div className="bg-popover border border-border/60 rounded-lg px-3 py-2 shadow-lg space-y-0.5">
-      <p className="text-[11px] font-medium text-foreground">{translatedName}</p>
-      <p className="text-sm font-semibold text-foreground tabular-nums">
+    <div className="bg-card border border-border/50 rounded-lg px-3.5 py-2.5 shadow-xl backdrop-blur-sm">
+      <p className="text-[11px] text-muted-foreground mb-1">{translatedName}</p>
+      <p className="text-[15px] font-semibold text-foreground tabular-nums tracking-tight">
         {Number(total_cost).toLocaleString(undefined, {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         })}
       </p>
-      <p className="text-[11px] text-muted-foreground tabular-nums">
+      <p className="text-[11px] text-muted-foreground tabular-nums mt-1">
         {entry_count} entries &middot; avg{' '}
         {Number(avg_cost).toLocaleString(undefined, {
           minimumFractionDigits: 2,
@@ -47,7 +49,7 @@ export default function CategoryBarChart({ data }) {
 
   if (!data || data.length === 0) {
     return (
-      <p className="text-sm text-muted-foreground text-center py-8">
+      <p className="text-sm text-muted-foreground text-center py-10">
         {t('statistics.noCategoryData')}
       </p>
     );
@@ -59,41 +61,58 @@ export default function CategoryBarChart({ data }) {
   }));
 
   return (
-    <div className="w-full h-[240px] sm:h-[300px] -ml-2 sm:ml-0">
+    <div className="w-full h-[220px] sm:h-[280px]">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={chartData} margin={{ top: 8, right: 12, left: -12, bottom: 4 }} barGap={8}>
+        <BarChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }} barGap={12}>
           <CartesianGrid
-            strokeDasharray="3 3"
-            stroke={BORDER}
-            strokeOpacity={0.5}
+            stroke={COLORS.grid}
+            strokeOpacity={0.6}
             vertical={false}
+            horizontalCoordinatesGenerator={({ yAxis }) => {
+              const { domain, height, y } = yAxis;
+              if (!domain || domain[0] === domain[1]) return [];
+              const count = 4;
+              return Array.from({ length: count }, (_, i) =>
+                y + height - (height / count) * (i + 1)
+              );
+            }}
           />
           <XAxis
             dataKey="translatedName"
-            tick={{ fontSize: 11, fill: MUTED }}
+            tick={{ fontSize: 11, fill: COLORS.muted }}
             tickLine={false}
             axisLine={false}
-            dy={8}
+            dy={10}
+            tickMargin={0}
           />
           <YAxis
-            tick={{ fontSize: 10, fill: MUTED }}
+            tick={{ fontSize: 11, fill: COLORS.muted }}
             tickLine={false}
             axisLine={false}
             tickFormatter={(v) => v.toLocaleString()}
-            width={45}
+            width={48}
+            tickCount={5}
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--muted) / 0.2)' }} />
+          <Tooltip
+            content={<CustomTooltip />}
+            cursor={{
+              fill: 'hsl(0, 0%, 12%)',
+              fillOpacity: 0.5,
+              radius: 4,
+            }}
+          />
           <Bar
             dataKey="total_cost"
             radius={[6, 6, 0, 0]}
-            maxBarSize={56}
-            animationDuration={600}
+            maxBarSize={52}
+            animationDuration={800}
             animationEasing="ease-out"
           >
             {chartData.map((entry) => (
               <Cell
                 key={entry.type}
                 fill={TYPE_COLORS[entry.type] || '#6b7280'}
+                fillOpacity={0.85}
               />
             ))}
           </Bar>

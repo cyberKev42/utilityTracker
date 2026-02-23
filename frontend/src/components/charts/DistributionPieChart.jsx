@@ -5,7 +5,6 @@ import {
   Pie,
   Cell,
   Tooltip,
-  Legend,
 } from 'recharts';
 
 const TYPE_COLORS = {
@@ -18,33 +17,17 @@ function CustomTooltip({ active, payload }) {
   if (!active || !payload?.length) return null;
   const { name, value, percent } = payload[0];
   return (
-    <div className="bg-popover border border-border/60 rounded-lg px-3 py-2 shadow-lg">
-      <p className="text-[11px] font-medium text-foreground">{name}</p>
-      <p className="text-sm font-semibold text-foreground tabular-nums">
+    <div className="bg-card border border-border/50 rounded-lg px-3.5 py-2.5 shadow-xl backdrop-blur-sm">
+      <p className="text-[11px] text-muted-foreground mb-1">{name}</p>
+      <p className="text-[15px] font-semibold text-foreground tabular-nums tracking-tight">
         {Number(value).toLocaleString(undefined, {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         })}
       </p>
-      <p className="text-[11px] text-muted-foreground tabular-nums">
+      <p className="text-[11px] text-muted-foreground tabular-nums mt-1">
         {(percent * 100).toFixed(1)}%
       </p>
-    </div>
-  );
-}
-
-function CustomLegend({ payload }) {
-  return (
-    <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 mt-3">
-      {payload.map((entry) => (
-        <div key={entry.value} className="flex items-center gap-2 min-h-[28px]">
-          <span
-            className="inline-block h-2.5 w-2.5 rounded-full shrink-0"
-            style={{ backgroundColor: entry.color }}
-          />
-          <span className="text-xs text-muted-foreground">{entry.value}</span>
-        </div>
-      ))}
     </div>
   );
 }
@@ -54,7 +37,7 @@ export default function DistributionPieChart({ data }) {
 
   if (!data || data.length === 0) {
     return (
-      <p className="text-sm text-muted-foreground text-center py-8">
+      <p className="text-sm text-muted-foreground text-center py-10">
         {t('statistics.noCategoryData')}
       </p>
     );
@@ -63,7 +46,7 @@ export default function DistributionPieChart({ data }) {
   const total = data.reduce((sum, d) => sum + d.total_cost, 0);
   if (total === 0) {
     return (
-      <p className="text-sm text-muted-foreground text-center py-8">
+      <p className="text-sm text-muted-foreground text-center py-10">
         {t('statistics.noCategoryData')}
       </p>
     );
@@ -79,33 +62,62 @@ export default function DistributionPieChart({ data }) {
     }));
 
   return (
-    <div className="w-full h-[260px] sm:h-[320px]">
-      <ResponsiveContainer width="100%" height="100%">
-        <PieChart>
-          <Pie
-            data={chartData}
-            dataKey="value"
-            nameKey="name"
-            cx="50%"
-            cy="42%"
-            innerRadius="40%"
-            outerRadius="68%"
-            paddingAngle={3}
-            strokeWidth={0}
-            animationDuration={600}
-            animationEasing="ease-out"
-          >
-            {chartData.map((entry) => (
-              <Cell
-                key={entry.type}
-                fill={TYPE_COLORS[entry.type] || '#6b7280'}
-              />
-            ))}
-          </Pie>
-          <Tooltip content={<CustomTooltip />} />
-          <Legend content={<CustomLegend />} />
-        </PieChart>
-      </ResponsiveContainer>
+    <div className="w-full h-[220px] sm:h-[280px]">
+      <div className="relative w-full h-[160px] sm:h-[210px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={chartData}
+              dataKey="value"
+              nameKey="name"
+              cx="50%"
+              cy="50%"
+              innerRadius="42%"
+              outerRadius="72%"
+              paddingAngle={3}
+              strokeWidth={0}
+              animationDuration={800}
+              animationEasing="ease-out"
+            >
+              {chartData.map((entry) => (
+                <Cell
+                  key={entry.type}
+                  fill={TYPE_COLORS[entry.type] || '#6b7280'}
+                  fillOpacity={0.85}
+                />
+              ))}
+            </Pie>
+            <Tooltip content={<CustomTooltip />} />
+          </PieChart>
+        </ResponsiveContainer>
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="text-center">
+            <p className="text-[11px] text-muted-foreground">Total</p>
+            <p className="text-base font-semibold text-foreground tabular-nums tracking-tight">
+              {total.toLocaleString(undefined, {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+              })}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-wrap justify-center gap-x-5 gap-y-1.5 mt-2">
+        {chartData.map((entry) => (
+          <div key={entry.type} className="flex items-center gap-2">
+            <span
+              className="inline-block h-2 w-2 rounded-full shrink-0"
+              style={{ backgroundColor: TYPE_COLORS[entry.type], opacity: 0.85 }}
+            />
+            <span className="text-[11px] text-muted-foreground">
+              {entry.name}
+            </span>
+            <span className="text-[11px] font-medium text-foreground tabular-nums">
+              {(entry.percent * 100).toFixed(0)}%
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

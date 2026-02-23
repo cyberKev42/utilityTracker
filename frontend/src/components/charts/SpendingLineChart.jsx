@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import {
   ResponsiveContainer,
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -10,9 +10,9 @@ import {
 } from 'recharts';
 
 const COLORS = {
-  primary: 'hsl(var(--primary))',
-  muted: 'hsl(var(--muted-foreground))',
-  border: 'hsl(var(--border))',
+  primary: 'hsl(217, 91%, 60%)',
+  muted: 'hsl(0, 0%, 45%)',
+  grid: 'hsl(0, 0%, 12%)',
 };
 
 function formatMonth(monthStr) {
@@ -24,9 +24,9 @@ function formatMonth(monthStr) {
 function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-popover border border-border/60 rounded-lg px-3 py-2 shadow-lg">
-      <p className="text-[11px] text-muted-foreground mb-0.5">{formatMonth(label)}</p>
-      <p className="text-sm font-semibold text-foreground tabular-nums">
+    <div className="bg-card border border-border/50 rounded-lg px-3.5 py-2.5 shadow-xl backdrop-blur-sm">
+      <p className="text-[11px] text-muted-foreground mb-1">{formatMonth(label)}</p>
+      <p className="text-[15px] font-semibold text-foreground tabular-nums tracking-tight">
         {Number(payload[0].value).toLocaleString(undefined, {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
@@ -41,7 +41,7 @@ export default function SpendingLineChart({ data }) {
 
   if (!data || data.length === 0) {
     return (
-      <p className="text-sm text-muted-foreground text-center py-8">
+      <p className="text-sm text-muted-foreground text-center py-10">
         {t('statistics.noMonthlyData')}
       </p>
     );
@@ -50,43 +50,72 @@ export default function SpendingLineChart({ data }) {
   const sorted = [...data].sort((a, b) => a.month.localeCompare(b.month));
 
   return (
-    <div className="w-full h-[240px] sm:h-[300px] -ml-2 sm:ml-0">
+    <div className="w-full h-[220px] sm:h-[280px]">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={sorted} margin={{ top: 8, right: 12, left: -12, bottom: 4 }}>
+        <AreaChart data={sorted} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+          <defs>
+            <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={COLORS.primary} stopOpacity={0.15} />
+              <stop offset="100%" stopColor={COLORS.primary} stopOpacity={0} />
+            </linearGradient>
+          </defs>
           <CartesianGrid
-            strokeDasharray="3 3"
-            stroke={COLORS.border}
-            strokeOpacity={0.5}
+            stroke={COLORS.grid}
+            strokeOpacity={0.6}
             vertical={false}
+            horizontalCoordinatesGenerator={({ yAxis }) => {
+              const { domain, height, y } = yAxis;
+              if (!domain || domain[0] === domain[1]) return [];
+              const count = 4;
+              return Array.from({ length: count }, (_, i) =>
+                y + height - (height / count) * (i + 1)
+              );
+            }}
           />
           <XAxis
             dataKey="month"
             tickFormatter={formatMonth}
-            tick={{ fontSize: 10, fill: COLORS.muted }}
+            tick={{ fontSize: 11, fill: COLORS.muted }}
             tickLine={false}
             axisLine={false}
-            dy={8}
+            dy={10}
             interval="preserveStartEnd"
+            tickMargin={0}
           />
           <YAxis
-            tick={{ fontSize: 10, fill: COLORS.muted }}
+            tick={{ fontSize: 11, fill: COLORS.muted }}
             tickLine={false}
             axisLine={false}
             tickFormatter={(v) => v.toLocaleString()}
-            width={45}
+            width={48}
+            tickCount={5}
           />
-          <Tooltip content={<CustomTooltip />} />
-          <Line
+          <Tooltip
+            content={<CustomTooltip />}
+            cursor={{
+              stroke: COLORS.primary,
+              strokeWidth: 1,
+              strokeOpacity: 0.3,
+              strokeDasharray: '4 4',
+            }}
+          />
+          <Area
             type="monotone"
             dataKey="total_cost"
             stroke={COLORS.primary}
             strokeWidth={2}
-            dot={{ r: 4, fill: COLORS.primary, strokeWidth: 0 }}
-            activeDot={{ r: 6, strokeWidth: 2, stroke: COLORS.primary, fill: 'hsl(var(--background))' }}
-            animationDuration={600}
+            fill="url(#areaGradient)"
+            dot={false}
+            activeDot={{
+              r: 5,
+              strokeWidth: 2,
+              stroke: COLORS.primary,
+              fill: 'hsl(0, 0%, 3.5%)',
+            }}
+            animationDuration={800}
             animationEasing="ease-out"
           />
-        </LineChart>
+        </AreaChart>
       </ResponsiveContainer>
     </div>
   );
