@@ -7,7 +7,7 @@ const getApiUrl = () => {
     return '';
   }
 
-  const backendPort = import.meta.env.VITE_BACKEND_PORT || '4000';
+  const backendPort = import.meta.env.VITE_BACKEND_PORT || '3000';
   return `http://localhost:${backendPort}`;
 };
 
