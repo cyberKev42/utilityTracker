@@ -6,17 +6,11 @@ dotenv.config();
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-if (!supabaseUrl) {
-  throw new Error('SUPABASE_URL is not configured in backend environment');
+console.log('Supabase URL:', supabaseUrl ? 'loaded' : 'missing');
+console.log('Supabase Service Key:', supabaseServiceKey ? 'loaded' : 'missing');
+
+if (!supabaseUrl || !supabaseServiceKey) {
+  throw new Error('Database not configured: Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
 }
 
-if (!supabaseServiceKey) {
-  throw new Error('SUPABASE_SERVICE_ROLE_KEY is not configured in backend environment');
-}
-
-export const supabase = createClient(supabaseUrl, supabaseServiceKey, {
-  auth: {
-    persistSession: false,
-    autoRefreshToken: false,
-  },
-});
+export const supabase = createClient(supabaseUrl, supabaseServiceKey);
