@@ -31,8 +31,8 @@ export default function Settings() {
   const navigate = useNavigate();
   const { language, changeLanguage, supportedLanguages } = useLanguage();
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate('/login');
   };
 

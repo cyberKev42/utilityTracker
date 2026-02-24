@@ -9,8 +9,6 @@ import { Button } from '../components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiOutlineEye, HiOutlineEyeSlash, HiExclamationCircle } from 'react-icons/hi2';
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 export default function Login() {
   const { t } = useTranslation();
   const { login } = useAuth();
@@ -26,7 +24,6 @@ export default function Login() {
     switch (field) {
       case 'email':
         if (!value.trim()) return t('auth.validation.emailRequired');
-        if (!EMAIL_REGEX.test(value.trim())) return t('auth.validation.emailInvalid');
         return '';
       case 'password':
         if (!value) return t('auth.validation.passwordRequired');
@@ -125,6 +122,7 @@ export default function Login() {
                 id="email"
                 type="email"
                 inputMode="email"
+                required
                 placeholder={t('auth.emailPlaceholder')}
                 value={email}
                 onChange={(e) => handleChange('email', e.target.value)}
@@ -147,6 +145,7 @@ export default function Login() {
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
+                  required
                   placeholder={t('auth.passwordPlaceholder')}
                   value={password}
                   onChange={(e) => handleChange('password', e.target.value)}

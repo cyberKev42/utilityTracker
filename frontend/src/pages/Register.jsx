@@ -9,8 +9,6 @@ import { Button } from '../components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiOutlineEye, HiOutlineEyeSlash, HiExclamationCircle } from 'react-icons/hi2';
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 export default function Register() {
   const { t } = useTranslation();
   const { register } = useAuth();
@@ -35,7 +33,6 @@ export default function Register() {
     switch (field) {
       case 'email':
         if (!value.trim()) return t('auth.validation.emailRequired');
-        if (!EMAIL_REGEX.test(value.trim())) return t('auth.validation.emailInvalid');
         return '';
       case 'password':
         if (!value) return t('auth.validation.passwordRequired');
@@ -68,7 +65,7 @@ export default function Register() {
     }
     if (field === 'confirmPassword') setConfirmPassword(value);
     if (touched[field]) {
-      const err = validateField(field, field === 'confirmPassword' ? value : value);
+      const err = validateField(field, value);
       setFieldErrors((prev) => ({ ...prev, [field]: err }));
     }
   };
@@ -147,6 +144,7 @@ export default function Register() {
                 id="email"
                 type="email"
                 inputMode="email"
+                required
                 placeholder={t('auth.emailPlaceholder')}
                 value={email}
                 onChange={(e) => handleChange('email', e.target.value)}
@@ -169,6 +167,8 @@ export default function Register() {
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
+                  required
+                  minLength={6}
                   placeholder={t('auth.passwordPlaceholder')}
                   value={password}
                   onChange={(e) => handleChange('password', e.target.value)}
@@ -204,6 +204,8 @@ export default function Register() {
                 <Input
                   id="confirmPassword"
                   type={showConfirmPassword ? 'text' : 'password'}
+                  required
+                  minLength={6}
                   placeholder={t('auth.confirmPasswordPlaceholder')}
                   value={confirmPassword}
                   onChange={(e) => handleChange('confirmPassword', e.target.value)}

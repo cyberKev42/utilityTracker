@@ -1,3 +1,5 @@
+import { supabase } from './lib/supabase';
+
 const getApiUrl = () => {
   if (import.meta.env.VITE_API_URL) {
     return import.meta.env.VITE_API_URL;
@@ -13,11 +15,13 @@ const getApiUrl = () => {
 
 export const API_URL = getApiUrl();
 
-function getHeaders() {
+async function getHeaders() {
   const headers = { 'Content-Type': 'application/json' };
-  const token = localStorage.getItem('token');
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+  if (supabase) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.access_token) {
+      headers['Authorization'] = `Bearer ${session.access_token}`;
+    }
   }
   return headers;
 }
@@ -35,7 +39,7 @@ async function handleResponse(res) {
 export const api = {
   async get(endpoint) {
     const res = await fetch(`${API_URL}${endpoint}`, {
-      headers: getHeaders(),
+      headers: await getHeaders(),
     });
     return handleResponse(res);
   },
@@ -43,7 +47,7 @@ export const api = {
   async post(endpoint, data) {
     const res = await fetch(`${API_URL}${endpoint}`, {
       method: 'POST',
-      headers: getHeaders(),
+      headers: await getHeaders(),
       body: JSON.stringify(data),
     });
     return handleResponse(res);
@@ -52,7 +56,7 @@ export const api = {
   async put(endpoint, data) {
     const res = await fetch(`${API_URL}${endpoint}`, {
       method: 'PUT',
-      headers: getHeaders(),
+      headers: await getHeaders(),
       body: JSON.stringify(data),
     });
     return handleResponse(res);
@@ -61,7 +65,7 @@ export const api = {
   async delete(endpoint) {
     const res = await fetch(`${API_URL}${endpoint}`, {
       method: 'DELETE',
-      headers: getHeaders(),
+      headers: await getHeaders(),
     });
     return handleResponse(res);
   },
