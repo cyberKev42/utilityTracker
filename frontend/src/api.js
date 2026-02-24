@@ -1,19 +1,6 @@
 import { supabase } from './lib/supabase';
 
-const getApiUrl = () => {
-  if (import.meta.env.VITE_API_URL) {
-    return import.meta.env.VITE_API_URL;
-  }
-
-  if (import.meta.env.PROD) {
-    return '';
-  }
-
-  const backendPort = import.meta.env.VITE_BACKEND_PORT || '3000';
-  return `http://localhost:${backendPort}`;
-};
-
-export const API_URL = getApiUrl();
+const API_URL = import.meta.env.VITE_API_URL || '';
 
 async function getHeaders() {
   const headers = { 'Content-Type': 'application/json' };
