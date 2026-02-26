@@ -104,13 +104,13 @@ export async function getStats(userId) {
     ),
     pool.query(
       `SELECT
-         TO_CHAR(date, 'YYYY-MM') AS month,
+         TO_CHAR(CAST(date AS DATE), 'YYYY-MM') AS month,
          COUNT(*)::int AS entry_count,
          COALESCE(SUM(cost_amount), 0)::float AS total_cost,
          COALESCE(SUM(usage_amount), 0)::float AS total_usage
        FROM utility_entries
        WHERE user_id = $1
-       GROUP BY TO_CHAR(date, 'YYYY-MM')
+       GROUP BY TO_CHAR(CAST(date AS DATE), 'YYYY-MM')
        ORDER BY month DESC`,
       [userId]
     ),

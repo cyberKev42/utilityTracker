@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { connect, getDb } from './db.js';
+import { connect, getDb, getDatabaseEnvKey } from './db.js';
 import authRoutes from './routes/auth.js';
 import entriesRoutes from './routes/entries.js';
 
@@ -34,6 +34,7 @@ app.get('/api/health', async (req, res) => {
   res.json({
     status: 'ok',
     database: db ? 'connected' : 'Not configured',
+    databaseEnv: getDatabaseEnvKey() || 'none',
   });
 });
 
