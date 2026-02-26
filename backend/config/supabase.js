@@ -14,4 +14,6 @@ if (!supabaseUrl || !supabaseServiceKey) {
   console.error('Database not configured: missing env vars');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseServiceKey);
+export const supabase = supabaseUrl && supabaseServiceKey
+  ? createClient(supabaseUrl, supabaseServiceKey)
+  : null;
