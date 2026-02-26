@@ -6,11 +6,12 @@ dotenv.config();
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-console.log('Supabase URL:', supabaseUrl ? 'loaded' : 'missing');
-console.log('Supabase Service Key:', supabaseServiceKey ? 'loaded' : 'missing');
+console.log('ENV CHECK:');
+console.log('SUPABASE_URL:', supabaseUrl ? 'FOUND' : 'MISSING');
+console.log('SUPABASE_SERVICE_ROLE_KEY:', supabaseServiceKey ? 'FOUND' : 'MISSING');
 
 if (!supabaseUrl || !supabaseServiceKey) {
-  throw new Error('Database not configured: Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
+  console.error('Database not configured: missing env vars');
 }
 
 export const supabase = createClient(supabaseUrl, supabaseServiceKey);
