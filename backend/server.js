@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { connect, getDb, getDatabaseEnvKey } from './db.js';
+import { connect, getDb, getDatabaseEnvKey, getDiagnostics } from './db.js';
 import authRoutes from './routes/auth.js';
 import entriesRoutes from './routes/entries.js';
 
@@ -31,10 +31,13 @@ await connect();
 
 app.get('/api/health', async (req, res) => {
   const db = getDb();
+  const { dbStatus, dbErrorCode, dbErrorHint } = getDiagnostics();
   res.json({
     status: 'ok',
-    database: db ? 'connected' : 'Not configured',
+    databaseStatus: db ? 'connected' : dbStatus,
     databaseEnv: getDatabaseEnvKey() || 'none',
+    databaseErrorCode: dbErrorCode || undefined,
+    databaseErrorHint: dbErrorHint || undefined,
   });
 });
 

@@ -4,6 +4,10 @@ const VALID_TYPES = ['electricity', 'water', 'fuel'];
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+function isDbUnavailable(error) {
+  return error.message === 'Database not configured' || error.message === 'Database unavailable';
+}
+
 export async function create(req, res) {
   try {
     const { type, usage_amount, cost_amount, unit, date } = req.body;
@@ -46,7 +50,10 @@ export async function create(req, res) {
 
     res.status(201).json(entry);
   } catch (error) {
-    res.status(500).json({ error: error.message || 'Failed to create entry' });
+    if (isDbUnavailable(error)) {
+      return res.status(503).json({ error: 'Database unavailable' });
+    }
+    res.status(500).json({ error: 'Failed to create entry' });
   }
 }
 
@@ -85,7 +92,10 @@ export async function getAll(req, res) {
     const entries = await entriesService.getEntries(req.user.id, filters);
     res.json(entries);
   } catch (error) {
-    res.status(500).json({ error: error.message || 'Failed to fetch entries' });
+    if (isDbUnavailable(error)) {
+      return res.status(503).json({ error: 'Database unavailable' });
+    }
+    res.status(500).json({ error: 'Failed to fetch entries' });
   }
 }
 
@@ -103,7 +113,10 @@ export async function remove(req, res) {
     if (error.message === 'Entry not found') {
       return res.status(404).json({ error: 'Entry not found' });
     }
-    res.status(500).json({ error: error.message || 'Failed to delete entry' });
+    if (isDbUnavailable(error)) {
+      return res.status(503).json({ error: 'Database unavailable' });
+    }
+    res.status(500).json({ error: 'Failed to delete entry' });
   }
 }
 
@@ -112,6 +125,9 @@ export async function getStats(req, res) {
     const stats = await entriesService.getStats(req.user.id);
     res.json(stats);
   } catch (error) {
-    res.status(500).json({ error: error.message || 'Failed to fetch statistics' });
+    if (isDbUnavailable(error)) {
+      return res.status(503).json({ error: 'Database unavailable' });
+    }
+    res.status(500).json({ error: 'Failed to fetch statistics' });
   }
 }
