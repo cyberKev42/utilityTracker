@@ -4,13 +4,22 @@ export async function createEntry(userId, entryData) {
   const pool = getDb();
   if (!pool) throw new Error('Database not configured');
 
-  const { type, usage_amount, cost_amount, unit, date } = entryData;
+  const { type, usage_amount, cost_amount, unit_price, unit, date } = entryData;
 
   const result = await pool.query(
-    `INSERT INTO utility_entries (user_id, type, usage_amount, cost_amount, unit, date)
-     VALUES ($1, $2, $3, $4, $5, $6)
+    `INSERT INTO utility_entries (user_id, type, usage_amount, cost_amount, unit_price, unit, date)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)
      RETURNING *`,
-    [userId, type, usage_amount, cost_amount, unit, date]
+    [userId, type, usage_amount, cost_amount, unit_price, unit, date]
+  );
+
+  // Save latest unit_price for this type so it auto-fills next time
+  await pool.query(
+    `INSERT INTO utility_settings (user_id, type, unit_price)
+     VALUES ($1, $2, $3)
+     ON CONFLICT (user_id, type) DO UPDATE
+       SET unit_price = $3, updated_at = now()`,
+    [userId, type, unit_price]
   );
 
   return result.rows[0];
