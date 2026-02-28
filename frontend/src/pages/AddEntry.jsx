@@ -17,7 +17,7 @@ import {
 } from 'react-icons/hi2';
 
 const TYPES = [
-  { value: 'electricity', icon: HiOutlineBolt, defaultUnit: 'kWh' },
+  { value: 'power', icon: HiOutlineBolt, defaultUnit: 'kWh' },
   { value: 'water', icon: HiOutlineBeaker, defaultUnit: 'm\u00B3' },
   { value: 'fuel', icon: HiOutlineFire, defaultUnit: 'L' },
 ];

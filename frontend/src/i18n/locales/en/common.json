@@ -42,7 +42,7 @@
     "title": "Dashboard",
     "description": "Overview of your utility consumption.",
     "totalSpending": "Total Spending",
-    "electricity": "Electricity",
+    "power": "Power",
     "water": "Water",
     "fuel": "Fuel",
     "entries_one": "{{count}} entry",
@@ -64,7 +64,7 @@
     "type": "Utility type",
     "typePlaceholder": "Select a type",
     "types": {
-      "electricity": "Electricity",
+      "power": "Power",
       "water": "Water",
       "fuel": "Fuel"
     },
@@ -124,7 +124,7 @@
     "showing_one": "{{count}} entry",
     "showing_other": "{{count}} entries",
     "noResults": "No entries match your filters.",
-    "electricity": "Electricity",
+    "power": "Power",
     "water": "Water",
     "fuel": "Fuel"
   },
@@ -144,7 +144,7 @@
     "entries": "Entries",
     "totalCost": "Total Cost",
     "avgCost": "Avg Cost",
-    "electricity": "Electricity",
+    "power": "Power",
     "water": "Water",
     "fuel": "Fuel",
     "noMonthlyData": "Not enough data for a time trend yet.",

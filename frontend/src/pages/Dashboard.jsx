@@ -17,7 +17,7 @@ import {
 } from 'react-icons/hi2';
 
 const TYPE_CONFIG = {
-  electricity: { icon: HiOutlineBolt, colorClass: 'text-amber-500', bgClass: 'bg-amber-500/10' },
+  power: { icon: HiOutlineBolt, colorClass: 'text-amber-500', bgClass: 'bg-amber-500/10' },
   water: { icon: HiOutlineBeaker, colorClass: 'text-sky-500', bgClass: 'bg-sky-500/10' },
   fuel: { icon: HiOutlineFire, colorClass: 'text-orange-500', bgClass: 'bg-orange-500/10' },
 };
@@ -169,7 +169,7 @@ export default function Dashboard() {
           </Card>
         </motion.div>
 
-        {['electricity', 'water', 'fuel'].map((type) => {
+        {['power', 'water', 'fuel'].map((type) => {
           const stat = getStatByType(type);
           const config = TYPE_CONFIG[type];
           const Icon = config.icon;

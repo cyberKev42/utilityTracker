@@ -1,6 +1,6 @@
 import { getDb } from '../db.js';
 
-const VALID_TYPES = ['electricity', 'water', 'fuel'];
+const VALID_TYPES = ['power', 'water', 'fuel'];
 const YEAR_REGEX = /^\d{4}$/;
 const MONTH_REGEX = /^\d{1,2}$/;
 

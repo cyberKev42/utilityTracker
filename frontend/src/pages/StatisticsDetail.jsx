@@ -24,7 +24,7 @@ import {
 } from 'recharts';
 
 const TYPE_COLORS = {
-  electricity: '#f59e0b',
+  power: '#f59e0b',
   water: '#0ea5e9',
   fuel: '#f97316',
 };
