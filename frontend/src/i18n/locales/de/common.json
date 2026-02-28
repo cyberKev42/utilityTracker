@@ -42,7 +42,7 @@
     "title": "Dashboard",
     "description": "Überblick über Ihren Verbrauch.",
     "totalSpending": "Gesamtausgaben",
-    "electricity": "Strom",
+    "power": "Strom",
     "water": "Wasser",
     "fuel": "Brennstoff",
     "entries_one": "{{count}} Eintrag",
@@ -64,7 +64,7 @@
     "type": "Verbrauchsart",
     "typePlaceholder": "Art auswählen",
     "types": {
-      "electricity": "Strom",
+      "power": "Strom",
       "water": "Wasser",
       "fuel": "Brennstoff"
     },
@@ -123,7 +123,7 @@
     "showing_one": "{{count}} Eintrag",
     "showing_other": "{{count}} Einträge",
     "noResults": "Keine Einträge entsprechen Ihren Filtern.",
-    "electricity": "Strom",
+    "power": "Strom",
     "water": "Wasser",
     "fuel": "Brennstoff"
   },
@@ -143,7 +143,7 @@
     "entries": "Einträge",
     "totalCost": "Gesamtkosten",
     "avgCost": "Durchschn. Kosten",
-    "electricity": "Strom",
+    "power": "Strom",
     "water": "Wasser",
     "fuel": "Brennstoff",
     "noMonthlyData": "Noch nicht genug Daten für einen Zeitverlauf.",

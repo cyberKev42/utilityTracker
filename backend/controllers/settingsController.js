@@ -1,6 +1,6 @@
 import * as settingsService from '../services/settingsService.js';
 
-const VALID_TYPES = ['electricity', 'water', 'fuel'];
+const VALID_TYPES = ['power', 'water', 'fuel'];
 
 function isDbUnavailable(error) {
   return error.message === 'Database not configured' || error.message === 'Database unavailable';

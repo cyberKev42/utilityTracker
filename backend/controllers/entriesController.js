@@ -1,7 +1,7 @@
 import * as entriesService from '../services/entriesService.js';
 import * as settingsService from '../services/settingsService.js';
 
-const VALID_TYPES = ['electricity', 'water', 'fuel'];
+const VALID_TYPES = ['power', 'water', 'fuel'];
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 

@@ -28,12 +28,12 @@ import {
 } from 'react-icons/hi2';
 
 const TYPE_CONFIG = {
-  electricity: { icon: HiOutlineBolt, colorClass: 'text-amber-500', bgClass: 'bg-amber-500/10' },
+  power: { icon: HiOutlineBolt, colorClass: 'text-amber-500', bgClass: 'bg-amber-500/10' },
   water: { icon: HiOutlineBeaker, colorClass: 'text-sky-500', bgClass: 'bg-sky-500/10' },
   fuel: { icon: HiOutlineFire, colorClass: 'text-orange-500', bgClass: 'bg-orange-500/10' },
 };
 
-const TYPES = ['electricity', 'water', 'fuel'];
+const TYPES = ['power', 'water', 'fuel'];
 
 const stagger = {
   animate: { transition: { staggerChildren: 0.04 } },
