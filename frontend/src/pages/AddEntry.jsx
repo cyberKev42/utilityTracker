@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createEntry } from '../services/entriesService';
+import { getUnitPrice } from '../services/settingsService';
 import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -38,7 +39,7 @@ export default function AddEntry() {
 
   const [type, setType] = useState('');
   const [usageAmount, setUsageAmount] = useState('');
-  const [costAmount, setCostAmount] = useState('');
+  const [unitPrice, setUnitPrice] = useState('');
   const [unit, setUnit] = useState('');
   const [date, setDate] = useState(todayISO());
   const [fieldErrors, setFieldErrors] = useState({});
@@ -46,6 +47,11 @@ export default function AddEntry() {
   const [serverError, setServerError] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  const computedCost =
+    usageAmount !== '' && unitPrice !== ''
+      ? parseFloat(usageAmount) * parseFloat(unitPrice)
+      : null;
 
   const validateField = (field, value) => {
     switch (field) {
@@ -58,10 +64,10 @@ export default function AddEntry() {
         if (isNaN(num) || num < 0) return t('addEntry.validation.usagePositive');
         return '';
       }
-      case 'costAmount': {
-        if (value === '' || value == null) return t('addEntry.validation.costRequired');
+      case 'unitPrice': {
+        if (value === '' || value == null) return t('addEntry.validation.unitPriceRequired');
         const num = parseFloat(value);
-        if (isNaN(num) || num < 0) return t('addEntry.validation.costPositive');
+        if (isNaN(num) || num < 0) return t('addEntry.validation.unitPricePositive');
         return '';
       }
       case 'unit':
@@ -77,7 +83,7 @@ export default function AddEntry() {
   };
 
   const getFieldValue = (field) => {
-    const map = { type, usageAmount, costAmount, unit, date };
+    const map = { type, usageAmount, unitPrice, unit, date };
     return map[field] ?? '';
   };
 
@@ -92,7 +98,7 @@ export default function AddEntry() {
   const handleFieldChange = (field, value) => {
     if (field === 'type') setType(value);
     if (field === 'usageAmount') setUsageAmount(value);
-    if (field === 'costAmount') setCostAmount(value);
+    if (field === 'unitPrice') setUnitPrice(value);
     if (field === 'unit') setUnit(value);
     if (field === 'date') setDate(value);
 
@@ -101,30 +107,42 @@ export default function AddEntry() {
     }
   };
 
-  const handleTypeSelect = (value) => {
+  const handleTypeSelect = async (value) => {
     setType(value);
     const match = TYPES.find((t) => t.value === value);
     if (match) setUnit(match.defaultUnit);
     if (touched.type) {
       setFieldErrors((prev) => ({ ...prev, type: validateField('type', value) }));
     }
+
+    // Fetch saved unit price for this type
+    try {
+      const data = await getUnitPrice(value);
+      if (data.unit_price != null) {
+        setUnitPrice(String(data.unit_price));
+      } else {
+        setUnitPrice('');
+      }
+    } catch {
+      // Silently ignore — user can enter manually
+    }
   };
 
   const validate = () => {
-    const fields = ['type', 'usageAmount', 'costAmount', 'unit', 'date'];
+    const fields = ['type', 'usageAmount', 'unitPrice', 'unit', 'date'];
     const errors = {};
     fields.forEach((f) => {
       errors[f] = validateField(f, getFieldValue(f));
     });
     setFieldErrors(errors);
-    setTouched({ type: true, usageAmount: true, costAmount: true, unit: true, date: true });
+    setTouched({ type: true, usageAmount: true, unitPrice: true, unit: true, date: true });
     return fields.every((f) => !errors[f]);
   };
 
   const resetForm = () => {
     setType('');
     setUsageAmount('');
-    setCostAmount('');
+    setUnitPrice('');
     setUnit('');
     setDate(todayISO());
     setFieldErrors({});
@@ -143,7 +161,7 @@ export default function AddEntry() {
       await createEntry({
         type,
         usage_amount: parseFloat(usageAmount),
-        cost_amount: parseFloat(costAmount),
+        unit_price: parseFloat(unitPrice),
         unit: unit.trim(),
         date,
       });
@@ -296,27 +314,41 @@ export default function AddEntry() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="costAmount">{t('addEntry.costAmount')}</Label>
+                <Label htmlFor="unitPrice">{t('addEntry.unitPrice')}</Label>
                 <Input
-                  id="costAmount"
+                  id="unitPrice"
                   type="number"
                   inputMode="decimal"
                   step="any"
                   min="0"
-                  placeholder={t('addEntry.costAmountPlaceholder')}
-                  value={costAmount}
-                  onChange={(e) => handleFieldChange('costAmount', e.target.value)}
-                  onBlur={() => handleBlur('costAmount')}
+                  placeholder={t('addEntry.unitPricePlaceholder')}
+                  value={unitPrice}
+                  onChange={(e) => handleFieldChange('unitPrice', e.target.value)}
+                  onBlur={() => handleBlur('unitPrice')}
                   className={`h-11 ${
-                    touched.costAmount && fieldErrors.costAmount
+                    touched.unitPrice && fieldErrors.unitPrice
                       ? 'border-destructive focus-visible:ring-destructive'
                       : ''
                   }`}
                 />
-                {touched.costAmount && fieldErrors.costAmount && (
-                  <p className="text-xs text-destructive">{fieldErrors.costAmount}</p>
+                {touched.unitPrice && fieldErrors.unitPrice && (
+                  <p className="text-xs text-destructive">{fieldErrors.unitPrice}</p>
                 )}
               </div>
+
+              {computedCost !== null && !isNaN(computedCost) && (
+                <motion.div {...fadeUp}>
+                  <div className="rounded-lg bg-accent/40 border border-border/30 px-4 py-3 flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">{t('addEntry.totalCost')}</span>
+                    <span className="text-lg font-semibold text-foreground tabular-nums">
+                      {new Intl.NumberFormat(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      }).format(computedCost)}
+                    </span>
+                  </div>
+                </motion.div>
+              )}
 
               <div className="space-y-2">
                 <Label htmlFor="date">{t('addEntry.date')}</Label>

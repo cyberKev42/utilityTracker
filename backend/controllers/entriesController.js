@@ -10,11 +10,11 @@ function isDbUnavailable(error) {
 
 export async function create(req, res) {
   try {
-    const { type, usage_amount, cost_amount, unit, date } = req.body;
+    const { type, usage_amount, unit_price, unit, date } = req.body;
 
-    if (!type || usage_amount == null || cost_amount == null || !unit || !date) {
+    if (!type || usage_amount == null || unit_price == null || !unit || !date) {
       return res.status(400).json({
-        error: 'All fields are required: type, usage_amount, cost_amount, unit, date',
+        error: 'All fields are required: type, usage_amount, unit_price, unit, date',
       });
     }
 
@@ -28,8 +28,8 @@ export async function create(req, res) {
       return res.status(400).json({ error: 'usage_amount must be a non-negative number' });
     }
 
-    if (typeof cost_amount !== 'number' || cost_amount < 0) {
-      return res.status(400).json({ error: 'cost_amount must be a non-negative number' });
+    if (typeof unit_price !== 'number' || unit_price < 0) {
+      return res.status(400).json({ error: 'unit_price must be a non-negative number' });
     }
 
     if (typeof unit !== 'string' || unit.trim().length === 0) {
@@ -40,10 +40,13 @@ export async function create(req, res) {
       return res.status(400).json({ error: 'date must be a valid date in YYYY-MM-DD format' });
     }
 
+    const cost_amount = Math.round(usage_amount * unit_price * 100) / 100;
+
     const entry = await entriesService.createEntry(req.user.id, {
       type,
       usage_amount,
       cost_amount,
+      unit_price,
       unit: unit.trim(),
       date,
     });
