@@ -72,7 +72,7 @@
     "usageAmountPlaceholder": "0,00",
     "unitPrice": "Stückpreis",
     "unitPricePlaceholder": "0,00",
-    "unitPricePerUnit": "Stückpreis: \u20ac{{price}} pro {{unit}}",
+    "unitPricePerUnit": "Stückpreis: {{price}} pro {{unit}}",
     "costAmount": "Kosten",
     "costAmountPlaceholder": "0,00",
     "costAutoHint": "Automatisch aus Stückpreis berechnet",
@@ -168,6 +168,8 @@
     "languageDescription": "Wählen Sie Ihre bevorzugte Anzeigesprache.",
     "english": "English",
     "german": "Deutsch",
+    "currency": "Währung",
+    "currencyDescription": "Wählen Sie Ihre bevorzugte Anzeige-Währung. Kosten werden anhand aktueller Wechselkurse von EUR umgerechnet.",
     "logoutTitle": "Abmelden",
     "logoutDescription": "Aktuelle Sitzung beenden und zum Anmeldebildschirm zurückkehren.",
     "logoutButton": "Abmelden"

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { getEntries, deleteEntry } from '../services/entriesService';
+import { useCurrency } from '../hooks/useCurrency';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -43,13 +44,6 @@ const fadeUp = {
   animate: { opacity: 1, y: 0, transition: { duration: 0.25, ease: [0.25, 0.1, 0.25, 1] } },
 };
 
-function formatCurrency(value) {
-  return new Intl.NumberFormat(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value || 0);
-}
-
 function formatDate(dateStr) {
   return new Date(dateStr).toLocaleDateString(undefined, {
     year: 'numeric',
@@ -60,6 +54,7 @@ function formatDate(dateStr) {
 
 export default function Entries() {
   const { t } = useTranslation();
+  const { formatCurrency } = useCurrency();
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { getBreakdown } from '../services/entriesService';
+import { useCurrency } from '../hooks/useCurrency';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { motion } from 'framer-motion';
@@ -47,13 +48,6 @@ const cardHover = {
   transition: { duration: 0.15, ease: 'easeOut' },
 };
 
-function formatCurrency(value) {
-  return Number(value).toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-}
-
 function formatMonth(monthStr) {
   const [year, month] = monthStr.split('-');
   const date = new Date(Number(year), Number(month) - 1);
@@ -65,7 +59,7 @@ function formatDay(dateStr) {
   return d.toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
 }
 
-function MonthlyTooltip({ active, payload, label }) {
+function MonthlyTooltip({ active, payload, label, formatCurrency }) {
   if (!active || !payload?.length) return null;
   const [year, month] = label.split('-');
   const date = new Date(Number(year), Number(month) - 1);
@@ -80,7 +74,7 @@ function MonthlyTooltip({ active, payload, label }) {
   );
 }
 
-function DailyTooltip({ active, payload, label }) {
+function DailyTooltip({ active, payload, label, formatCurrency }) {
   if (!active || !payload?.length) return null;
   const formatted = new Date(label).toLocaleDateString(undefined, {
     weekday: 'short',
@@ -108,6 +102,7 @@ const gridGenerator = ({ yAxis }) => {
 
 export default function StatisticsDetail() {
   const { t } = useTranslation();
+  const { formatCurrency } = useCurrency();
   const { type } = useParams();
 
   const currentYear = new Date().getFullYear();
@@ -249,7 +244,7 @@ export default function StatisticsDetail() {
                           tickCount={5}
                         />
                         <Tooltip
-                          content={<MonthlyTooltip />}
+                          content={<MonthlyTooltip formatCurrency={formatCurrency} />}
                           cursor={{ fill: 'hsl(0, 0%, 12%)', fillOpacity: 0.5, radius: 4 }}
                         />
                         <Bar
@@ -333,7 +328,7 @@ export default function StatisticsDetail() {
                           tickCount={5}
                         />
                         <Tooltip
-                          content={<DailyTooltip />}
+                          content={<DailyTooltip formatCurrency={formatCurrency} />}
                           cursor={{
                             stroke: color,
                             strokeWidth: 1,

@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useCurrency } from '../../hooks/useCurrency';
 import {
   ResponsiveContainer,
   PieChart,
@@ -13,17 +14,14 @@ const TYPE_COLORS = {
   fuel: '#f97316',
 };
 
-function CustomTooltip({ active, payload }) {
+function CustomTooltip({ active, payload, formatCurrency }) {
   if (!active || !payload?.length) return null;
   const { name, value, percent } = payload[0];
   return (
     <div className="bg-card border border-border/50 rounded-lg px-3.5 py-2.5 shadow-xl backdrop-blur-sm">
       <p className="text-[11px] text-muted-foreground mb-1">{name}</p>
       <p className="text-[15px] font-semibold text-foreground tabular-nums tracking-tight">
-        {Number(value).toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}
+        {formatCurrency(value)}
       </p>
       <p className="text-[11px] text-muted-foreground tabular-nums mt-1">
         {(percent * 100).toFixed(1)}%
@@ -34,6 +32,7 @@ function CustomTooltip({ active, payload }) {
 
 export default function DistributionPieChart({ data }) {
   const { t } = useTranslation();
+  const { formatCurrency } = useCurrency();
 
   if (!data || data.length === 0) {
     return (
@@ -87,17 +86,14 @@ export default function DistributionPieChart({ data }) {
                 />
               ))}
             </Pie>
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip content={<CustomTooltip formatCurrency={formatCurrency} />} />
           </PieChart>
         </ResponsiveContainer>
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="text-center">
             <p className="text-[11px] text-muted-foreground">Total</p>
             <p className="text-base font-semibold text-foreground tabular-nums tracking-tight">
-              {total.toLocaleString(undefined, {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0,
-              })}
+              {formatCurrency(total)}
             </p>
           </div>
         </div>

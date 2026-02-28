@@ -72,7 +72,7 @@
     "usageAmountPlaceholder": "0.00",
     "unitPrice": "Unit price",
     "unitPricePlaceholder": "0.00",
-    "unitPricePerUnit": "Unit price: \u20ac{{price}} per {{unit}}",
+    "unitPricePerUnit": "Unit price: {{price}} per {{unit}}",
     "costAmount": "Cost",
     "costAmountPlaceholder": "0.00",
     "costAutoHint": "Auto-calculated from unit price",
@@ -169,6 +169,8 @@
     "languageDescription": "Choose your preferred display language.",
     "english": "English",
     "german": "German",
+    "currency": "Currency",
+    "currencyDescription": "Choose your preferred display currency. Costs are converted from EUR using current exchange rates.",
     "logoutTitle": "Sign out",
     "logoutDescription": "End your current session and return to the login screen.",
     "logoutButton": "Sign out"

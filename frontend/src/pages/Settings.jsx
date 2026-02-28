@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../hooks/useLanguage';
+import { useCurrency } from '../hooks/useCurrency';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { motion } from 'framer-motion';
@@ -9,6 +10,7 @@ import {
   HiOutlineEnvelope,
   HiOutlineGlobeAlt,
   HiOutlineArrowRightOnRectangle,
+  HiOutlineCurrencyDollar,
 } from 'react-icons/hi2';
 
 const LANGUAGE_FLAGS = {
@@ -30,6 +32,7 @@ export default function Settings() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const { language, changeLanguage, supportedLanguages } = useLanguage();
+  const { currency, changeCurrency, supportedCurrencies } = useCurrency();
 
   const handleLogout = async () => {
     await logout();
@@ -100,6 +103,52 @@ export default function Settings() {
                         {t(`settings.${lang.code === 'en' ? 'english' : 'german'}`)}
                       </p>
                       <p className="text-[11px] text-muted-foreground">{lang.label}</p>
+                    </div>
+                  </motion.button>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      <motion.div variants={fadeUp}>
+        <Card>
+          <CardContent className="p-5">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <HiOutlineCurrencyDollar className="h-[18px] w-[18px] text-primary" />
+              </div>
+              <div>
+                <h2 className="text-sm font-medium text-foreground">{t('settings.currency')}</h2>
+                <p className="text-xs text-muted-foreground">{t('settings.currencyDescription')}</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+              {supportedCurrencies.map((cur) => {
+                const isActive = currency === cur.code;
+                return (
+                  <motion.button
+                    key={cur.code}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => changeCurrency(cur.code)}
+                    className={`
+                      flex items-center gap-3 rounded-xl border px-4 py-3 min-h-[48px]
+                      transition-colors duration-150
+                      ${isActive
+                        ? 'border-primary bg-primary/5 ring-1 ring-primary/20'
+                        : 'border-border/40 bg-card active:bg-accent sm:hover:border-border/60'
+                      }
+                    `}
+                  >
+                    <span className="text-base font-medium leading-none text-muted-foreground">
+                      {cur.symbol}
+                    </span>
+                    <div className="text-left">
+                      <p className={`text-sm font-medium ${isActive ? 'text-primary' : 'text-foreground'}`}>
+                        {cur.code}
+                      </p>
+                      <p className="text-[11px] text-muted-foreground">{cur.label}</p>
                     </div>
                   </motion.button>
                 );
