@@ -9,10 +9,19 @@ import {
   HiExclamationCircle,
   HiOutlineChartBar,
   HiOutlinePlusCircle,
+  HiOutlineBolt,
+  HiOutlineBeaker,
+  HiOutlineFire,
 } from 'react-icons/hi2';
 import SpendingLineChart from '../components/charts/SpendingLineChart';
 import CategoryBarChart from '../components/charts/CategoryBarChart';
 import DistributionPieChart from '../components/charts/DistributionPieChart';
+
+const TYPE_CONFIG = {
+  electricity: { icon: HiOutlineBolt, colorClass: 'text-amber-500', bgClass: 'bg-amber-500/10' },
+  water: { icon: HiOutlineBeaker, colorClass: 'text-sky-500', bgClass: 'bg-sky-500/10' },
+  fuel: { icon: HiOutlineFire, colorClass: 'text-orange-500', bgClass: 'bg-orange-500/10' },
+};
 
 const stagger = {
   animate: { transition: { staggerChildren: 0.08 } },
@@ -109,6 +118,29 @@ export default function Statistics() {
         <h1 className="text-xl font-semibold text-foreground tracking-tight">{t('statistics.title')}</h1>
         <p className="text-[13px] text-muted-foreground mt-1">{t('statistics.description')}</p>
       </motion.div>
+
+      <div className="grid grid-cols-3 gap-3">
+        {['electricity', 'water', 'fuel'].map((type) => {
+          const config = TYPE_CONFIG[type];
+          const Icon = config.icon;
+          return (
+            <motion.div key={type} variants={fadeUp} whileHover={cardHover}>
+              <Link to={`/statistics/${type}`} className="block">
+                <Card className="hover:border-border/60 transition-colors duration-200 cursor-pointer">
+                  <CardContent className="p-4 flex items-center gap-3">
+                    <div className={`h-9 w-9 rounded-lg ${config.bgClass} flex items-center justify-center shrink-0`}>
+                      <Icon className={`h-[18px] w-[18px] ${config.colorClass}`} />
+                    </div>
+                    <span className="text-sm font-medium text-foreground">
+                      {t(`statistics.${type}`)}
+                    </span>
+                  </CardContent>
+                </Card>
+              </Link>
+            </motion.div>
+          );
+        })}
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         <motion.div variants={fadeUp} whileHover={cardHover} className="lg:col-span-2">

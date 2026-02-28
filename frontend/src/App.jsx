@@ -10,6 +10,7 @@ import Dashboard from './pages/Dashboard';
 import AddEntry from './pages/AddEntry';
 import Entries from './pages/Entries';
 import Statistics from './pages/Statistics';
+import StatisticsDetail from './pages/StatisticsDetail';
 import Settings from './pages/Settings';
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
               <Route path="/add-entry" element={<AddEntry />} />
               <Route path="/entries" element={<Entries />} />
               <Route path="/statistics" element={<Statistics />} />
+              <Route path="/statistics/:type" element={<StatisticsDetail />} />
               <Route path="/settings" element={<Settings />} />
             </Route>
           </Routes>

@@ -149,6 +149,16 @@
     "noMonthlyData": "Noch nicht genug Daten für einen Zeitverlauf.",
     "noCategoryData": "Keine Kategoriedaten vorhanden."
   },
+  "statisticsDetail": {
+    "back": "Zurück zu Statistiken",
+    "title": "{{type}} Details",
+    "description": "Detaillierte Kostenaufschlüsselung für {{year}}.",
+    "noData": "Keine Daten für diese Verbrauchsart vorhanden. Fügen Sie Einträge hinzu.",
+    "monthlyOverview": "Monatsübersicht",
+    "monthlyOverviewDesc": "Gesamtkosten pro Monat in {{year}}",
+    "dailyBreakdown": "Tagesaufschlüsselung",
+    "dailyBreakdownDesc": "Kosten pro Tag für den ausgewählten Monat"
+  },
   "settings": {
     "title": "Einstellungen",
     "description": "Konto und Einstellungen verwalten.",

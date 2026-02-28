@@ -24,3 +24,9 @@ export async function deleteEntry(id) {
 export async function getTrend() {
   return api.get('/api/entries/trend');
 }
+
+export async function getBreakdown(type, year, month) {
+  const params = new URLSearchParams({ year: String(year) });
+  if (month != null) params.set('month', String(month));
+  return api.get(`/api/entries/breakdown/${type}?${params.toString()}`);
+}

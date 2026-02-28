@@ -150,6 +150,16 @@
     "noMonthlyData": "Not enough data for a time trend yet.",
     "noCategoryData": "No category data available."
   },
+  "statisticsDetail": {
+    "back": "Back to Statistics",
+    "title": "{{type}} Details",
+    "description": "Detailed cost breakdown for {{year}}.",
+    "noData": "No data available for this utility type. Add entries to see the breakdown.",
+    "monthlyOverview": "Monthly Overview",
+    "monthlyOverviewDesc": "Total cost per month in {{year}}",
+    "dailyBreakdown": "Daily Breakdown",
+    "dailyBreakdownDesc": "Cost per day for the selected month"
+  },
   "settings": {
     "title": "Settings",
     "description": "Manage your account and preferences.",
