@@ -54,7 +54,9 @@
     "viewAll": "Alle Einträge anzeigen",
     "usage": "Verbrauch",
     "cost": "Kosten",
-    "loadingError": "Dashboard-Daten konnten nicht geladen werden."
+    "loadingError": "Dashboard-Daten konnten nicht geladen werden.",
+    "trendNoData": "Keine Daten vom Vormonat",
+    "trendVsPrevious": "ggü. Vormonat"
   },
   "addEntry": {
     "title": "Eintrag hinzufügen",

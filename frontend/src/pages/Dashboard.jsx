@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { getStats, getEntries } from '../services/entriesService';
+import { getStats, getEntries, getTrend } from '../services/entriesService';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -53,6 +53,7 @@ function formatDate(dateStr) {
 export default function Dashboard() {
   const { t } = useTranslation();
   const [stats, setStats] = useState(null);
+  const [trend, setTrend] = useState(null);
   const [recentEntries, setRecentEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -60,12 +61,14 @@ export default function Dashboard() {
   useEffect(() => {
     async function load() {
       try {
-        const [statsData, entriesData] = await Promise.all([
+        const [statsData, entriesData, trendData] = await Promise.all([
           getStats(),
           getEntries(),
+          getTrend(),
         ]);
         setStats(statsData);
         setRecentEntries(entriesData.slice(0, 5));
+        setTrend(trendData);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -78,6 +81,41 @@ export default function Dashboard() {
   const getStatByType = (type) => stats?.byType?.find((s) => s.type === type);
   const totalCost = stats?.totals?.total_cost || 0;
   const totalCount = stats?.totals?.entry_count || 0;
+
+  const renderTrend = () => {
+    if (!trend) return null;
+
+    if (trend.trendPercent == null) {
+      return (
+        <p className="text-xs text-muted-foreground mt-1">
+          {t('dashboard.trendNoData')}
+        </p>
+      );
+    }
+
+    if (trend.trendPercent > 0) {
+      return (
+        <p className="text-xs font-medium text-red-500 mt-1">
+          ↑ +{Math.abs(trend.trendPercent).toFixed(1)}% {t('dashboard.trendVsPrevious')}
+        </p>
+      );
+    }
+
+    if (trend.trendPercent < 0) {
+      return (
+        <p className="text-xs font-medium text-emerald-500 mt-1">
+          ↓ {Math.abs(trend.trendPercent).toFixed(1)}% {t('dashboard.trendVsPrevious')}
+        </p>
+      );
+    }
+
+    // trendPercent === 0
+    return (
+      <p className="text-xs text-muted-foreground mt-1">
+        0% {t('dashboard.trendVsPrevious')}
+      </p>
+    );
+  };
 
   if (loading) {
     return (
@@ -126,6 +164,7 @@ export default function Dashboard() {
               <p className="text-2xl font-semibold text-foreground tabular-nums tracking-tight">
                 {formatCurrency(totalCost)}
               </p>
+              {renderTrend()}
               <p className="text-xs text-muted-foreground mt-1">
                 {totalCount > 0
                   ? t('dashboard.entries', { count: totalCount })

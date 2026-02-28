@@ -54,7 +54,9 @@
     "viewAll": "View all entries",
     "usage": "Usage",
     "cost": "Cost",
-    "loadingError": "Failed to load dashboard data."
+    "loadingError": "Failed to load dashboard data.",
+    "trendNoData": "No previous month data",
+    "trendVsPrevious": "vs last month"
   },
   "addEntry": {
     "title": "Add Entry",
