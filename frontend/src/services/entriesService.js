@@ -20,3 +20,7 @@ export async function getStats() {
 export async function deleteEntry(id) {
   return api.delete(`/api/entries/${id}`);
 }
+
+export async function getTrend() {
+  return api.get('/api/entries/trend');
+}

@@ -1,4 +1,5 @@
 import * as entriesService from '../services/entriesService.js';
+import * as settingsService from '../services/settingsService.js';
 
 const VALID_TYPES = ['electricity', 'water', 'fuel'];
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
@@ -10,11 +11,11 @@ function isDbUnavailable(error) {
 
 export async function create(req, res) {
   try {
-    const { type, usage_amount, unit_price, unit, date } = req.body;
+    const { type, usage_amount, unit_price: bodyUnitPrice, cost_amount: bodyCostAmount, unit, date } = req.body;
 
-    if (!type || usage_amount == null || unit_price == null || !unit || !date) {
+    if (!type || usage_amount == null || !unit || !date) {
       return res.status(400).json({
-        error: 'All fields are required: type, usage_amount, unit_price, unit, date',
+        error: 'Required fields: type, usage_amount, unit, date',
       });
     }
 
@@ -28,10 +29,6 @@ export async function create(req, res) {
       return res.status(400).json({ error: 'usage_amount must be a non-negative number' });
     }
 
-    if (typeof unit_price !== 'number' || unit_price < 0) {
-      return res.status(400).json({ error: 'unit_price must be a non-negative number' });
-    }
-
     if (typeof unit !== 'string' || unit.trim().length === 0) {
       return res.status(400).json({ error: 'unit must be a non-empty string' });
     }
@@ -40,7 +37,32 @@ export async function create(req, res) {
       return res.status(400).json({ error: 'date must be a valid date in YYYY-MM-DD format' });
     }
 
-    const cost_amount = Math.round(usage_amount * unit_price * 100) / 100;
+    let cost_amount;
+    let unit_price = bodyUnitPrice;
+
+    if (bodyCostAmount != null) {
+      // Manual override: cost_amount provided directly
+      if (typeof bodyCostAmount !== 'number' || bodyCostAmount < 0) {
+        return res.status(400).json({ error: 'cost_amount must be a non-negative number' });
+      }
+      cost_amount = bodyCostAmount;
+    } else {
+      // Auto-calculate from unit_price
+      if (unit_price == null) {
+        // No unit_price in body — look up saved price from DB
+        const saved = await settingsService.getUnitPrice(req.user.id, type);
+        if (!saved) {
+          return res.status(400).json({ error: 'Unit price not configured for this type. Please provide unit_price or cost_amount.' });
+        }
+        unit_price = parseFloat(saved.unit_price);
+      }
+
+      if (typeof unit_price !== 'number' || unit_price < 0) {
+        return res.status(400).json({ error: 'unit_price must be a non-negative number' });
+      }
+
+      cost_amount = Math.round(usage_amount * unit_price * 100) / 100;
+    }
 
     const entry = await entriesService.createEntry(req.user.id, {
       type,
@@ -132,5 +154,17 @@ export async function getStats(req, res) {
       return res.status(503).json({ error: 'Database unavailable' });
     }
     res.status(500).json({ error: 'Failed to fetch statistics' });
+  }
+}
+
+export async function getTrend(req, res) {
+  try {
+    const trend = await entriesService.getMonthlyTrend(req.user.id);
+    res.json(trend);
+  } catch (error) {
+    if (isDbUnavailable(error)) {
+      return res.status(503).json({ error: 'Database unavailable' });
+    }
+    res.status(500).json({ error: 'Failed to fetch monthly trend' });
   }
 }

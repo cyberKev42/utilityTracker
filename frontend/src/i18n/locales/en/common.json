@@ -54,7 +54,9 @@
     "viewAll": "View all entries",
     "usage": "Usage",
     "cost": "Cost",
-    "loadingError": "Failed to load dashboard data."
+    "loadingError": "Failed to load dashboard data.",
+    "trendNoData": "No previous month data",
+    "trendVsPrevious": "vs last month"
   },
   "addEntry": {
     "title": "Add Entry",
@@ -70,6 +72,10 @@
     "usageAmountPlaceholder": "0.00",
     "unitPrice": "Unit price",
     "unitPricePlaceholder": "0.00",
+    "unitPricePerUnit": "Unit price: \u20ac{{price}} per {{unit}}",
+    "costAmount": "Cost",
+    "costAmountPlaceholder": "0.00",
+    "costAutoHint": "Auto-calculated from unit price",
     "totalCost": "Total cost",
     "unit": "Unit",
     "unitPlaceholder": "e.g. kWh, m³, L",
@@ -84,6 +90,8 @@
       "usagePositive": "Usage amount must be 0 or greater",
       "unitPriceRequired": "Unit price is required",
       "unitPricePositive": "Unit price must be 0 or greater",
+      "costRequired": "Cost amount is required",
+      "costPositive": "Cost amount must be 0 or greater",
       "unitRequired": "Unit is required",
       "dateRequired": "Date is required",
       "dateInvalid": "Please enter a valid date"
