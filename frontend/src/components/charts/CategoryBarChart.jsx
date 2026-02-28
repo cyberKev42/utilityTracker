@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useCurrency } from '../../hooks/useCurrency';
 import {
   ResponsiveContainer,
   BarChart,
@@ -21,24 +22,17 @@ const COLORS = {
   grid: 'hsl(0, 0%, 12%)',
 };
 
-function CustomTooltip({ active, payload }) {
+function CustomTooltip({ active, payload, formatCurrency }) {
   if (!active || !payload?.length) return null;
   const { translatedName, total_cost, entry_count, avg_cost } = payload[0].payload;
   return (
     <div className="bg-card border border-border/50 rounded-lg px-3.5 py-2.5 shadow-xl backdrop-blur-sm">
       <p className="text-[11px] text-muted-foreground mb-1">{translatedName}</p>
       <p className="text-[15px] font-semibold text-foreground tabular-nums tracking-tight">
-        {Number(total_cost).toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}
+        {formatCurrency(total_cost)}
       </p>
       <p className="text-[11px] text-muted-foreground tabular-nums mt-1">
-        {entry_count} entries &middot; avg{' '}
-        {Number(avg_cost).toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}
+        {entry_count} entries &middot; avg {formatCurrency(avg_cost)}
       </p>
     </div>
   );
@@ -46,6 +40,7 @@ function CustomTooltip({ active, payload }) {
 
 export default function CategoryBarChart({ data }) {
   const { t } = useTranslation();
+  const { formatCurrency } = useCurrency();
 
   if (!data || data.length === 0) {
     return (
@@ -94,7 +89,7 @@ export default function CategoryBarChart({ data }) {
             tickCount={5}
           />
           <Tooltip
-            content={<CustomTooltip />}
+            content={<CustomTooltip formatCurrency={formatCurrency} />}
             cursor={{
               fill: 'hsl(0, 0%, 12%)',
               fillOpacity: 0.5,

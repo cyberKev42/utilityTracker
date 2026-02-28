@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { CurrencyProvider } from './context/CurrencyContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { MainLayout } from './layouts/MainLayout';
@@ -17,6 +18,7 @@ function App() {
   return (
     <LanguageProvider>
       <AuthProvider>
+        <CurrencyProvider>
         <BrowserRouter>
           <Routes>
             <Route element={<AuthLayout />}>
@@ -39,6 +41,7 @@ function App() {
             </Route>
           </Routes>
         </BrowserRouter>
+        </CurrencyProvider>
       </AuthProvider>
     </LanguageProvider>
   );

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { getStats, getEntries, getTrend } from '../services/entriesService';
+import { useCurrency } from '../hooks/useCurrency';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -35,13 +36,6 @@ const cardHover = {
   transition: { duration: 0.15, ease: 'easeOut' },
 };
 
-function formatCurrency(value) {
-  return new Intl.NumberFormat(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value || 0);
-}
-
 function formatDate(dateStr) {
   return new Date(dateStr).toLocaleDateString(undefined, {
     year: 'numeric',
@@ -52,6 +46,7 @@ function formatDate(dateStr) {
 
 export default function Dashboard() {
   const { t } = useTranslation();
+  const { formatCurrency } = useCurrency();
   const [stats, setStats] = useState(null);
   const [trend, setTrend] = useState(null);
   const [recentEntries, setRecentEntries] = useState([]);

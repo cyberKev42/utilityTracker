@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useCurrency } from '../../hooks/useCurrency';
 import {
   ResponsiveContainer,
   AreaChart,
@@ -21,16 +22,13 @@ function formatMonth(monthStr) {
   return date.toLocaleDateString(undefined, { month: 'short', year: '2-digit' });
 }
 
-function CustomTooltip({ active, payload, label }) {
+function CustomTooltip({ active, payload, label, formatCurrency }) {
   if (!active || !payload?.length) return null;
   return (
     <div className="bg-card border border-border/50 rounded-lg px-3.5 py-2.5 shadow-xl backdrop-blur-sm">
       <p className="text-[11px] text-muted-foreground mb-1">{formatMonth(label)}</p>
       <p className="text-[15px] font-semibold text-foreground tabular-nums tracking-tight">
-        {Number(payload[0].value).toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}
+        {formatCurrency(payload[0].value)}
       </p>
     </div>
   );
@@ -38,6 +36,7 @@ function CustomTooltip({ active, payload, label }) {
 
 export default function SpendingLineChart({ data }) {
   const { t } = useTranslation();
+  const { formatCurrency } = useCurrency();
 
   if (!data || data.length === 0) {
     return (
@@ -91,7 +90,7 @@ export default function SpendingLineChart({ data }) {
             tickCount={5}
           />
           <Tooltip
-            content={<CustomTooltip />}
+            content={<CustomTooltip formatCurrency={formatCurrency} />}
             cursor={{
               stroke: COLORS.primary,
               strokeWidth: 1,

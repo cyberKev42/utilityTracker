@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createEntry } from '../services/entriesService';
 import { getUnitPrice } from '../services/settingsService';
+import { useCurrency } from '../hooks/useCurrency';
 import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -34,15 +35,9 @@ function todayISO() {
   return `${year}-${month}-${day}`;
 }
 
-function formatCost(value) {
-  return new Intl.NumberFormat(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value);
-}
-
 export default function AddEntry() {
   const { t } = useTranslation();
+  const { formatCurrency } = useCurrency();
 
   const [type, setType] = useState('');
   const [usageAmount, setUsageAmount] = useState('');
@@ -352,7 +347,7 @@ export default function AddEntry() {
               {unitPrice !== '' && unit && (
                 <motion.div {...fadeUp}>
                   <p className="text-sm text-muted-foreground">
-                    {t('addEntry.unitPricePerUnit', { price: formatCost(parseFloat(unitPrice)), unit })}
+                    {t('addEntry.unitPricePerUnit', { price: formatCurrency(parseFloat(unitPrice)), unit })}
                   </p>
                 </motion.div>
               )}
@@ -385,7 +380,7 @@ export default function AddEntry() {
                   <div className="rounded-lg bg-accent/40 border border-border/30 px-4 py-3 flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">{t('addEntry.totalCost')}</span>
                     <span className="text-lg font-semibold text-foreground tabular-nums">
-                      {formatCost(parseFloat(costAmount))}
+                      {formatCurrency(parseFloat(costAmount))}
                     </span>
                   </div>
                 </motion.div>
