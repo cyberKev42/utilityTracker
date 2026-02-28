@@ -156,3 +156,15 @@ export async function getStats(req, res) {
     res.status(500).json({ error: 'Failed to fetch statistics' });
   }
 }
+
+export async function getTrend(req, res) {
+  try {
+    const trend = await entriesService.getMonthlyTrend(req.user.id);
+    res.json(trend);
+  } catch (error) {
+    if (isDbUnavailable(error)) {
+      return res.status(503).json({ error: 'Database unavailable' });
+    }
+    res.status(500).json({ error: 'Failed to fetch monthly trend' });
+  }
+}

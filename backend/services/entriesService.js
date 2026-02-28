@@ -131,3 +131,33 @@ export async function getStats(userId) {
     monthly: monthlyResult.rows,
   };
 }
+
+export async function getMonthlyTrend(userId) {
+  const pool = getDb();
+  if (!pool) throw new Error('Database not configured');
+
+  const result = await pool.query(
+    `SELECT
+       COALESCE(SUM(CASE WHEN TO_CHAR(CAST(date AS DATE), 'YYYY-MM') = TO_CHAR(CURRENT_DATE, 'YYYY-MM') THEN cost_amount ELSE 0 END), 0)::float AS current_month_total,
+       COALESCE(SUM(CASE WHEN TO_CHAR(CAST(date AS DATE), 'YYYY-MM') = TO_CHAR(CURRENT_DATE - INTERVAL '1 month', 'YYYY-MM') THEN cost_amount ELSE 0 END), 0)::float AS previous_month_total
+     FROM utility_entries
+     WHERE user_id = $1
+       AND TO_CHAR(CAST(date AS DATE), 'YYYY-MM') IN (
+         TO_CHAR(CURRENT_DATE, 'YYYY-MM'),
+         TO_CHAR(CURRENT_DATE - INTERVAL '1 month', 'YYYY-MM')
+       )`,
+    [userId]
+  );
+
+  const { current_month_total, previous_month_total } = result.rows[0];
+
+  const trendPercent = previous_month_total === 0
+    ? null
+    : Math.round(((current_month_total - previous_month_total) / previous_month_total) * 10000) / 100;
+
+  return {
+    currentMonthTotal: current_month_total,
+    previousMonthTotal: previous_month_total,
+    trendPercent,
+  };
+}
