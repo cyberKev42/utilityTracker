@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { connect, getDb, getDatabaseEnvKey, getDiagnostics } from './db.js';
 import authRoutes from './routes/auth.js';
 import entriesRoutes from './routes/entries.js';
+import settingsRoutes from './routes/settings.js';
 
 dotenv.config();
 
@@ -43,5 +44,6 @@ app.get('/api/health', async (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/entries', entriesRoutes);
+app.use('/api/settings', settingsRoutes);
 
 app.listen(PORT, '0.0.0.0');
