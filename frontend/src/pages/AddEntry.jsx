@@ -129,10 +129,6 @@ export default function AddEntry() {
       setUnitPrice(value);
       setManualCost(false); // Reset manual override when unit price changes
     }
-    if (field === 'costAmount') {
-      setCostAmount(value);
-      setManualCost(true); // User manually edited cost → stop auto-calculation
-    }
     if (field === 'unit') setUnit(value);
     if (field === 'date') setDate(value);
 
@@ -202,13 +198,7 @@ export default function AddEntry() {
         date,
       };
 
-      if (manualCost) {
-        // Manual override: send cost_amount, let backend use it directly
-        payload.cost_amount = parseFloat(costAmount);
-      } else {
-        // Auto-calculated: send unit_price, let backend compute cost
-        payload.unit_price = parseFloat(unitPrice);
-      }
+      payload.unit_price = parseFloat(unitPrice);
 
       await createEntry(payload);
       setSuccess(true);
@@ -400,13 +390,9 @@ export default function AddEntry() {
                   min="0"
                   placeholder={t('addEntry.costAmountPlaceholder')}
                   value={costAmount}
-                  onChange={(e) => handleFieldChange('costAmount', e.target.value)}
-                  onBlur={() => handleBlur('costAmount')}
-                  className={`h-11 ${
-                    touched.costAmount && fieldErrors.costAmount
-                      ? 'border-destructive focus-visible:ring-destructive'
-                      : ''
-                  }`}
+                  readOnly
+                  tabIndex={-1}
+                  className="h-11 bg-muted/50 cursor-default focus-visible:ring-0"
                 />
                 {!manualCost && costAmount !== '' && (
                   <p className="text-xs text-muted-foreground">{t('addEntry.costAutoHint')}</p>
