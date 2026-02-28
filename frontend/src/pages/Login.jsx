@@ -78,9 +78,7 @@ export default function Login() {
     <>
       <div className="text-center mb-8">
         <div className="flex items-center justify-center gap-2 mb-3">
-          <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-            <span className="text-sm font-bold text-primary-foreground">U</span>
-          </div>
+          <img src="/assets/images/logo.png" alt="UtilityTracker" className="h-8 w-8 rounded-lg object-cover" />
         </div>
         <h1 className="text-xl font-semibold text-foreground tracking-tight">
           {t('app.name')}
