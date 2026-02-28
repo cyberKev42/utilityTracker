@@ -380,28 +380,6 @@ export default function AddEntry() {
                 )}
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="costAmount">{t('addEntry.costAmount')}</Label>
-                <Input
-                  id="costAmount"
-                  type="number"
-                  inputMode="decimal"
-                  step="any"
-                  min="0"
-                  placeholder={t('addEntry.costAmountPlaceholder')}
-                  value={costAmount}
-                  readOnly
-                  tabIndex={-1}
-                  className="h-11 bg-muted/50 cursor-default focus-visible:ring-0"
-                />
-                {!manualCost && costAmount !== '' && (
-                  <p className="text-xs text-muted-foreground">{t('addEntry.costAutoHint')}</p>
-                )}
-                {touched.costAmount && fieldErrors.costAmount && (
-                  <p className="text-xs text-destructive">{fieldErrors.costAmount}</p>
-                )}
-              </div>
-
               {costAmount !== '' && !isNaN(parseFloat(costAmount)) && (
                 <motion.div {...fadeUp}>
                   <div className="rounded-lg bg-accent/40 border border-border/30 px-4 py-3 flex items-center justify-between">
