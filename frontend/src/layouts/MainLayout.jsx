@@ -1,4 +1,4 @@
-import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { Outlet, NavLink, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/useAuth';
 import { LanguageSwitcher } from '../components/LanguageSwitcher';
@@ -45,12 +45,12 @@ export function MainLayout() {
       <aside className="hidden lg:fixed lg:inset-y-0 lg:z-40 lg:flex lg:w-[260px] lg:flex-col">
         <div className="flex grow flex-col border-r border-border/40 bg-card/50">
           <div className="flex items-center h-14 px-5">
-            <div className="flex items-center gap-2.5">
+            <Link to="/" className="flex items-center gap-2.5">
               <img src="/assets/images/logo.png" alt="UtilityTracker" className="h-7 w-7 rounded-lg object-cover" />
               <span className="text-sm font-semibold text-foreground">
                 {t('app.name')}
               </span>
-            </div>
+            </Link>
           </div>
 
           <nav className="flex flex-1 flex-col gap-0.5 px-3 pt-4">
@@ -100,12 +100,12 @@ export function MainLayout() {
           className="sticky top-0 z-30 flex items-center justify-between border-b border-border/40 bg-background/90 backdrop-blur-xl px-4 sm:px-6 lg:hidden"
           style={{ height: 'calc(3.25rem + var(--safe-top, 0px))', paddingTop: 'var(--safe-top, 0px)' }}
         >
-          <div className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2">
             <img src="/assets/images/logo.png" alt="UtilityTracker" className="h-6 w-6 rounded-md object-cover" />
             <span className="text-sm font-semibold text-foreground">
               {t('app.name')}
             </span>
-          </div>
+          </Link>
           <LanguageSwitcher />
         </header>
 
