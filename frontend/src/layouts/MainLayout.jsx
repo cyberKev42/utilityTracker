@@ -46,9 +46,7 @@ export function MainLayout() {
         <div className="flex grow flex-col border-r border-border/40 bg-card/50">
           <div className="flex items-center h-14 px-5">
             <div className="flex items-center gap-2.5">
-              <div className="h-7 w-7 rounded-lg bg-primary flex items-center justify-center">
-                <span className="text-xs font-bold text-primary-foreground">U</span>
-              </div>
+              <img src="/assets/images/logo.png" alt="UtilityTracker" className="h-7 w-7 rounded-lg object-cover" />
               <span className="text-sm font-semibold text-foreground">
                 {t('app.name')}
               </span>
@@ -103,9 +101,7 @@ export function MainLayout() {
           style={{ height: 'calc(3.25rem + var(--safe-top, 0px))', paddingTop: 'var(--safe-top, 0px)' }}
         >
           <div className="flex items-center gap-2">
-            <div className="h-6 w-6 rounded-md bg-primary flex items-center justify-center">
-              <span className="text-[10px] font-bold text-primary-foreground">U</span>
-            </div>
+            <img src="/assets/images/logo.png" alt="UtilityTracker" className="h-6 w-6 rounded-md object-cover" />
             <span className="text-sm font-semibold text-foreground">
               {t('app.name')}
             </span>
