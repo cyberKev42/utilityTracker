@@ -180,26 +180,28 @@ export default function Dashboard() {
           const Icon = config.icon;
           return (
             <motion.div key={type} variants={fadeUp} whileHover={cardHover}>
-              <Card className="h-full hover:border-border/60 transition-colors duration-200">
-                <CardContent className="p-5">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className={`h-9 w-9 rounded-lg ${config.bgClass} flex items-center justify-center`}>
-                      <Icon className={`h-[18px] w-[18px] ${config.colorClass}`} />
+              <Link to={`/statistics/${type}`} className="block">
+                <Card className="h-full hover:border-border/60 transition-colors duration-200 cursor-pointer">
+                  <CardContent className="p-5">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className={`h-9 w-9 rounded-lg ${config.bgClass} flex items-center justify-center`}>
+                        <Icon className={`h-[18px] w-[18px] ${config.colorClass}`} />
+                      </div>
+                      <span className="text-[13px] font-medium text-muted-foreground">
+                        {t(`dashboard.${type}`)}
+                      </span>
                     </div>
-                    <span className="text-[13px] font-medium text-muted-foreground">
-                      {t(`dashboard.${type}`)}
-                    </span>
-                  </div>
-                  <p className="text-2xl font-semibold text-foreground tabular-nums tracking-tight">
-                    {formatCurrency(stat?.total_cost)}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {stat
-                      ? t('dashboard.entries', { count: stat.entry_count })
-                      : t('dashboard.noEntries')}
-                  </p>
-                </CardContent>
-              </Card>
+                    <p className="text-2xl font-semibold text-foreground tabular-nums tracking-tight">
+                      {formatCurrency(stat?.total_cost)}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {stat
+                        ? t('dashboard.entries', { count: stat.entry_count })
+                        : t('dashboard.noEntries')}
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
             </motion.div>
           );
         })}
