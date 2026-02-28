@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createEntry } from '../services/entriesService';
 import { getUnitPrice } from '../services/settingsService';
@@ -34,12 +34,21 @@ function todayISO() {
   return `${year}-${month}-${day}`;
 }
 
+function formatCost(value) {
+  return new Intl.NumberFormat(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value);
+}
+
 export default function AddEntry() {
   const { t } = useTranslation();
 
   const [type, setType] = useState('');
   const [usageAmount, setUsageAmount] = useState('');
   const [unitPrice, setUnitPrice] = useState('');
+  const [costAmount, setCostAmount] = useState('');
+  const [manualCost, setManualCost] = useState(false);
   const [unit, setUnit] = useState('');
   const [date, setDate] = useState(todayISO());
   const [fieldErrors, setFieldErrors] = useState({});
@@ -48,10 +57,22 @@ export default function AddEntry() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const computedCost =
-    usageAmount !== '' && unitPrice !== ''
-      ? parseFloat(usageAmount) * parseFloat(unitPrice)
-      : null;
+  // Auto-calculate cost when usage or unit price changes (unless manual override)
+  const autoCalculate = useCallback(() => {
+    if (manualCost) return;
+    if (usageAmount !== '' && unitPrice !== '') {
+      const calc = parseFloat(usageAmount) * parseFloat(unitPrice);
+      if (!isNaN(calc)) {
+        setCostAmount(String(Math.round(calc * 100) / 100));
+        return;
+      }
+    }
+    setCostAmount('');
+  }, [usageAmount, unitPrice, manualCost]);
+
+  useEffect(() => {
+    autoCalculate();
+  }, [autoCalculate]);
 
   const validateField = (field, value) => {
     switch (field) {
@@ -70,6 +91,12 @@ export default function AddEntry() {
         if (isNaN(num) || num < 0) return t('addEntry.validation.unitPricePositive');
         return '';
       }
+      case 'costAmount': {
+        if (value === '' || value == null) return t('addEntry.validation.costRequired');
+        const num = parseFloat(value);
+        if (isNaN(num) || num < 0) return t('addEntry.validation.costPositive');
+        return '';
+      }
       case 'unit':
         if (!value || !value.trim()) return t('addEntry.validation.unitRequired');
         return '';
@@ -83,7 +110,7 @@ export default function AddEntry() {
   };
 
   const getFieldValue = (field) => {
-    const map = { type, usageAmount, unitPrice, unit, date };
+    const map = { type, usageAmount, unitPrice, costAmount, unit, date };
     return map[field] ?? '';
   };
 
@@ -98,7 +125,14 @@ export default function AddEntry() {
   const handleFieldChange = (field, value) => {
     if (field === 'type') setType(value);
     if (field === 'usageAmount') setUsageAmount(value);
-    if (field === 'unitPrice') setUnitPrice(value);
+    if (field === 'unitPrice') {
+      setUnitPrice(value);
+      setManualCost(false); // Reset manual override when unit price changes
+    }
+    if (field === 'costAmount') {
+      setCostAmount(value);
+      setManualCost(true); // User manually edited cost → stop auto-calculation
+    }
     if (field === 'unit') setUnit(value);
     if (field === 'date') setDate(value);
 
@@ -111,6 +145,7 @@ export default function AddEntry() {
     setType(value);
     const match = TYPES.find((t) => t.value === value);
     if (match) setUnit(match.defaultUnit);
+    setManualCost(false);
     if (touched.type) {
       setFieldErrors((prev) => ({ ...prev, type: validateField('type', value) }));
     }
@@ -129,13 +164,13 @@ export default function AddEntry() {
   };
 
   const validate = () => {
-    const fields = ['type', 'usageAmount', 'unitPrice', 'unit', 'date'];
+    const fields = ['type', 'usageAmount', 'unitPrice', 'costAmount', 'unit', 'date'];
     const errors = {};
     fields.forEach((f) => {
       errors[f] = validateField(f, getFieldValue(f));
     });
     setFieldErrors(errors);
-    setTouched({ type: true, usageAmount: true, unitPrice: true, unit: true, date: true });
+    setTouched({ type: true, usageAmount: true, unitPrice: true, costAmount: true, unit: true, date: true });
     return fields.every((f) => !errors[f]);
   };
 
@@ -143,6 +178,8 @@ export default function AddEntry() {
     setType('');
     setUsageAmount('');
     setUnitPrice('');
+    setCostAmount('');
+    setManualCost(false);
     setUnit('');
     setDate(todayISO());
     setFieldErrors({});
@@ -158,13 +195,22 @@ export default function AddEntry() {
 
     setLoading(true);
     try {
-      await createEntry({
+      const payload = {
         type,
         usage_amount: parseFloat(usageAmount),
-        unit_price: parseFloat(unitPrice),
         unit: unit.trim(),
         date,
-      });
+      };
+
+      if (manualCost) {
+        // Manual override: send cost_amount, let backend use it directly
+        payload.cost_amount = parseFloat(costAmount);
+      } else {
+        // Auto-calculated: send unit_price, let backend compute cost
+        payload.unit_price = parseFloat(unitPrice);
+      }
+
+      await createEntry(payload);
       setSuccess(true);
     } catch (err) {
       setServerError(err.message);
@@ -313,6 +359,14 @@ export default function AddEntry() {
                 </div>
               </div>
 
+              {unitPrice !== '' && unit && (
+                <motion.div {...fadeUp}>
+                  <p className="text-sm text-muted-foreground">
+                    {t('addEntry.unitPricePerUnit', { price: formatCost(parseFloat(unitPrice)), unit })}
+                  </p>
+                </motion.div>
+              )}
+
               <div className="space-y-2">
                 <Label htmlFor="unitPrice">{t('addEntry.unitPrice')}</Label>
                 <Input
@@ -336,15 +390,38 @@ export default function AddEntry() {
                 )}
               </div>
 
-              {computedCost !== null && !isNaN(computedCost) && (
+              <div className="space-y-2">
+                <Label htmlFor="costAmount">{t('addEntry.costAmount')}</Label>
+                <Input
+                  id="costAmount"
+                  type="number"
+                  inputMode="decimal"
+                  step="any"
+                  min="0"
+                  placeholder={t('addEntry.costAmountPlaceholder')}
+                  value={costAmount}
+                  onChange={(e) => handleFieldChange('costAmount', e.target.value)}
+                  onBlur={() => handleBlur('costAmount')}
+                  className={`h-11 ${
+                    touched.costAmount && fieldErrors.costAmount
+                      ? 'border-destructive focus-visible:ring-destructive'
+                      : ''
+                  }`}
+                />
+                {!manualCost && costAmount !== '' && (
+                  <p className="text-xs text-muted-foreground">{t('addEntry.costAutoHint')}</p>
+                )}
+                {touched.costAmount && fieldErrors.costAmount && (
+                  <p className="text-xs text-destructive">{fieldErrors.costAmount}</p>
+                )}
+              </div>
+
+              {costAmount !== '' && !isNaN(parseFloat(costAmount)) && (
                 <motion.div {...fadeUp}>
                   <div className="rounded-lg bg-accent/40 border border-border/30 px-4 py-3 flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">{t('addEntry.totalCost')}</span>
                     <span className="text-lg font-semibold text-foreground tabular-nums">
-                      {new Intl.NumberFormat(undefined, {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      }).format(computedCost)}
+                      {formatCost(parseFloat(costAmount))}
                     </span>
                   </div>
                 </motion.div>
