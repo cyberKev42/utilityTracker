@@ -33,7 +33,8 @@
       "emailRequired": "Email is required",
       "emailInvalid": "Please enter a valid email address",
       "passwordRequired": "Password is required",
-      "passwordMinLength": "Password must be at least 6 characters",
+      "passwordMinLength": "Password must be at least 6 characters long",
+      "passwordRules": "Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, and one digit",
       "confirmPasswordRequired": "Please confirm your password",
       "passwordsMismatch": "Passwords do not match"
     }

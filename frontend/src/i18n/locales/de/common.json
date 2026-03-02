@@ -34,6 +34,7 @@
       "emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
       "passwordRequired": "Passwort ist erforderlich",
       "passwordMinLength": "Passwort muss mindestens 6 Zeichen lang sein",
+      "passwordRules": "Passwort muss mindestens 6 Zeichen lang sein und mindestens einen Großbuchstaben, einen Kleinbuchstaben und eine Ziffer enthalten",
       "confirmPasswordRequired": "Bitte bestätigen Sie Ihr Passwort",
       "passwordsMismatch": "Passwörter stimmen nicht überein"
     }
