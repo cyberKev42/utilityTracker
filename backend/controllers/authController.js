@@ -12,8 +12,8 @@ export async function register(req, res) {
       return res.status(400).json({ error: 'Invalid input' });
     }
 
-    if (password.length < 6) {
-      return res.status(400).json({ error: 'Password must be at least 6 characters' });
+    if (password.length < 6 || !/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[0-9]/.test(password)) {
+      return res.status(400).json({ error: 'Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, and one digit' });
     }
 
     const result = await authService.registerUser(email.trim().toLowerCase(), password);

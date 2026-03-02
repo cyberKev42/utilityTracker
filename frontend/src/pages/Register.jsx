@@ -36,7 +36,9 @@ export default function Register() {
         return '';
       case 'password':
         if (!value) return t('auth.validation.passwordRequired');
-        if (value.length < 6) return t('auth.validation.passwordMinLength');
+        if (value.length < 6 || !/[A-Z]/.test(value) || !/[a-z]/.test(value) || !/[0-9]/.test(value)) {
+          return t('auth.validation.passwordRules');
+        }
         return '';
       case 'confirmPassword':
         if (!value) return t('auth.validation.confirmPasswordRequired');
@@ -90,7 +92,11 @@ export default function Register() {
     try {
       await register(email.trim(), password);
     } catch (err) {
-      setError(err.message);
+      if (err.message?.toLowerCase().includes('password')) {
+        setError(t('auth.validation.passwordRules'));
+      } else {
+        setError(err.message);
+      }
     } finally {
       setLoading(false);
     }
