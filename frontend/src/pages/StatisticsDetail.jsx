@@ -5,7 +5,7 @@ import { getBreakdown } from '../services/entriesService';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { motion } from 'framer-motion';
-import { EtherealShadow } from '../components/ui/etheral-shadow';
+import { BackgroundPaths } from '../components/ui/background-paths';
 import {
   HiExclamationCircle,
   HiOutlineChartBar,
@@ -29,22 +29,10 @@ const TYPE_COLORS = {
   fuel: '#f97316',
 };
 
-const TYPE_BG_CONFIG = {
-  electricity: {
-    color: 'rgba(245, 158, 11, 0.75)',
-    animation: { scale: 80, speed: 88 },
-    noise: { opacity: 0.5, scale: 1.5 },
-  },
-  water: {
-    color: 'rgba(14, 165, 233, 0.72)',
-    animation: { scale: 55, speed: 35 },
-    noise: { opacity: 0.35, scale: 1.2 },
-  },
-  fuel: {
-    color: 'rgba(249, 115, 22, 0.78)',
-    animation: { scale: 92, speed: 78 },
-    noise: { opacity: 0.65, scale: 1.8 },
-  },
+const TYPE_BG_COLOR = {
+  electricity: '#f59e0b',
+  water: '#0ea5e9',
+  fuel: '#f97316',
 };
 
 const CHART_COLORS = {
@@ -139,7 +127,7 @@ export default function StatisticsDetail() {
   const [error, setError] = useState('');
 
   const color = TYPE_COLORS[type] || '#6b7280';
-  const bgConfig = TYPE_BG_CONFIG[type];
+  const bgColor = TYPE_BG_COLOR[type];
 
   useEffect(() => {
     async function load() {
@@ -196,14 +184,9 @@ export default function StatisticsDetail() {
 
   return (
     <>
-      {bgConfig && (
+      {bgColor && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }}>
-          <EtherealShadow
-            color={bgConfig.color}
-            animation={bgConfig.animation}
-            noise={bgConfig.noise}
-            sizing="fill"
-          />
+          <BackgroundPaths color={bgColor} />
           <div style={{
             position: 'absolute',
             inset: 0,
