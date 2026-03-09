@@ -6,6 +6,7 @@ import { useCurrency } from '../hooks/useCurrency';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { motion } from 'framer-motion';
+import { EtherealShadow } from '../components/ui/etheral-shadow';
 import {
   HiExclamationCircle,
   HiOutlineChartBar,
@@ -27,6 +28,24 @@ const TYPE_COLORS = {
   power: '#f59e0b',
   water: '#0ea5e9',
   fuel: '#f97316',
+};
+
+const TYPE_BG_CONFIG = {
+  electricity: {
+    color: 'rgba(245, 158, 11, 0.75)',
+    animation: { scale: 80, speed: 88 },
+    noise: { opacity: 0.5, scale: 1.5 },
+  },
+  water: {
+    color: 'rgba(14, 165, 233, 0.72)',
+    animation: { scale: 55, speed: 35 },
+    noise: { opacity: 0.35, scale: 1.2 },
+  },
+  fuel: {
+    color: 'rgba(249, 115, 22, 0.78)',
+    animation: { scale: 92, speed: 78 },
+    noise: { opacity: 0.65, scale: 1.8 },
+  },
 };
 
 const CHART_COLORS = {
@@ -115,6 +134,7 @@ export default function StatisticsDetail() {
   const [error, setError] = useState('');
 
   const color = TYPE_COLORS[type] || '#6b7280';
+  const bgConfig = TYPE_BG_CONFIG[type];
 
   useEffect(() => {
     async function load() {
@@ -170,6 +190,23 @@ export default function StatisticsDetail() {
   const isEmpty = !hasMonthly && !hasDaily;
 
   return (
+    <>
+      {bgConfig && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }}>
+          <EtherealShadow
+            color={bgConfig.color}
+            animation={bgConfig.animation}
+            noise={bgConfig.noise}
+            sizing="fill"
+          />
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(to bottom, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.70) 100%)',
+          }} />
+        </div>
+      )}
+      <div style={{ position: 'relative', zIndex: 1 }}>
     <motion.div variants={stagger} initial="initial" animate="animate" className="space-y-6">
       <motion.div variants={fadeUp}>
         <Link to="/statistics">
@@ -366,5 +403,7 @@ export default function StatisticsDetail() {
         </>
       )}
     </motion.div>
+      </div>
+    </>
   );
 }
