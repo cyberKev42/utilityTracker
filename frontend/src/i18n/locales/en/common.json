@@ -161,6 +161,11 @@
     "dailyBreakdown": "Daily Breakdown",
     "dailyBreakdownDesc": "Cost per day for the selected month"
   },
+  "sections": {
+    "loadError": "Failed to load sections.",
+    "loadErrorHint": "Check your connection and try again.",
+    "retry": "Retry"
+  },
   "settings": {
     "title": "Settings",
     "description": "Manage your account and preferences.",
