@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 02-backend-services 02-02-PLAN.md
-last_updated: "2026-03-18T21:17:25.478Z"
+stopped_at: Completed 02-backend-services-01-PLAN.md
+last_updated: "2026-03-18T21:17:47.579Z"
 last_activity: 2026-03-18 — Roadmap created
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 6
-  completed_plans: 3
+  completed_plans: 4
   percent: 0
 ---
 
@@ -53,6 +53,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01-schema-migration P01 | 15 | 3 tasks | 6 files |
 | Phase 01-schema-migration P02 | 5 | 1 tasks | 1 files |
 | Phase 02-backend-services P02 | 5 | 1 tasks | 1 files |
+| Phase 02-backend-services P01 | 15 | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -72,6 +73,7 @@ Recent decisions affecting current work:
 - [Phase 01-schema-migration]: 3 users x 3 sections = 9 rows in utility_sections — correct per-user seeding confirmed post-migration
 - [Phase 02-backend-services]: unit_price falls back to utility_settings section-level lookup; defaults 0 if absent
 - [Phase 02-backend-services]: cost_amount stored per row in entriesService (including date-range splits), not computed at read time
+- [Phase 02-backend-services]: Static /reorder routes placed before /:id in sections router to avoid Express matching 'reorder' as a UUID param
 
 ### Pending Todos
 
@@ -85,6 +87,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-18T21:17:25.477Z
-Stopped at: Completed 02-backend-services 02-02-PLAN.md
+Last session: 2026-03-18T21:17:47.578Z
+Stopped at: Completed 02-backend-services-01-PLAN.md
 Resume file: None
