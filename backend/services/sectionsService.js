@@ -63,11 +63,16 @@ export async function create(userId, { name, unit, icon }) {
   if (!pool) throw new Error('Database not configured');
 
   const result = await pool.query(
-    `INSERT INTO utility_sections (user_id, name, unit, icon, sort_order)
-     VALUES ($1, $2, $3, $4,
-       COALESCE((SELECT MAX(sort_order) + 1 FROM utility_sections WHERE user_id = $1), 0))
-     RETURNING *`,
-    [userId, name, unit, icon || null]
+    icon
+      ? `INSERT INTO utility_sections (user_id, name, unit, icon, sort_order)
+         VALUES ($1, $2, $3, $4,
+           COALESCE((SELECT MAX(sort_order) + 1 FROM utility_sections WHERE user_id = $1), 0))
+         RETURNING *`
+      : `INSERT INTO utility_sections (user_id, name, unit, sort_order)
+         VALUES ($1, $2, $3,
+           COALESCE((SELECT MAX(sort_order) + 1 FROM utility_sections WHERE user_id = $1), 0))
+         RETURNING *`,
+    icon ? [userId, name, unit, icon] : [userId, name, unit]
   );
 
   return result.rows[0];
@@ -79,10 +84,10 @@ export async function update(userId, sectionId, { name, unit, icon }) {
 
   const result = await pool.query(
     `UPDATE utility_sections
-     SET name = $3, unit = $4, icon = $5, updated_at = now()
+     SET name = $3, unit = $4, icon = COALESCE($5, icon), updated_at = now()
      WHERE id = $2 AND user_id = $1
      RETURNING *`,
-    [userId, sectionId, name, unit, icon]
+    [userId, sectionId, name, unit, icon || null]
   );
 
   return result.rows.length > 0 ? result.rows[0] : null;

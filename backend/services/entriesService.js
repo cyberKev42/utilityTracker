@@ -66,9 +66,9 @@ export async function createEntry(userId, {
   const pool = getDb();
   if (!pool) throw new Error('Database not configured');
 
-  // Ownership check — single JOIN query
+  // Ownership check — single JOIN query, also fetch unit for entries
   const ownerCheck = await pool.query(
-    `SELECT m.id, m.entry_mode, m.section_id
+    `SELECT m.id, m.entry_mode, m.section_id, s.unit
      FROM utility_meters m
      JOIN utility_sections s ON s.id = m.section_id
      WHERE m.id = $1 AND s.user_id = $2`,
@@ -79,7 +79,7 @@ export async function createEntry(userId, {
     throw Object.assign(new Error('Meter not found'), { status: 404 });
   }
 
-  const { entry_mode, section_id } = ownerCheck.rows[0];
+  const { entry_mode, section_id, unit } = ownerCheck.rows[0];
 
   // Resolve effective unit price
   let effectiveUnitPrice = unit_price;
@@ -94,7 +94,7 @@ export async function createEntry(userId, {
   }
 
   // ----- meter_reading mode -----
-  if (entry_mode === 'meter_reading') {
+  if (entry_mode === 'reading') {
     if (meter_reading == null) {
       throw Object.assign(new Error('meter_reading is required for meter_reading mode'), { status: 400 });
     }
@@ -114,10 +114,10 @@ export async function createEntry(userId, {
     const cost_amount = Math.round(usageAmount * effectiveUnitPrice * 100) / 100;
 
     const result = await pool.query(
-      `INSERT INTO utility_entries (user_id, meter_id, date, meter_reading, usage_amount, cost_amount)
-       VALUES ($1, $2, $3, $4, $5, $6)
+      `INSERT INTO utility_entries (user_id, meter_id, date, meter_reading, usage_amount, cost_amount, unit)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING *`,
-      [userId, meter_id, start_date, meter_reading, usageAmount, cost_amount]
+      [userId, meter_id, start_date, meter_reading, usageAmount, cost_amount, unit]
     );
 
     return { ...result.rows[0], is_initial };
@@ -132,10 +132,10 @@ export async function createEntry(userId, {
     // Single-day insert
     const cost_amount = Math.round(usage_amount * effectiveUnitPrice * 100) / 100;
     const result = await pool.query(
-      `INSERT INTO utility_entries (user_id, meter_id, date, usage_amount, cost_amount)
-       VALUES ($1, $2, $3, $4, $5)
+      `INSERT INTO utility_entries (user_id, meter_id, date, usage_amount, cost_amount, unit)
+       VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING *`,
-      [userId, meter_id, start_date, usage_amount, cost_amount]
+      [userId, meter_id, start_date, usage_amount, cost_amount, unit]
     );
     return result.rows[0];
   }
@@ -151,10 +151,10 @@ export async function createEntry(userId, {
     const inserted = [];
     for (const row of dailyRows) {
       const result = await client.query(
-        `INSERT INTO utility_entries (user_id, meter_id, date, usage_amount, cost_amount, group_id)
-         VALUES ($1, $2, $3, $4, $5, $6)
+        `INSERT INTO utility_entries (user_id, meter_id, date, usage_amount, cost_amount, group_id, unit)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)
          RETURNING *`,
-        [userId, meter_id, row.date, row.usage_amount, row.cost_amount, group_id]
+        [userId, meter_id, row.date, row.usage_amount, row.cost_amount, group_id, unit]
       );
       inserted.push(result.rows[0]);
     }
@@ -194,7 +194,7 @@ export async function deleteEntry(userId, entryId) {
 
   const entry = entryResult.rows[0];
 
-  if (entry.entry_mode === 'meter_reading') {
+  if (entry.entry_mode === 'reading') {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
