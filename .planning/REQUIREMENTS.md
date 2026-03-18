@@ -28,8 +28,8 @@
 
 ### Units & Display
 
-- [ ] **UNIT-01**: Power section defaults to "kWh" unit
-- [ ] **UNIT-02**: Water section defaults to "m³" unit
+- [x] **UNIT-01**: Power section defaults to "kWh" unit
+- [x] **UNIT-02**: Water section defaults to "m³" unit
 - [ ] **UNIT-03**: Custom sections display their user-defined unit throughout the app
 
 ### Internationalization
@@ -78,8 +78,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ENTR-02 | Phase 5 | Pending |
 | ENTR-03 | Phase 5 | Pending |
 | ENTR-04 | Phase 5 | Pending |
-| UNIT-01 | Phase 1 | Pending |
-| UNIT-02 | Phase 1 | Pending |
+| UNIT-01 | Phase 1 | Complete |
+| UNIT-02 | Phase 1 | Complete |
 | UNIT-03 | Phase 6 | Pending |
 | I18N-01 | Phase 4 | Pending |
 | I18N-02 | Phase 4 | Pending |

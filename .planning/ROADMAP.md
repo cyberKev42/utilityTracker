@@ -31,7 +31,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. All existing `utility_entries` rows reference a `meter_id` and have no orphaned `type` column values
   4. `utility_settings` rows reference `section_id` instead of type strings
   5. The migration is reversible — rollback restores original schema without data loss
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 Plans:
 - [ ] 01-01-PLAN.md — Test infrastructure, migration SQL files (up + down), and Node runner script
 - [ ] 01-02-PLAN.md — Integration tests and production migration verification
@@ -99,7 +99,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Schema Migration | 0/2 | Planning complete | - |
+| 1. Schema Migration | 1/2 | In Progress|  |
 | 2. Backend Services | 0/TBD | Not started | - |
 | 3. SectionsContext | 0/TBD | Not started | - |
 | 4. Section & Meter Management UI | 0/TBD | Not started | - |

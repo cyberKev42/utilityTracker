@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Phase 1 context gathered
-last_updated: "2026-03-18T16:34:15.702Z"
+stopped_at: Completed 01-schema-migration-01-PLAN.md
+last_updated: "2026-03-18T18:23:01.998Z"
 last_activity: 2026-03-18 — Roadmap created
 progress:
   total_phases: 6
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 2
+  completed_plans: 1
   percent: 0
 ---
 
@@ -50,6 +50,7 @@ Progress: [░░░░░░░░░░] 0%
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 01-schema-migration P01 | 15 | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -62,6 +63,8 @@ Recent decisions affecting current work:
 - Archive + delete options for sections (preserve data on archive, permanent on delete)
 - Date range entries split evenly across days
 - First meter reading establishes baseline with usage = 0
+- [Phase 01-schema-migration]: Seed sections with three separate INSERTs (not UNION) to avoid gen_random_uuid() determinism issues
+- [Phase 01-schema-migration]: RAISE EXCEPTION assertion before DROP COLUMN ensures zero data loss on forward migration
 
 ### Pending Todos
 
@@ -75,6 +78,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-18T16:34:15.691Z
-Stopped at: Phase 1 context gathered
-Resume file: .planning/phases/01-schema-migration/01-CONTEXT.md
+Last session: 2026-03-18T18:22:57.546Z
+Stopped at: Completed 01-schema-migration-01-PLAN.md
+Resume file: None
