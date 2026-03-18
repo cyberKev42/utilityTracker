@@ -62,6 +62,7 @@ export default function Dashboard() {
           getTrend(),
         ]);
         setStats(statsData);
+        console.log('[Dashboard] entriesData sample:', JSON.stringify(entriesData.slice(0, 2)));
         setRecentEntries(entriesData.slice(0, 5));
         setTrend(trendData);
       } catch (err) {

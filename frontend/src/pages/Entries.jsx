@@ -298,7 +298,7 @@ export default function Entries() {
                     </tr>
                   </thead>
                   <tbody>
-                    {entries.map((entry) => {
+                    {entries.filter((entry) => TYPE_CONFIG[entry.type]).map((entry) => {
                       const config = TYPE_CONFIG[entry.type];
                       const Icon = config.icon;
                       return (
@@ -351,7 +351,7 @@ export default function Entries() {
           </motion.div>
 
           <motion.div variants={stagger} initial="initial" animate="animate" className="md:hidden space-y-2">
-            {entries.map((entry) => {
+            {entries.filter((entry) => TYPE_CONFIG[entry.type]).map((entry) => {
               const config = TYPE_CONFIG[entry.type];
               const Icon = config.icon;
               return (
