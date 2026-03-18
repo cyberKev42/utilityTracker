@@ -1,9 +1,7 @@
 import * as entriesService from '../services/entriesService.js';
-import * as settingsService from '../services/settingsService.js';
 
-const VALID_TYPES = ['power', 'water', 'fuel'];
-const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 
 function isDbUnavailable(error) {
   return error.message === 'Database not configured' || error.message === 'Database unavailable';
@@ -11,116 +9,65 @@ function isDbUnavailable(error) {
 
 export async function create(req, res) {
   try {
-    const { type, usage_amount, unit_price: bodyUnitPrice, cost_amount: bodyCostAmount, unit, date } = req.body;
+    const { meter_id, start_date, end_date, usage_amount, meter_reading, unit_price } = req.body;
 
-    if (!type || usage_amount == null || !unit || !date) {
-      return res.status(400).json({
-        error: 'Required fields: type, usage_amount, unit, date',
-      });
+    if (!meter_id || !UUID_REGEX.test(meter_id)) {
+      return res.status(400).json({ error: 'meter_id is required and must be a valid UUID' });
     }
 
-    if (!VALID_TYPES.includes(type)) {
-      return res.status(400).json({
-        error: `Type must be one of: ${VALID_TYPES.join(', ')}`,
-      });
+    if (!start_date || !DATE_REGEX.test(start_date) || isNaN(new Date(start_date).getTime())) {
+      return res.status(400).json({ error: 'start_date is required and must be a valid date in YYYY-MM-DD format' });
     }
 
-    if (typeof usage_amount !== 'number' || usage_amount < 0) {
-      return res.status(400).json({ error: 'usage_amount must be a non-negative number' });
+    if (!end_date || !DATE_REGEX.test(end_date) || isNaN(new Date(end_date).getTime())) {
+      return res.status(400).json({ error: 'end_date is required and must be a valid date in YYYY-MM-DD format' });
     }
 
-    if (typeof unit !== 'string' || unit.trim().length === 0) {
-      return res.status(400).json({ error: 'unit must be a non-empty string' });
+    if (new Date(end_date) < new Date(start_date)) {
+      return res.status(400).json({ error: 'end_date must be greater than or equal to start_date' });
     }
 
-    if (!DATE_REGEX.test(date) || isNaN(new Date(date).getTime())) {
-      return res.status(400).json({ error: 'date must be a valid date in YYYY-MM-DD format' });
+    const hasUsage = usage_amount != null;
+    const hasReading = meter_reading != null;
+
+    if (!hasUsage && !hasReading) {
+      return res.status(400).json({ error: 'Either usage_amount or meter_reading must be provided' });
     }
 
-    let cost_amount;
-    let unit_price = bodyUnitPrice;
-
-    if (bodyCostAmount != null) {
-      // Manual override: cost_amount provided directly
-      if (typeof bodyCostAmount !== 'number' || bodyCostAmount < 0) {
-        return res.status(400).json({ error: 'cost_amount must be a non-negative number' });
-      }
-      cost_amount = bodyCostAmount;
-    } else {
-      // Auto-calculate from unit_price
-      if (unit_price == null) {
-        // No unit_price in body — look up saved price from DB
-        const saved = await settingsService.getUnitPrice(req.user.id, type);
-        if (!saved) {
-          return res.status(400).json({ error: 'Unit price not configured for this type. Please provide unit_price or cost_amount.' });
-        }
-        unit_price = parseFloat(saved.unit_price);
-      }
-
-      if (typeof unit_price !== 'number' || unit_price < 0) {
-        return res.status(400).json({ error: 'unit_price must be a non-negative number' });
-      }
-
-      cost_amount = Math.round(usage_amount * unit_price * 100) / 100;
+    if (hasUsage && hasReading) {
+      return res.status(400).json({ error: 'Provide either usage_amount or meter_reading, not both' });
     }
 
-    const entry = await entriesService.createEntry(req.user.id, {
-      type,
+    if (hasUsage && (typeof usage_amount !== 'number' || usage_amount <= 0)) {
+      return res.status(400).json({ error: 'usage_amount must be a number greater than 0' });
+    }
+
+    if (hasReading && (typeof meter_reading !== 'number' || meter_reading < 0)) {
+      return res.status(400).json({ error: 'meter_reading must be a non-negative number' });
+    }
+
+    if (unit_price != null && (typeof unit_price !== 'number' || unit_price < 0)) {
+      return res.status(400).json({ error: 'unit_price must be a non-negative number' });
+    }
+
+    const result = await entriesService.createEntry(req.user.id, {
+      meter_id,
+      start_date,
+      end_date,
       usage_amount,
-      cost_amount,
+      meter_reading,
       unit_price,
-      unit: unit.trim(),
-      date,
     });
 
-    res.status(201).json(entry);
+    res.status(201).json(result);
   } catch (error) {
     if (isDbUnavailable(error)) {
       return res.status(503).json({ error: 'Database unavailable' });
+    }
+    if (error.status) {
+      return res.status(error.status).json({ error: error.message });
     }
     res.status(500).json({ error: 'Failed to create entry' });
-  }
-}
-
-export async function getAll(req, res) {
-  try {
-    const { type, from, to } = req.query;
-    const filters = {};
-
-    if (type) {
-      if (!VALID_TYPES.includes(type)) {
-        return res.status(400).json({
-          error: `Invalid type filter. Must be one of: ${VALID_TYPES.join(', ')}`,
-        });
-      }
-      filters.type = type;
-    }
-
-    if (from) {
-      if (!DATE_REGEX.test(from) || isNaN(new Date(from).getTime())) {
-        return res.status(400).json({ error: 'Invalid "from" date. Use YYYY-MM-DD format' });
-      }
-      filters.from = from;
-    }
-
-    if (to) {
-      if (!DATE_REGEX.test(to) || isNaN(new Date(to).getTime())) {
-        return res.status(400).json({ error: 'Invalid "to" date. Use YYYY-MM-DD format' });
-      }
-      filters.to = to;
-    }
-
-    if (filters.from && filters.to && new Date(filters.from) > new Date(filters.to)) {
-      return res.status(400).json({ error: '"from" date must be before or equal to "to" date' });
-    }
-
-    const entries = await entriesService.getEntries(req.user.id, filters);
-    res.json(entries);
-  } catch (error) {
-    if (isDbUnavailable(error)) {
-      return res.status(503).json({ error: 'Database unavailable' });
-    }
-    res.status(500).json({ error: 'Failed to fetch entries' });
   }
 }
 
@@ -133,38 +80,79 @@ export async function remove(req, res) {
     }
 
     await entriesService.deleteEntry(req.user.id, id);
-    res.json({ message: 'Entry deleted' });
+    res.status(204).end();
   } catch (error) {
-    if (error.message === 'Entry not found') {
-      return res.status(404).json({ error: 'Entry not found' });
-    }
     if (isDbUnavailable(error)) {
       return res.status(503).json({ error: 'Database unavailable' });
+    }
+    if (error.status) {
+      return res.status(error.status).json({ error: error.message });
     }
     res.status(500).json({ error: 'Failed to delete entry' });
   }
 }
 
+export async function getEntries(req, res) {
+  try {
+    const { meter_id, section_id, year, month, limit: limitRaw, offset: offsetRaw } = req.query;
+
+    if (meter_id && !UUID_REGEX.test(meter_id)) {
+      return res.status(400).json({ error: 'meter_id must be a valid UUID' });
+    }
+
+    if (section_id && !UUID_REGEX.test(section_id)) {
+      return res.status(400).json({ error: 'section_id must be a valid UUID' });
+    }
+
+    const parsedYear = year != null ? parseInt(year, 10) : undefined;
+    const parsedMonth = month != null ? parseInt(month, 10) : undefined;
+
+    if (parsedMonth != null && (isNaN(parsedMonth) || parsedMonth < 1 || parsedMonth > 12)) {
+      return res.status(400).json({ error: 'month must be an integer between 1 and 12' });
+    }
+
+    const limit = limitRaw != null ? Math.min(parseInt(limitRaw, 10) || 50, 500) : 50;
+    const offset = offsetRaw != null ? parseInt(offsetRaw, 10) || 0 : 0;
+
+    const entries = await entriesService.getEntries(req.user.id, {
+      meter_id,
+      section_id,
+      year: parsedYear,
+      month: parsedMonth,
+      limit,
+      offset,
+    });
+
+    res.json(entries);
+  } catch (error) {
+    if (isDbUnavailable(error)) {
+      return res.status(503).json({ error: 'Database unavailable' });
+    }
+    res.status(500).json({ error: 'Failed to fetch entries' });
+  }
+}
+
 export async function getStats(req, res) {
   try {
-    const stats = await entriesService.getStats(req.user.id);
+    const { year, month } = req.query;
+
+    const parsedYear = year != null ? parseInt(year, 10) : undefined;
+    const parsedMonth = month != null ? parseInt(month, 10) : undefined;
+
+    if (parsedMonth != null && (isNaN(parsedMonth) || parsedMonth < 1 || parsedMonth > 12)) {
+      return res.status(400).json({ error: 'month must be an integer between 1 and 12' });
+    }
+
+    const stats = await entriesService.getStats(req.user.id, {
+      year: parsedYear,
+      month: parsedMonth,
+    });
+
     res.json(stats);
   } catch (error) {
     if (isDbUnavailable(error)) {
       return res.status(503).json({ error: 'Database unavailable' });
     }
     res.status(500).json({ error: 'Failed to fetch statistics' });
-  }
-}
-
-export async function getTrend(req, res) {
-  try {
-    const trend = await entriesService.getMonthlyTrend(req.user.id);
-    res.json(trend);
-  } catch (error) {
-    if (isDbUnavailable(error)) {
-      return res.status(503).json({ error: 'Database unavailable' });
-    }
-    res.status(500).json({ error: 'Failed to fetch monthly trend' });
   }
 }
