@@ -2,6 +2,7 @@ import { Outlet, NavLink, Link, useNavigate, useLocation } from 'react-router-do
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/useAuth';
 import { LanguageSwitcher } from '../components/LanguageSwitcher';
+import { PageErrorBoundary } from '../components/PageErrorBoundary';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   HiOutlineHome,
@@ -119,7 +120,9 @@ export function MainLayout() {
               exit="exit"
               transition={pageTransition}
             >
-              <Outlet />
+              <PageErrorBoundary key={location.pathname}>
+                <Outlet />
+              </PageErrorBoundary>
             </motion.div>
           </AnimatePresence>
         </main>

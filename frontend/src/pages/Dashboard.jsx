@@ -237,7 +237,7 @@ export default function Dashboard() {
             <CardContent className="p-0">
               <div className="divide-y divide-border/30">
                 {recentEntries.map((entry) => {
-                  const config = TYPE_CONFIG[entry.type];
+                  const config = TYPE_CONFIG[entry.type] ?? TYPE_CONFIG.electricity;
                   const Icon = config.icon;
                   return (
                     <div
