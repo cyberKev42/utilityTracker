@@ -66,29 +66,29 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SECT-01 | — | Pending |
-| SECT-02 | — | Pending |
-| SECT-03 | — | Pending |
-| SECT-04 | — | Pending |
-| METR-01 | — | Pending |
-| METR-02 | — | Pending |
-| METR-03 | — | Pending |
-| METR-04 | — | Pending |
-| ENTR-01 | — | Pending |
-| ENTR-02 | — | Pending |
-| ENTR-03 | — | Pending |
-| ENTR-04 | — | Pending |
-| UNIT-01 | — | Pending |
-| UNIT-02 | — | Pending |
-| UNIT-03 | — | Pending |
-| I18N-01 | — | Pending |
-| I18N-02 | — | Pending |
+| SECT-01 | Phase 4 | Pending |
+| SECT-02 | Phase 4 | Pending |
+| SECT-03 | Phase 4 | Pending |
+| SECT-04 | Phase 4 | Pending |
+| METR-01 | Phase 4 | Pending |
+| METR-02 | Phase 4 | Pending |
+| METR-03 | Phase 6 | Pending |
+| METR-04 | Phase 6 | Pending |
+| ENTR-01 | Phase 5 | Pending |
+| ENTR-02 | Phase 5 | Pending |
+| ENTR-03 | Phase 5 | Pending |
+| ENTR-04 | Phase 5 | Pending |
+| UNIT-01 | Phase 1 | Pending |
+| UNIT-02 | Phase 1 | Pending |
+| UNIT-03 | Phase 6 | Pending |
+| I18N-01 | Phase 4 | Pending |
+| I18N-02 | Phase 4 | Pending |
 
 **Coverage:**
 - v1 requirements: 17 total
-- Mapped to phases: 0
-- Unmapped: 17 ⚠️
+- Mapped to phases: 17
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-03-18*
-*Last updated: 2026-03-18 after initial definition*
+*Last updated: 2026-03-18 after roadmap creation*
