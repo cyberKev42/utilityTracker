@@ -46,7 +46,7 @@ Plans:
   3. `POST /api/entries` accepts both usage-amount and meter-reading modes and stores correct `usage_amount`
   4. `GET /api/entries/stats` returns breakdowns grouped by section and meter dynamically (no hardcoded types)
   5. `GET /api/meters/:id/last-reading` returns the most recent entry for that meter
-**Plans:** 2/4 plans executed
+**Plans:** 3/4 plans executed
 Plans:
 - [ ] 02-01-PLAN.md — Sections and meters CRUD (service + controller + routes + server mount)
 - [ ] 02-02-PLAN.md — Entries service rewrite (date splitting, meter reading, delete recalc, stats)
@@ -105,7 +105,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Schema Migration | 2/2 | Complete   | 2026-03-18 |
-| 2. Backend Services | 2/4 | In Progress|  |
+| 2. Backend Services | 3/4 | In Progress|  |
 | 3. SectionsContext | 0/TBD | Not started | - |
 | 4. Section & Meter Management UI | 0/TBD | Not started | - |
 | 5. Dynamic Entry Form | 0/TBD | Not started | - |
