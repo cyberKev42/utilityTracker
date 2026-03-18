@@ -25,6 +25,8 @@ key-files:
 key-decisions:
   - "Run down migration in beforeAll to ensure clean state before seeding old-schema data"
   - "Re-run up migration after rollback test to leave DB in migrated state for subsequent tests"
+  - "Production migration applied with DATABASE_URL from backend/.env (Supabase pooler URL)"
+  - "3 users x 3 sections = 9 rows in utility_sections — confirmed correct per-user seeding"
 
 patterns-established:
   - "Integration test pattern: beforeAll runs down+seed+up, tests verify state, rollback test verifies then re-applies up"
@@ -38,14 +40,14 @@ completed: 2026-03-18
 
 # Phase 1 Plan 02: Migration Integration Tests Summary
 
-**Vitest integration tests verifying schema migration correctness: tables exist, Power/Water unit seeding (UNIT-01/UNIT-02), backfill completeness, type column removal, and rollback**
+**Vitest integration tests verifying schema migration correctness plus production migration applied: Power/Water/Fuel sections seeded with correct units (UNIT-01/UNIT-02), 16 entries backfilled, type column dropped**
 
 ## Performance
 
-- **Duration:** ~5 min
+- **Duration:** ~12 min
 - **Started:** 2026-03-18T18:23:51Z
-- **Completed:** 2026-03-18T18:28:00Z
-- **Tasks:** 1 of 2 (Task 2 is a human-verify checkpoint)
+- **Completed:** 2026-03-18T18:36:00Z
+- **Tasks:** 2 of 2
 - **Files modified:** 1
 
 ## Accomplishments
@@ -54,15 +56,16 @@ completed: 2026-03-18
 - Tests verify backfill completeness (0 NULL meter_id, 0 NULL section_id)
 - Tests verify type column is dropped after migration
 - Tests verify rollback fully restores original schema
-- Seeds representative old-schema data (water/power/fuel entries + settings)
+- Production migration applied: 3 users each have Water/m3, Power/kWh, Fuel/L sections; 16 entries backfilled; type column dropped
 
 ## Task Commits
 
 Each task was committed atomically:
 
 1. **Task 1: Write migration integration tests** - `33b30b7` (test)
+2. **Task 2: Apply and verify production migration** - `04c29fa` (feat)
 
-**Plan metadata:** (pending final commit)
+**Plan metadata:** (docs commit follows)
 
 ## Files Created/Modified
 - `backend/tests/migration.test.js` - Integration test suite for 001_schema_migration up/down
@@ -82,19 +85,13 @@ None.
 
 ## User Setup Required
 
-Task 2 is a `checkpoint:human-verify` gate requiring the user to:
-
-1. Inspect production data to confirm type values are lowercase water/power/fuel only
-2. Optionally run integration tests with a TEST_DATABASE_URL
-3. Apply migration to production with `cd backend && node scripts/migrate.js up`
-4. Verify post-migration state in production SQL
-
-See Task 2 in the plan for exact SQL and commands.
+None - production migration applied during this plan execution.
 
 ## Next Phase Readiness
-- Integration tests ready to run against any Postgres DB with TEST_DATABASE_URL
-- Migration SQL verified and ready for production application
-- Phase 2 (meter entry) blocked until user confirms production migration applied
+- Production schema fully migrated: utility_sections and utility_meters tables exist
+- All 16 existing entries have meter_id; all settings have section_id
+- type column dropped from utility_entries and utility_settings
+- Phase 2 (API layer / meter entry) can proceed against new schema
 
 ---
 *Phase: 01-schema-migration*
