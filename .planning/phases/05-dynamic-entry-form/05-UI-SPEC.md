@@ -44,6 +44,7 @@ Declared values (must be multiples of 4). All values sourced from existing AddEn
 Exceptions:
 - Touch targets for all `<input>`, `<select>`, `<button>` elements: minimum 44px height (enforced globally in `index.css` via `min-height: 44px` on `input[type="date"]`, `input[type="number"]`, `select`)
 - Card content padding: `p-5` (20px) on mobile, `sm:p-6` (24px) on sm+ breakpoint — matches existing AddEntry.jsx
+- **20px (lg token) is a codebase-inherited exception:** a multiple of 4 used consistently in the existing AddEntry.jsx form stack; retained to match established density rather than substituting the standard 24px step.
 
 Source: `frontend/src/pages/AddEntry.jsx` class patterns, `frontend/src/index.css`
 
@@ -56,12 +57,12 @@ All values extracted from existing AddEntry.jsx and index.css. Do not introduce 
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
 | Body | 14px (text-sm) | 400 (regular) | 1.5 |
-| Label | 14px (text-sm) | 500 (medium — Label component default) | 1.4 |
+| Label | 14px (text-sm) | 600 (semibold — override `label.jsx` to use `font-semibold`) | 1.4 |
 | Heading | 20px (text-xl) | 600 (semibold — font-semibold) | 1.25 |
 | Caption / meta | 13px (text-[13px]) | 400 (regular) | 1.5 |
 
 Notes:
-- Two weights in use: 400 (regular) and 600 (semibold). Label uses 500 from the shadcn Label component base styles — acceptable as it comes from the component, not authored directly.
+- Two weights in use: 400 (regular) and 600 (semibold). The shadcn Label component defaults to `font-medium` (500) — override it with `font-semibold` (className prop or component-level default) so only 400 and 600 are rendered. Do not rely on the component default.
 - 13px is reserved for page subtitle/description lines only (e.g. page sub-heading below h1). Do not use for field labels or errors.
 - Error messages: 12px (text-xs) at weight 400, color `text-destructive` — matches existing pattern in AddEntry.jsx.
 
@@ -101,7 +102,7 @@ All components already present in `frontend/src/components/ui/`. No new installs
 |-----------|------|-------------------|
 | Card, CardContent | card.jsx | Outer form container — single card wrapping all fields |
 | Input | input.jsx | Usage amount field, meter reading field, optional unit price field |
-| Label | label.jsx | All field labels |
+| Label | label.jsx | All field labels — apply `font-semibold` override to render at 600 weight |
 | Button | button.jsx | Submit ("Save Entry"), "Add Another" on success state |
 | select (native HTML) | n/a — native | Section dropdown, meter dropdown — styled with existing AddEntry.jsx class pattern |
 | input[type="date"] (native HTML) | n/a — native | Start date, end date fields |
@@ -200,6 +201,7 @@ All components already present in `frontend/src/components/ui/`. No new installs
 - Form fields: single column, `space-y-5` stack
 - Card: single card wrapping all form content
 - Responsive: no layout change between mobile/desktop — single column always. Card padding adjusts from `p-5` (mobile) to `sm:p-6` (640px+)
+- **Primary visual anchor:** The "Save Entry" submit button is the terminal focal point of the single-column layout. It appears last in the card, full-width, at `Button` default (primary blue) variant — the only accent-colored element in the form body.
 
 ---
 
