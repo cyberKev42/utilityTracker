@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Schema Migration** - Replace type string with sections/meters schema and backfill existing data (completed 2026-03-18)
 - [ ] **Phase 2: Backend Services** - CRUD API for sections/meters and updated entries with mode logic
 - [x] **Phase 3: SectionsContext** - Global frontend state layer for sections and meters tree (completed 2026-03-18)
-- [ ] **Phase 4: Section & Meter Management UI** - Settings page with full section/meter creation, editing, and reordering
+- [x] **Phase 4: Section & Meter Management UI** - Settings page with full section/meter creation, editing, and reordering (completed 2026-03-19)
 - [ ] **Phase 5: Dynamic Entry Form** - AddEntry with section/meter selectors and both entry modes
 - [ ] **Phase 6: Statistics & Display** - Dynamic section-driven charts, per-meter breakdowns, and unit display
 
@@ -76,7 +76,7 @@ Plans:
   3. User can drag sections to reorder them and the order persists on page reload
   4. User can add, rename, and delete meters within any section
   5. All new UI labels and messages appear in the user's chosen language (EN or DE); section and meter names display as typed (not translated)
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 Plans:
 - [ ] 04-01-PLAN.md — Foundation components (IconPickerGrid, SectionEditDialog, MeterRow) + dnd-kit install + i18n keys
 - [ ] 04-02-PLAN.md — SectionCard, ArchivedSectionsArea, SectionsManagementCard, Settings.jsx integration + human verification
@@ -119,6 +119,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 1. Schema Migration | 2/2 | Complete   | 2026-03-18 |
 | 2. Backend Services | 3/4 | In Progress|  |
 | 3. SectionsContext | 2/2 | Complete   | 2026-03-18 |
-| 4. Section & Meter Management UI | 1/2 | In Progress|  |
+| 4. Section & Meter Management UI | 2/2 | Complete   | 2026-03-19 |
 | 5. Dynamic Entry Form | 0/TBD | Not started | - |
 | 6. Statistics & Display | 0/TBD | Not started | - |
