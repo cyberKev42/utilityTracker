@@ -160,6 +160,11 @@
     "dailyBreakdown": "Tagesaufschlüsselung",
     "dailyBreakdownDesc": "Kosten pro Tag für den ausgewählten Monat"
   },
+  "sections": {
+    "loadError": "Abschnitte konnten nicht geladen werden.",
+    "loadErrorHint": "Prufen Sie Ihre Verbindung und versuchen Sie es erneut.",
+    "retry": "Erneut versuchen"
+  },
   "settings": {
     "title": "Einstellungen",
     "description": "Konto und Einstellungen verwalten.",

@@ -7,6 +7,7 @@ import entriesRoutes from './routes/entries.js';
 import settingsRoutes from './routes/settings.js';
 import breakdownRoutes from './routes/breakdownRoutes.js';
 import userPreferencesRoutes from './routes/userPreferences.js';
+import sectionsRoutes from './routes/sections.js';
 
 dotenv.config();
 
@@ -58,5 +59,6 @@ app.use('/api/entries', entriesRoutes);
 app.use('/api/entries', breakdownRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/preferences', userPreferencesRoutes);
+app.use('/api/sections', sectionsRoutes);
 
 app.listen(PORT, '0.0.0.0');

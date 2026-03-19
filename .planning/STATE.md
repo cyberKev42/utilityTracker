@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 01-02-PLAN.md
-last_updated: "2026-03-18T18:33:42.674Z"
+stopped_at: "Completed 03-02-PLAN.md (checkpoint:human-verify Task 3 pending)"
+last_updated: "2026-03-18T23:59:53.652Z"
 last_activity: 2026-03-18 — Roadmap created
 progress:
   total_phases: 6
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  completed_phases: 3
+  total_plans: 8
+  completed_plans: 8
   percent: 0
 ---
 
@@ -52,6 +52,11 @@ Progress: [░░░░░░░░░░] 0%
 *Updated after each plan completion*
 | Phase 01-schema-migration P01 | 15 | 3 tasks | 6 files |
 | Phase 01-schema-migration P02 | 5 | 1 tasks | 1 files |
+| Phase 02-backend-services P02 | 5 | 1 tasks | 1 files |
+| Phase 02-backend-services P01 | 15 | 3 tasks | 4 files |
+| Phase 02-backend-services P03 | 12 | 2 tasks | 3 files |
+| Phase 03-sectionscontext P01 | 15 | 2 tasks | 3 files |
+| Phase 03-sectionscontext P02 | 5 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -69,6 +74,14 @@ Recent decisions affecting current work:
 - [Phase 01-schema-migration]: Run down migration in beforeAll to guarantee clean state for integration tests
 - [Phase 01-schema-migration]: Production migration applied with DATABASE_URL from backend/.env (Supabase pooler URL)
 - [Phase 01-schema-migration]: 3 users x 3 sections = 9 rows in utility_sections — correct per-user seeding confirmed post-migration
+- [Phase 02-backend-services]: unit_price falls back to utility_settings section-level lookup; defaults 0 if absent
+- [Phase 02-backend-services]: cost_amount stored per row in entriesService (including date-range splits), not computed at read time
+- [Phase 02-backend-services]: Static /reorder routes placed before /:id in sections router to avoid Express matching 'reorder' as a UUID param
+- [Phase 02-backend-services]: breakdownController shimmed rather than deleted — server.js still mounts breakdownRoutes on /api/entries
+- [Phase 02-backend-services]: remove() returns HTTP 204 (no body) per REST convention
+- [Phase 03-sectionscontext]: reorderSections/reorderMeters optimistic; all other mutations server-wait for simplicity
+- [Phase 03-sectionscontext]: fetchWithArchived does not update context state — callers own returned data
+- [Phase 03-sectionscontext]: SectionsProvider placed inside ProtectedRoute so sections fetch only runs when authenticated
 
 ### Pending Todos
 
@@ -82,6 +95,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-18T18:33:38.466Z
-Stopped at: Completed 01-02-PLAN.md
+Last session: 2026-03-18T23:59:53.650Z
+Stopped at: Completed 03-02-PLAN.md (checkpoint:human-verify Task 3 pending)
 Resume file: None

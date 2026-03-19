@@ -3,6 +3,7 @@ import { AuthProvider } from './context/AuthContext';
 import { CurrencyProvider } from './context/CurrencyContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { SectionsProvider } from './context/SectionsContext';
 import { MainLayout } from './layouts/MainLayout';
 import { AuthLayout } from './layouts/AuthLayout';
 import Login from './pages/Login';
@@ -28,7 +29,9 @@ function App() {
             <Route
               element={
                 <ProtectedRoute>
-                  <MainLayout />
+                  <SectionsProvider>
+                    <MainLayout />
+                  </SectionsProvider>
                 </ProtectedRoute>
               }
             >
