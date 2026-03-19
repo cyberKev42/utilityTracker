@@ -9,8 +9,8 @@
 
 - [x] **SECT-01**: User can create a new utility section with name, unit, and icon
 - [x] **SECT-02**: User can edit a section's name, unit, and icon
-- [ ] **SECT-03**: User can reorder sections via drag-and-drop
-- [ ] **SECT-04**: Default Water (m³), Power (kWh), and Fuel sections are editable like custom sections
+- [x] **SECT-03**: User can reorder sections via drag-and-drop
+- [x] **SECT-04**: Default Water (m³), Power (kWh), and Fuel sections are editable like custom sections
 
 ### Sub-Meters
 
@@ -21,10 +21,10 @@
 
 ### Entry Modes
 
-- [ ] **ENTR-01**: User can enter a usage amount for a single date, added to the meter's running total
-- [ ] **ENTR-02**: User can enter a usage amount for a date range, split evenly across the days
-- [ ] **ENTR-03**: User can enter a current meter reading and the app calculates usage since last reading
-- [ ] **ENTR-04**: First entry for a meter prompts for initial reading (usage = 0 baseline)
+- [x] **ENTR-01**: User can enter a usage amount for a single date, added to the meter's running total
+- [x] **ENTR-02**: User can enter a usage amount for a date range, split evenly across the days
+- [x] **ENTR-03**: User can enter a current meter reading and the app calculates usage since last reading
+- [x] **ENTR-04**: First entry for a meter prompts for initial reading (usage = 0 baseline)
 
 ### Units & Display
 
@@ -68,16 +68,16 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | SECT-01 | Phase 4 | Complete |
 | SECT-02 | Phase 4 | Complete |
-| SECT-03 | Phase 4 | Pending |
-| SECT-04 | Phase 4 | Pending |
+| SECT-03 | Phase 4 | Complete |
+| SECT-04 | Phase 4 | Complete |
 | METR-01 | Phase 4 | Complete |
 | METR-02 | Phase 4 | Complete |
 | METR-03 | Phase 6 | Pending |
 | METR-04 | Phase 6 | Pending |
-| ENTR-01 | Phase 5 | Pending |
-| ENTR-02 | Phase 5 | Pending |
-| ENTR-03 | Phase 5 | Pending |
-| ENTR-04 | Phase 5 | Pending |
+| ENTR-01 | Phase 5 | Complete |
+| ENTR-02 | Phase 5 | Complete |
+| ENTR-03 | Phase 5 | Complete |
+| ENTR-04 | Phase 5 | Complete |
 | UNIT-01 | Phase 1 | Complete |
 | UNIT-02 | Phase 1 | Complete |
 | UNIT-03 | Phase 6 | Pending |
