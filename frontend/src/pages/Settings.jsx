@@ -6,6 +6,7 @@ import { useCurrency } from '../hooks/useCurrency';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { motion } from 'framer-motion';
+import SectionsManagementCard from '../components/settings/SectionsManagementCard';
 import {
   HiOutlineEnvelope,
   HiOutlineGlobeAlt,
@@ -63,6 +64,10 @@ export default function Settings() {
             </div>
           </CardContent>
         </Card>
+      </motion.div>
+
+      <motion.div variants={fadeUp}>
+        <SectionsManagementCard />
       </motion.div>
 
       <motion.div variants={fadeUp}>
