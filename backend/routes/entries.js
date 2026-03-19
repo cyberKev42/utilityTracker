@@ -7,6 +7,7 @@ router.use(authenticate);
 
 router.get('/', entriesController.getEntries);
 router.get('/stats', entriesController.getStats);
+router.get('/trend', entriesController.getTrend);
 router.post('/', entriesController.create);
 router.delete('/:id', entriesController.remove);
 

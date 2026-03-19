@@ -333,6 +333,42 @@ export async function getEntries(userId, filters = {}) {
 }
 
 /**
+ * Get month-over-month cost trend for a user.
+ * Compares current calendar month total cost to prior calendar month total cost.
+ *
+ * @param {string} userId
+ * @returns {{ currentMonth: number, previousMonth: number, trendPercent: number|null }}
+ */
+export async function getMonthlyTrend(userId) {
+  const pool = getDb();
+  if (!pool) throw new Error('Database not configured');
+
+  const result = await pool.query(
+    `SELECT
+       COALESCE(SUM(CASE WHEN EXTRACT(YEAR FROM e.date) = EXTRACT(YEAR FROM CURRENT_DATE)
+                          AND EXTRACT(MONTH FROM e.date) = EXTRACT(MONTH FROM CURRENT_DATE)
+                     THEN e.cost_amount ELSE 0 END), 0)::float AS current_month,
+       COALESCE(SUM(CASE WHEN e.date >= DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '1 month'
+                          AND e.date < DATE_TRUNC('month', CURRENT_DATE)
+                     THEN e.cost_amount ELSE 0 END), 0)::float AS previous_month
+     FROM utility_entries e
+     JOIN utility_meters m ON m.id = e.meter_id
+     JOIN utility_sections s ON s.id = m.section_id
+     WHERE e.user_id = $1 AND s.archived_at IS NULL`,
+    [userId]
+  );
+
+  const { current_month, previous_month } = result.rows[0];
+
+  let trendPercent = null;
+  if (previous_month > 0) {
+    trendPercent = Math.round(((current_month - previous_month) / previous_month) * 1000) / 10;
+  }
+
+  return { currentMonth: current_month, previousMonth: previous_month, trendPercent };
+}
+
+/**
  * Get stats aggregated by section with nested per-meter breakdown.
  *
  * @param {string} userId
