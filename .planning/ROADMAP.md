@@ -92,8 +92,8 @@ Plans:
   4. When logging the first entry for a meter in reading mode, the app accepts an initial reading and records usage as zero
 **Plans:** 2 plans
 Plans:
-- [ ] 04-01-PLAN.md — Foundation components (IconPickerGrid, SectionEditDialog, MeterRow) + dnd-kit install + i18n keys
-- [ ] 04-02-PLAN.md — SectionCard, ArchivedSectionsArea, SectionsManagementCard, Settings.jsx integration + human verification
+- [ ] 05-01-PLAN.md — Refactor AddEntry.jsx: cascading dropdowns, localStorage, last-reading, split preview, i18n keys
+- [ ] 05-02-PLAN.md — Human verification of all four ENTR requirements
 
 ### Phase 6: Statistics & Display
 **Goal**: Statistics, charts, and entry lists reflect all sections and meters dynamically with correct units
@@ -120,5 +120,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 2. Backend Services | 3/4 | In Progress|  |
 | 3. SectionsContext | 2/2 | Complete   | 2026-03-18 |
 | 4. Section & Meter Management UI | 2/2 | Complete   | 2026-03-19 |
-| 5. Dynamic Entry Form | 0/TBD | Not started | - |
+| 5. Dynamic Entry Form | 0/2 | Not started | - |
 | 6. Statistics & Display | 0/TBD | Not started | - |
