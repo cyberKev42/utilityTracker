@@ -76,7 +76,10 @@ Plans:
   3. User can drag sections to reorder them and the order persists on page reload
   4. User can add, rename, and delete meters within any section
   5. All new UI labels and messages appear in the user's chosen language (EN or DE); section and meter names display as typed (not translated)
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 04-01-PLAN.md — Foundation components (IconPickerGrid, SectionEditDialog, MeterRow) + dnd-kit install + i18n keys
+- [ ] 04-02-PLAN.md — SectionCard, ArchivedSectionsArea, SectionsManagementCard, Settings.jsx integration + human verification
 
 ### Phase 5: Dynamic Entry Form
 **Goal**: Users can log entries to any section and meter using either usage-amount or meter-reading input
@@ -87,7 +90,10 @@ Plans:
   2. User can enter a date range and the app splits the usage evenly across each day in the range
   3. User can enter a current meter reading and the app calculates and stores the usage delta since the last reading
   4. When logging the first entry for a meter in reading mode, the app accepts an initial reading and records usage as zero
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 04-01-PLAN.md — Foundation components (IconPickerGrid, SectionEditDialog, MeterRow) + dnd-kit install + i18n keys
+- [ ] 04-02-PLAN.md — SectionCard, ArchivedSectionsArea, SectionsManagementCard, Settings.jsx integration + human verification
 
 ### Phase 6: Statistics & Display
 **Goal**: Statistics, charts, and entry lists reflect all sections and meters dynamically with correct units
@@ -98,7 +104,10 @@ Plans:
   2. User can view usage breakdown per individual meter within a section
   3. User can view aggregated totals rolled up to the section level
   4. All units shown throughout the app match each section's configured unit (e.g. a custom "Gas" section shows "m³" if that is its unit)
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 04-01-PLAN.md — Foundation components (IconPickerGrid, SectionEditDialog, MeterRow) + dnd-kit install + i18n keys
+- [ ] 04-02-PLAN.md — SectionCard, ArchivedSectionsArea, SectionsManagementCard, Settings.jsx integration + human verification
 
 ## Progress
 
