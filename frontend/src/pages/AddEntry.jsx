@@ -1,8 +1,9 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createEntry } from '../services/entriesService';
 import { useCurrency } from '../hooks/useCurrency';
 import { useSections } from '../hooks/useSections';
+import { api } from '../api';
 import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -11,6 +12,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   HiOutlineCheckCircle,
   HiExclamationCircle,
+  HiInformationCircle,
 } from 'react-icons/hi2';
 
 function todayISO() {
@@ -21,16 +23,14 @@ function todayISO() {
   return `${year}-${month}-${day}`;
 }
 
+const STORAGE_KEY = 'addEntry.lastUsed';
+
 export default function AddEntry() {
   const { t } = useTranslation();
   const { formatCurrency } = useCurrency();
   const { sections } = useSections();
 
-  // Flatten all active meters across all active sections
-  const allMeters = sections.flatMap((s) =>
-    (s.meters ?? []).map((m) => ({ ...m, sectionName: s.name, sectionUnit: s.unit }))
-  );
-
+  const [sectionId, setSectionId] = useState('');
   const [meterId, setMeterId] = useState('');
   const [startDate, setStartDate] = useState(todayISO());
   const [endDate, setEndDate] = useState(todayISO());
@@ -43,9 +43,80 @@ export default function AddEntry() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const selectedMeter = allMeters.find((m) => m.id === meterId) ?? null;
+  const [lastReading, setLastReading] = useState(null);
+  const [lastReadingLoaded, setLastReadingLoaded] = useState(false);
+
+  const hasLoadedFromStorage = useRef(false);
+
+  const selectedSection = sections.find(s => s.id === sectionId) ?? null;
+  const availableMeters = selectedSection?.meters ?? [];
+  const selectedMeter = availableMeters.find(m => m.id === meterId) ?? null;
   const entryMode = selectedMeter?.entry_mode ?? 'usage_amount';
   const isReadingMode = entryMode === 'reading';
+
+  const showFirstReadingBanner = isReadingMode && lastReadingLoaded && lastReading === null;
+
+  // Load last-used section+meter from localStorage on mount only
+  useEffect(() => {
+    if (hasLoadedFromStorage.current || sections.length === 0) return;
+    hasLoadedFromStorage.current = true;
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? 'null');
+      if (saved?.sectionId && saved?.meterId) {
+        const sec = sections.find(s => s.id === saved.sectionId);
+        const met = sec?.meters?.find(m => m.id === saved.meterId);
+        if (sec && met) {
+          setSectionId(saved.sectionId);
+          setMeterId(saved.meterId);
+        }
+      }
+    } catch { /* ignore corrupt storage */ }
+  }, [sections]);
+
+  // Save to localStorage when user changes selection
+  useEffect(() => {
+    if (sectionId && meterId) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ sectionId, meterId }));
+    }
+  }, [sectionId, meterId]);
+
+  // Fetch last reading when meter changes
+  useEffect(() => {
+    if (!meterId) {
+      setLastReading(null);
+      setLastReadingLoaded(false);
+      return;
+    }
+    setLastReadingLoaded(false);
+    api.get(`/api/sections/meters/${meterId}/last-reading`)
+      .then(data => { setLastReading(data); setLastReadingLoaded(true); })
+      .catch(() => {
+        // 404 means no entries exist for this meter — not an error
+        setLastReading(null);
+        setLastReadingLoaded(true);
+      });
+  }, [meterId]);
+
+  // When meter changes, clear mode-specific fields and errors
+  useEffect(() => {
+    setUsageAmount('');
+    setMeterReading('');
+    setFieldErrors({});
+    setTouched((prev) => ({ sectionId: prev.sectionId, meterId: prev.meterId }));
+  }, [meterId]);
+
+  const splitPreview = useMemo(() => {
+    if (isReadingMode) return null;
+    if (!startDate || !endDate || startDate === endDate) return null;
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    if (end < start) return null;
+    const days = Math.round((end - start) / 86400000) + 1;
+    const usage = parseFloat(usageAmount);
+    if (isNaN(usage) || usage <= 0) return null;
+    const perDay = Math.round((usage / days) * 100) / 100;
+    return { days, perDay };
+  }, [startDate, endDate, usageAmount, isReadingMode]);
 
   // Auto-calculate cost preview when usage or unit price changes
   const costPreview = useCallback(() => {
@@ -58,8 +129,22 @@ export default function AddEntry() {
     return null;
   }, [usageAmount, unitPrice, isReadingMode]);
 
+  const handleSectionChange = (newSectionId) => {
+    setSectionId(newSectionId);
+    setMeterId('');
+    setUsageAmount('');
+    setMeterReading('');
+    setFieldErrors({});
+    setTouched(prev => ({ sectionId: true }));
+    setLastReading(null);
+    setLastReadingLoaded(false);
+  };
+
   const validateField = (field, value) => {
     switch (field) {
+      case 'sectionId':
+        if (!value) return t('addEntry.validation.sectionRequired');
+        return '';
       case 'meterId':
         if (!value) return t('addEntry.validation.meterRequired');
         return '';
@@ -97,7 +182,7 @@ export default function AddEntry() {
   };
 
   const getFieldValue = (field) => {
-    const map = { meterId, startDate, endDate, usageAmount, meterReading, unitPrice };
+    const map = { sectionId, meterId, startDate, endDate, usageAmount, meterReading, unitPrice };
     return map[field] ?? '';
   };
 
@@ -123,8 +208,8 @@ export default function AddEntry() {
   };
 
   const getRequiredFields = () => {
-    if (isReadingMode) return ['meterId', 'startDate', 'meterReading'];
-    return ['meterId', 'startDate', 'endDate', 'usageAmount'];
+    if (isReadingMode) return ['sectionId', 'meterId', 'startDate', 'meterReading'];
+    return ['sectionId', 'meterId', 'startDate', 'endDate', 'usageAmount'];
   };
 
   const validate = () => {
@@ -144,6 +229,7 @@ export default function AddEntry() {
   };
 
   const resetForm = () => {
+    setSectionId('');
     setMeterId('');
     setStartDate(todayISO());
     setEndDate(todayISO());
@@ -154,15 +240,9 @@ export default function AddEntry() {
     setTouched({});
     setServerError('');
     setSuccess(false);
+    setLastReading(null);
+    setLastReadingLoaded(false);
   };
-
-  // When meter changes, clear mode-specific fields and errors
-  useEffect(() => {
-    setUsageAmount('');
-    setMeterReading('');
-    setFieldErrors({});
-    setTouched((prev) => ({ meterId: prev.meterId }));
-  }, [meterId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -229,7 +309,7 @@ export default function AddEntry() {
     );
   }
 
-  const noMeters = allMeters.length === 0;
+  const noMeters = sections.length === 0 || sections.every(s => !s.meters || s.meters.length === 0);
   const cost = costPreview();
 
   return (
@@ -268,42 +348,73 @@ export default function AddEntry() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-                {/* Meter selector */}
+                {/* Section selector */}
                 <div className="space-y-2">
-                  <Label htmlFor="meterId">{t('addEntry.meter')}</Label>
+                  <Label htmlFor="sectionId">{t('addEntry.section')}</Label>
                   <select
-                    id="meterId"
-                    value={meterId}
-                    onChange={(e) => handleFieldChange('meterId', e.target.value)}
-                    onBlur={() => handleBlur('meterId')}
+                    id="sectionId"
+                    value={sectionId}
+                    onChange={(e) => handleSectionChange(e.target.value)}
+                    onBlur={() => handleBlur('sectionId')}
                     className={`flex h-11 w-full rounded-md border bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
-                      touched.meterId && fieldErrors.meterId
-                        ? 'border-destructive focus-visible:ring-destructive'
-                        : 'border-input'
+                      touched.sectionId && fieldErrors.sectionId ? 'border-destructive focus-visible:ring-destructive' : 'border-input'
                     }`}
                   >
-                    <option value="">{t('addEntry.meterPlaceholder')}</option>
-                    {sections.map((section) => (
-                      section.meters?.length > 0 && (
-                        <optgroup key={section.id} label={section.name}>
-                          {section.meters.map((meter) => (
-                            <option key={meter.id} value={meter.id}>
-                              {meter.name}
-                            </option>
-                          ))}
-                        </optgroup>
-                      )
+                    <option value="">{t('addEntry.sectionPlaceholder')}</option>
+                    {sections.map((s) => (
+                      <option key={s.id} value={s.id}>{s.name}</option>
                     ))}
                   </select>
-                  {touched.meterId && fieldErrors.meterId && (
-                    <p className="text-xs text-destructive">{fieldErrors.meterId}</p>
-                  )}
-                  {selectedMeter && (
-                    <p className="text-xs text-muted-foreground">
-                      {selectedMeter.sectionName} &middot; {selectedMeter.sectionUnit}
-                    </p>
+                  {touched.sectionId && fieldErrors.sectionId && (
+                    <p className="text-xs text-destructive">{fieldErrors.sectionId}</p>
                   )}
                 </div>
+
+                {/* Meter selector — only when section selected */}
+                {sectionId && (
+                  <div className="space-y-2">
+                    <Label htmlFor="meterId">{t('addEntry.meter')}</Label>
+                    {availableMeters.length === 0 ? (
+                      <p className="text-sm text-muted-foreground">{t('addEntry.noMetersInSection')}</p>
+                    ) : (
+                      <>
+                        <select
+                          id="meterId"
+                          value={meterId}
+                          onChange={(e) => handleFieldChange('meterId', e.target.value)}
+                          onBlur={() => handleBlur('meterId')}
+                          className={`flex h-11 w-full rounded-md border bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+                            touched.meterId && fieldErrors.meterId ? 'border-destructive focus-visible:ring-destructive' : 'border-input'
+                          }`}
+                        >
+                          <option value="">{t('addEntry.meterPlaceholder')}</option>
+                          {availableMeters.map((m) => (
+                            <option key={m.id} value={m.id}>{m.name}</option>
+                          ))}
+                        </select>
+                        {touched.meterId && fieldErrors.meterId && (
+                          <p className="text-xs text-destructive">{fieldErrors.meterId}</p>
+                        )}
+                      </>
+                    )}
+                    {/* Last reading / last usage display */}
+                    {selectedMeter && lastReadingLoaded && lastReading && (
+                      <p className="text-[13px] text-muted-foreground">
+                        {t(isReadingMode ? 'addEntry.lastReading' : 'addEntry.lastUsage', {
+                          value: isReadingMode ? lastReading.meter_reading : lastReading.usage_amount,
+                          unit: selectedSection?.unit,
+                          date: new Date(lastReading.entry_date).toLocaleDateString(),
+                        })}
+                      </p>
+                    )}
+                    {/* Unit display */}
+                    {selectedMeter && selectedSection && (
+                      <p className="text-xs text-muted-foreground">
+                        {selectedSection.name} &middot; {selectedSection.unit}
+                      </p>
+                    )}
+                  </div>
+                )}
 
                 <AnimatePresence>
                   {meterId && (
@@ -315,6 +426,14 @@ export default function AddEntry() {
                       transition={{ duration: 0.2 }}
                       className="space-y-5"
                     >
+                      {/* First-reading info banner */}
+                      {showFirstReadingBanner && (
+                        <div className="flex items-start gap-2 p-3 rounded-lg bg-muted border border-border/50">
+                          <HiInformationCircle className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
+                          <p className="text-sm text-muted-foreground">{t('addEntry.firstReadingInfo')}</p>
+                        </div>
+                      )}
+
                       {isReadingMode ? (
                         /* Reading mode: single date + meter reading */
                         <>
@@ -403,11 +522,34 @@ export default function AddEntry() {
                             </div>
                           </div>
 
+                          {/* Split preview */}
+                          <AnimatePresence>
+                            {splitPreview !== null && (
+                              <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                className="overflow-hidden"
+                              >
+                                <div className="rounded-lg bg-accent/40 border border-border/30 px-4 py-3">
+                                  <span className="text-sm text-muted-foreground">
+                                    {t('addEntry.splitPreview', {
+                                      total: usageAmount,
+                                      unit: selectedSection?.unit,
+                                      days: splitPreview.days,
+                                      perDay: splitPreview.perDay,
+                                    })}
+                                  </span>
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+
                           <div className="space-y-2">
                             <Label htmlFor="usageAmount">
                               {t('addEntry.usageAmount')}
                               {selectedMeter && (
-                                <span className="ml-1 text-muted-foreground font-normal">({selectedMeter.sectionUnit})</span>
+                                <span className="ml-1 text-muted-foreground font-normal">({selectedSection?.unit})</span>
                               )}
                             </Label>
                             <Input
