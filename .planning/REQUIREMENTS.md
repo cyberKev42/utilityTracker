@@ -7,15 +7,15 @@
 
 ### Section Management
 
-- [ ] **SECT-01**: User can create a new utility section with name, unit, and icon
-- [ ] **SECT-02**: User can edit a section's name, unit, and icon
+- [x] **SECT-01**: User can create a new utility section with name, unit, and icon
+- [x] **SECT-02**: User can edit a section's name, unit, and icon
 - [ ] **SECT-03**: User can reorder sections via drag-and-drop
 - [ ] **SECT-04**: Default Water (m³), Power (kWh), and Fuel sections are editable like custom sections
 
 ### Sub-Meters
 
-- [ ] **METR-01**: User can add multiple meters to any section (e.g. Water Meter 1, Water Meter 2)
-- [ ] **METR-02**: User can rename or delete a meter
+- [x] **METR-01**: User can add multiple meters to any section (e.g. Water Meter 1, Water Meter 2)
+- [x] **METR-02**: User can rename or delete a meter
 - [ ] **METR-03**: User can view statistics per individual meter
 - [ ] **METR-04**: User can view aggregated statistics rolled up to the section level
 
@@ -34,8 +34,8 @@
 
 ### Internationalization
 
-- [ ] **I18N-01**: All new UI text, labels, and messages are displayed in the language chosen by the user's language setting (EN or DE)
-- [ ] **I18N-02**: Custom section/meter names display as-is (user data, not translated)
+- [x] **I18N-01**: All new UI text, labels, and messages are displayed in the language chosen by the user's language setting (EN or DE)
+- [x] **I18N-02**: Custom section/meter names display as-is (user data, not translated)
 
 ## v2 Requirements
 
@@ -66,12 +66,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SECT-01 | Phase 4 | Pending |
-| SECT-02 | Phase 4 | Pending |
+| SECT-01 | Phase 4 | Complete |
+| SECT-02 | Phase 4 | Complete |
 | SECT-03 | Phase 4 | Pending |
 | SECT-04 | Phase 4 | Pending |
-| METR-01 | Phase 4 | Pending |
-| METR-02 | Phase 4 | Pending |
+| METR-01 | Phase 4 | Complete |
+| METR-02 | Phase 4 | Complete |
 | METR-03 | Phase 6 | Pending |
 | METR-04 | Phase 6 | Pending |
 | ENTR-01 | Phase 5 | Pending |
@@ -81,8 +81,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | UNIT-01 | Phase 1 | Complete |
 | UNIT-02 | Phase 1 | Complete |
 | UNIT-03 | Phase 6 | Pending |
-| I18N-01 | Phase 4 | Pending |
-| I18N-02 | Phase 4 | Pending |
+| I18N-01 | Phase 4 | Complete |
+| I18N-02 | Phase 4 | Complete |
 
 **Coverage:**
 - v1 requirements: 17 total

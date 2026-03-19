@@ -76,7 +76,7 @@ Plans:
   3. User can drag sections to reorder them and the order persists on page reload
   4. User can add, rename, and delete meters within any section
   5. All new UI labels and messages appear in the user's chosen language (EN or DE); section and meter names display as typed (not translated)
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 Plans:
 - [ ] 04-01-PLAN.md — Foundation components (IconPickerGrid, SectionEditDialog, MeterRow) + dnd-kit install + i18n keys
 - [ ] 04-02-PLAN.md — SectionCard, ArchivedSectionsArea, SectionsManagementCard, Settings.jsx integration + human verification
@@ -119,6 +119,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 1. Schema Migration | 2/2 | Complete   | 2026-03-18 |
 | 2. Backend Services | 3/4 | In Progress|  |
 | 3. SectionsContext | 2/2 | Complete   | 2026-03-18 |
-| 4. Section & Meter Management UI | 0/TBD | Not started | - |
+| 4. Section & Meter Management UI | 1/2 | In Progress|  |
 | 5. Dynamic Entry Form | 0/TBD | Not started | - |
 | 6. Statistics & Display | 0/TBD | Not started | - |
