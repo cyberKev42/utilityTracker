@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { getEntries, deleteEntry } from '../services/entriesService';
 import { useCurrency } from '../hooks/useCurrency';
+import { useSections } from '../hooks/useSections';
+import { ICON_MAP } from '../components/settings/IconPickerGrid';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -17,23 +19,22 @@ import {
   DialogClose,
 } from '../components/ui/dialog';
 import {
-  HiOutlineBolt,
-  HiOutlineBeaker,
-  HiOutlineFire,
   HiOutlinePlusCircle,
   HiOutlineTrash,
   HiOutlineFunnel,
   HiOutlineXMark,
+  HiOutlineSquares2X2,
   HiExclamationCircle,
 } from 'react-icons/hi2';
 
-const TYPE_CONFIG = {
-  power: { icon: HiOutlineBolt, colorClass: 'text-amber-500', bgClass: 'bg-amber-500/10' },
-  water: { icon: HiOutlineBeaker, colorClass: 'text-sky-500', bgClass: 'bg-sky-500/10' },
-  fuel: { icon: HiOutlineFire, colorClass: 'text-orange-500', bgClass: 'bg-orange-500/10' },
-};
-
-const TYPES = ['power', 'water', 'fuel'];
+const SECTION_COLORS = [
+  { colorClass: 'text-amber-500', bgClass: 'bg-amber-500/10' },
+  { colorClass: 'text-sky-500', bgClass: 'bg-sky-500/10' },
+  { colorClass: 'text-orange-500', bgClass: 'bg-orange-500/10' },
+  { colorClass: 'text-emerald-500', bgClass: 'bg-emerald-500/10' },
+  { colorClass: 'text-violet-500', bgClass: 'bg-violet-500/10' },
+  { colorClass: 'text-rose-500', bgClass: 'bg-rose-500/10' },
+];
 
 const stagger = {
   animate: { transition: { staggerChildren: 0.04 } },
@@ -55,24 +56,43 @@ function formatDate(dateStr) {
 export default function Entries() {
   const { t } = useTranslation();
   const { formatCurrency } = useCurrency();
+  const { sections } = useSections();
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [filterType, setFilterType] = useState('');
+  const [filterSection, setFilterSection] = useState('');
   const [filterFrom, setFilterFrom] = useState('');
   const [filterTo, setFilterTo] = useState('');
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
 
-  const hasActiveFilters = filterType || filterFrom || filterTo;
+  const hasActiveFilters = filterSection || filterFrom || filterTo;
+
+  // Build section lookup
+  const sectionLookup = {};
+  for (const s of sections) {
+    sectionLookup[s.name] = s;
+  }
+
+  function getSectionStyle(sectionName) {
+    const ctxSection = sectionLookup[sectionName];
+    const iconName = ctxSection?.icon;
+    const Icon = (iconName && ICON_MAP[iconName]) || HiOutlineSquares2X2;
+    const idx = sections.findIndex((s) => s.name === sectionName);
+    const colors = SECTION_COLORS[(idx >= 0 ? idx : 0) % SECTION_COLORS.length];
+    return { Icon, colors };
+  }
 
   const loadEntries = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
       const filters = {};
-      if (filterType) filters.type = filterType;
+      if (filterSection) {
+        const sec = sections.find((s) => s.name === filterSection);
+        if (sec) filters.section_id = sec.id;
+      }
       if (filterFrom) filters.from = filterFrom;
       if (filterTo) filters.to = filterTo;
       const data = await getEntries(filters);
@@ -82,14 +102,14 @@ export default function Entries() {
     } finally {
       setLoading(false);
     }
-  }, [filterType, filterFrom, filterTo]);
+  }, [filterSection, filterFrom, filterTo, sections]);
 
   useEffect(() => {
     loadEntries();
   }, [loadEntries]);
 
   function clearFilters() {
-    setFilterType('');
+    setFilterSection('');
     setFilterFrom('');
     setFilterTo('');
   }
@@ -193,14 +213,14 @@ export default function Entries() {
                           {t('entries.type')}
                         </label>
                         <select
-                          value={filterType}
-                          onChange={(e) => setFilterType(e.target.value)}
+                          value={filterSection}
+                          onChange={(e) => setFilterSection(e.target.value)}
                           className="w-full h-10 rounded-lg border border-input bg-transparent px-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
                         >
                           <option value="">{t('entries.filterByType')}</option>
-                          {TYPES.map((type) => (
-                            <option key={type} value={type}>
-                              {t(`entries.${type}`)}
+                          {sections.map((s) => (
+                            <option key={s.id} value={s.name}>
+                              {s.name}
                             </option>
                           ))}
                         </select>
@@ -298,9 +318,8 @@ export default function Entries() {
                     </tr>
                   </thead>
                   <tbody>
-                    {entries.filter((entry) => TYPE_CONFIG[entry.type]).map((entry) => {
-                      const config = TYPE_CONFIG[entry.type];
-                      const Icon = config.icon;
+                    {entries.map((entry) => {
+                      const { Icon, colors } = getSectionStyle(entry.section_name);
                       return (
                         <tr
                           key={entry.id}
@@ -308,11 +327,11 @@ export default function Entries() {
                         >
                           <td className="px-5 py-3">
                             <div className="flex items-center gap-2.5">
-                              <div className={`h-8 w-8 rounded-lg ${config.bgClass} flex items-center justify-center shrink-0`}>
-                                <Icon className={`h-4 w-4 ${config.colorClass}`} />
+                              <div className={`h-8 w-8 rounded-lg ${colors.bgClass} flex items-center justify-center shrink-0`}>
+                                <Icon className={`h-4 w-4 ${colors.colorClass}`} />
                               </div>
                               <span className="text-sm font-medium text-foreground">
-                                {t(`entries.${entry.type}`)}
+                                {entry.section_name}
                               </span>
                             </div>
                           </td>
@@ -351,21 +370,20 @@ export default function Entries() {
           </motion.div>
 
           <motion.div variants={stagger} initial="initial" animate="animate" className="md:hidden space-y-2">
-            {entries.filter((entry) => TYPE_CONFIG[entry.type]).map((entry) => {
-              const config = TYPE_CONFIG[entry.type];
-              const Icon = config.icon;
+            {entries.map((entry) => {
+              const { Icon, colors } = getSectionStyle(entry.section_name);
               return (
                 <motion.div key={entry.id} variants={fadeUp}>
                   <Card className="active:bg-accent/30 transition-colors">
                     <CardContent className="p-4">
                       <div className="flex items-start gap-3">
-                        <div className={`h-10 w-10 rounded-lg ${config.bgClass} flex items-center justify-center shrink-0`}>
-                          <Icon className={`h-5 w-5 ${config.colorClass}`} />
+                        <div className={`h-10 w-10 rounded-lg ${colors.bgClass} flex items-center justify-center shrink-0`}>
+                          <Icon className={`h-5 w-5 ${colors.colorClass}`} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between mb-1">
                             <Badge variant="outline" className="text-[10px] px-1.5">
-                              {t(`entries.${entry.type}`)}
+                              {entry.section_name}
                             </Badge>
                             <span className="text-xs text-muted-foreground">
                               {formatDate(entry.date)}

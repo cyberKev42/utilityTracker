@@ -3,24 +3,18 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { getStats, getEntries, getTrend } from '../services/entriesService';
 import { useCurrency } from '../hooks/useCurrency';
+import { useSections } from '../hooks/useSections';
+import { ICON_MAP } from '../components/settings/IconPickerGrid';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { motion } from 'framer-motion';
 import {
   HiOutlineBanknotes,
-  HiOutlineBolt,
-  HiOutlineBeaker,
-  HiOutlineFire,
   HiExclamationCircle,
   HiOutlinePlusCircle,
+  HiOutlineSquares2X2,
 } from 'react-icons/hi2';
-
-const TYPE_CONFIG = {
-  power: { icon: HiOutlineBolt, colorClass: 'text-amber-500', bgClass: 'bg-amber-500/10' },
-  water: { icon: HiOutlineBeaker, colorClass: 'text-sky-500', bgClass: 'bg-sky-500/10' },
-  fuel: { icon: HiOutlineFire, colorClass: 'text-orange-500', bgClass: 'bg-orange-500/10' },
-};
 
 const stagger = {
   animate: { transition: { staggerChildren: 0.06 } },
@@ -36,6 +30,15 @@ const cardHover = {
   transition: { duration: 0.15, ease: 'easeOut' },
 };
 
+const SECTION_COLORS = [
+  { colorClass: 'text-amber-500', bgClass: 'bg-amber-500/10' },
+  { colorClass: 'text-sky-500', bgClass: 'bg-sky-500/10' },
+  { colorClass: 'text-orange-500', bgClass: 'bg-orange-500/10' },
+  { colorClass: 'text-emerald-500', bgClass: 'bg-emerald-500/10' },
+  { colorClass: 'text-violet-500', bgClass: 'bg-violet-500/10' },
+  { colorClass: 'text-rose-500', bgClass: 'bg-rose-500/10' },
+];
+
 function formatDate(dateStr) {
   return new Date(dateStr).toLocaleDateString(undefined, {
     year: 'numeric',
@@ -47,6 +50,7 @@ function formatDate(dateStr) {
 export default function Dashboard() {
   const { t } = useTranslation();
   const { formatCurrency } = useCurrency();
+  const { sections: contextSections } = useSections();
   const [stats, setStats] = useState(null);
   const [trend, setTrend] = useState(null);
   const [recentEntries, setRecentEntries] = useState([]);
@@ -62,7 +66,6 @@ export default function Dashboard() {
           getTrend(),
         ]);
         setStats(statsData);
-        console.log('[Dashboard] entriesData sample:', JSON.stringify(entriesData.slice(0, 2)));
         setRecentEntries(entriesData.slice(0, 5));
         setTrend(trendData);
       } catch (err) {
@@ -74,9 +77,15 @@ export default function Dashboard() {
     load();
   }, []);
 
-  const getStatByType = (type) => stats?.byType?.find((s) => s.type === type);
-  const totalCost = stats?.totals?.total_cost || 0;
-  const totalCount = stats?.totals?.entry_count || 0;
+  // Build section lookup from context for icons
+  const sectionLookup = {};
+  for (const s of contextSections) {
+    sectionLookup[s.name] = s;
+  }
+
+  const statsSections = stats?.sections ?? [];
+  const totalCost = statsSections.reduce((sum, s) => sum + (s.total_cost || 0), 0);
+  const totalCount = statsSections.reduce((sum, s) => sum + (s.entry_count || 0), 0);
 
   const renderTrend = () => {
     if (!trend) return null;
@@ -170,34 +179,33 @@ export default function Dashboard() {
           </Card>
         </motion.div>
 
-        {['power', 'water', 'fuel'].map((type) => {
-          const stat = getStatByType(type);
-          const config = TYPE_CONFIG[type];
-          const Icon = config.icon;
+        {statsSections.map((section, idx) => {
+          const ctxSection = sectionLookup[section.name];
+          const iconName = ctxSection?.icon;
+          const Icon = (iconName && ICON_MAP[iconName]) || HiOutlineSquares2X2;
+          const colors = SECTION_COLORS[idx % SECTION_COLORS.length];
           return (
-            <motion.div key={type} variants={fadeUp} whileHover={cardHover}>
-              <Link to={`/statistics/${type}`} className="block">
-                <Card className="h-full hover:border-border/60 transition-colors duration-200 cursor-pointer">
-                  <CardContent className="p-5">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className={`h-9 w-9 rounded-lg ${config.bgClass} flex items-center justify-center`}>
-                        <Icon className={`h-[18px] w-[18px] ${config.colorClass}`} />
-                      </div>
-                      <span className="text-[13px] font-medium text-muted-foreground">
-                        {t(`dashboard.${type}`)}
-                      </span>
+            <motion.div key={section.id} variants={fadeUp} whileHover={cardHover}>
+              <Card className="h-full hover:border-border/60 transition-colors duration-200">
+                <CardContent className="p-5">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className={`h-9 w-9 rounded-lg ${colors.bgClass} flex items-center justify-center`}>
+                      <Icon className={`h-[18px] w-[18px] ${colors.colorClass}`} />
                     </div>
-                    <p className="text-2xl font-semibold text-foreground tabular-nums tracking-tight">
-                      {formatCurrency(stat?.total_cost)}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {stat
-                        ? t('dashboard.entries', { count: stat.entry_count })
-                        : t('dashboard.noEntries')}
-                    </p>
-                  </CardContent>
-                </Card>
-              </Link>
+                    <span className="text-[13px] font-medium text-muted-foreground">
+                      {section.name}
+                    </span>
+                  </div>
+                  <p className="text-2xl font-semibold text-foreground tabular-nums tracking-tight">
+                    {formatCurrency(section.total_cost)}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {section.entry_count > 0
+                      ? t('dashboard.entries', { count: section.entry_count })
+                      : t('dashboard.noEntries')}
+                  </p>
+                </CardContent>
+              </Card>
             </motion.div>
           );
         })}
@@ -237,21 +245,24 @@ export default function Dashboard() {
           <Card>
             <CardContent className="p-0">
               <div className="divide-y divide-border/30">
-                {recentEntries.filter((entry) => TYPE_CONFIG[entry.type]).map((entry) => {
-                  const config = TYPE_CONFIG[entry.type];
-                  const Icon = config.icon;
+                {recentEntries.map((entry) => {
+                  const ctxSection = sectionLookup[entry.section_name];
+                  const iconName = ctxSection?.icon;
+                  const Icon = (iconName && ICON_MAP[iconName]) || HiOutlineSquares2X2;
+                  const sectionIdx = contextSections.findIndex((s) => s.name === entry.section_name);
+                  const colors = SECTION_COLORS[(sectionIdx >= 0 ? sectionIdx : 0) % SECTION_COLORS.length];
                   return (
                     <div
                       key={entry.id}
                       className="flex items-center gap-3 min-h-[52px] py-3 px-4 sm:px-5 active:bg-accent/40 sm:hover:bg-accent/40 transition-colors duration-150"
                     >
-                      <div className={`h-8 w-8 rounded-lg ${config.bgClass} flex items-center justify-center shrink-0`}>
-                        <Icon className={`h-4 w-4 ${config.colorClass}`} />
+                      <div className={`h-8 w-8 rounded-lg ${colors.bgClass} flex items-center justify-center shrink-0`}>
+                        <Icon className={`h-4 w-4 ${colors.colorClass}`} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <Badge variant="outline" className="text-[10px] px-1.5">
-                            {t(`addEntry.types.${entry.type}`)}
+                            {entry.section_name}
                           </Badge>
                           <span className="text-xs text-muted-foreground">
                             {formatDate(entry.date)}
