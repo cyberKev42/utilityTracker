@@ -63,7 +63,7 @@ export function CurrencyProvider({ children }) {
       return;
     }
 
-    fetch('https://api.frankfurter.dev/latest?base=EUR')
+    fetch('https://api.frankfurter.dev/v1/latest?base=EUR')
       .then((res) => res.json())
       .then((data) => {
         if (data.rates) {
