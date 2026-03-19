@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { HiOutlineBars3, HiOutlineTrash } from 'react-icons/hi2';
+import { HiOutlineBars3, HiOutlineTrash, HiOutlineCalculator, HiOutlineSignal } from 'react-icons/hi2';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import {
@@ -107,6 +107,26 @@ export default function MeterRow({ meter, sectionId, isNew = false }) {
             {meter.name}
           </span>
         )}
+
+        <button
+          type="button"
+          onClick={async () => {
+            const newMode = meter.entry_mode === 'reading' ? 'usage' : 'reading';
+            try {
+              await updateMeter(sectionId, meter.id, { entry_mode: newMode });
+            } catch {
+              showError(t('settings.sections.saveError'));
+            }
+          }}
+          className="flex items-center justify-center text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity"
+          title={meter.entry_mode === 'reading'
+            ? t('settings.sections.modeReading', 'Meter reading mode — click to switch to usage')
+            : t('settings.sections.modeUsage', 'Usage amount mode — click to switch to meter reading')}
+        >
+          {meter.entry_mode === 'reading'
+            ? <HiOutlineSignal className="h-4 w-4" />
+            : <HiOutlineCalculator className="h-4 w-4" />}
+        </button>
 
         <button
           type="button"

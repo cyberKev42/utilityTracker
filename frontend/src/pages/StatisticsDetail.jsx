@@ -1,16 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { getBreakdown } from '../services/entriesService';
+import { getEntries } from '../services/entriesService';
 import { useCurrency } from '../hooks/useCurrency';
+import { useSections } from '../hooks/useSections';
+import { ICON_MAP } from '../components/settings/IconPickerGrid';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { motion } from 'framer-motion';
-import { BackgroundPaths } from '../components/ui/background-paths';
 import {
   HiExclamationCircle,
   HiOutlineChartBar,
   HiOutlineArrowLeft,
+  HiOutlineSquares2X2,
 } from 'react-icons/hi2';
 import {
   ResponsiveContainer,
@@ -24,17 +26,9 @@ import {
   Tooltip,
 } from 'recharts';
 
-const TYPE_COLORS = {
-  power: '#f59e0b',
-  water: '#0ea5e9',
-  fuel: '#f97316',
-};
-
-const TYPE_BG_COLOR = {
-  electricity: '#f59e0b',
-  water: '#0ea5e9',
-  fuel: '#f97316',
-};
+const SECTION_COLORS = [
+  '#f59e0b', '#0ea5e9', '#f97316', '#10b981', '#8b5cf6', '#f43f5e',
+];
 
 const CHART_COLORS = {
   muted: 'hsl(0, 0%, 45%)',
@@ -107,30 +101,57 @@ const gridGenerator = ({ yAxis }) => {
   );
 };
 
+function deriveMonthly(entries) {
+  const byMonth = {};
+  for (const e of entries) {
+    const d = new Date(e.date);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    if (!byMonth[key]) byMonth[key] = { month: key, total: 0 };
+    byMonth[key].total += Number(e.cost_amount) || 0;
+  }
+  return Object.values(byMonth).sort((a, b) => a.month.localeCompare(b.month));
+}
+
+function deriveDaily(entries, year, month) {
+  const byDay = {};
+  for (const e of entries) {
+    const d = new Date(e.date);
+    if (d.getFullYear() !== year || d.getMonth() + 1 !== month) continue;
+    const key = e.date.slice(0, 10);
+    if (!byDay[key]) byDay[key] = { date: key, total: 0 };
+    byDay[key].total += Number(e.cost_amount) || 0;
+  }
+  return Object.values(byDay).sort((a, b) => a.date.localeCompare(b.date));
+}
+
 export default function StatisticsDetail() {
   const { t } = useTranslation();
   const { formatCurrency } = useCurrency();
-  const { type } = useParams();
+  const { sectionId } = useParams();
+  const { sections, getSectionById } = useSections();
 
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
 
   const [year] = useState(currentYear);
   const [selectedMonth, setSelectedMonth] = useState(currentMonth);
-  const [data, setData] = useState(null);
+  const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const color = TYPE_COLORS[type] || '#6b7280';
-  const bgColor = TYPE_BG_COLOR[type];
+  const section = getSectionById(sectionId);
+  const sectionIdx = sections.findIndex((s) => s.id === sectionId);
+  const color = SECTION_COLORS[(sectionIdx >= 0 ? sectionIdx : 0) % SECTION_COLORS.length];
+  const iconName = section?.icon;
+  const Icon = (iconName && ICON_MAP[iconName]) || HiOutlineSquares2X2;
 
   useEffect(() => {
     async function load() {
       setLoading(true);
       setError('');
       try {
-        const result = await getBreakdown(type, year, selectedMonth);
-        setData(result);
+        const data = await getEntries({ section_id: sectionId });
+        setEntries(data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -138,7 +159,7 @@ export default function StatisticsDetail() {
       }
     }
     load();
-  }, [type, year, selectedMonth]);
+  }, [sectionId]);
 
   const months = Array.from({ length: 12 }, (_, i) => {
     const d = new Date(year, i);
@@ -173,23 +194,14 @@ export default function StatisticsDetail() {
     );
   }
 
-  const hasMonthly = data?.monthly?.length > 0;
-  const hasDaily = data?.daily?.length > 0;
+  const monthly = deriveMonthly(entries);
+  const daily = deriveDaily(entries, year, selectedMonth);
+  const hasMonthly = monthly.length > 0;
+  const hasDaily = daily.length > 0;
   const isEmpty = !hasMonthly && !hasDaily;
+  const sectionName = section?.name || t('statistics.unknownSection', 'Section');
 
   return (
-    <>
-      {bgColor && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }}>
-          <BackgroundPaths color={bgColor} />
-          <div style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'linear-gradient(to bottom, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.70) 100%)',
-          }} />
-        </div>
-      )}
-      <div style={{ position: 'relative', zIndex: 1 }}>
     <motion.div variants={stagger} initial="initial" animate="animate" className="space-y-6">
       <motion.div variants={fadeUp}>
         <Link to="/statistics">
@@ -198,12 +210,19 @@ export default function StatisticsDetail() {
             {t('statisticsDetail.back')}
           </Button>
         </Link>
-        <h1 className="text-xl font-semibold text-foreground tracking-tight">
-          {t(`statisticsDetail.title`, { type: t(`statistics.${type}`) })}
-        </h1>
-        <p className="text-[13px] text-muted-foreground mt-1">
-          {t('statisticsDetail.description', { year })}
-        </p>
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: color + '1a' }}>
+            <Icon className="h-5 w-5" style={{ color }} />
+          </div>
+          <div>
+            <h1 className="text-xl font-semibold text-foreground tracking-tight">
+              {sectionName}
+            </h1>
+            <p className="text-[13px] text-muted-foreground mt-0.5">
+              {t('statisticsDetail.description', { year })}
+            </p>
+          </div>
+        </div>
       </motion.div>
 
       {isEmpty ? (
@@ -239,7 +258,7 @@ export default function StatisticsDetail() {
                 {hasMonthly ? (
                   <div className="w-full h-[220px] sm:h-[280px]">
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={data.monthly} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+                      <BarChart data={monthly} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
                         <CartesianGrid
                           stroke={CHART_COLORS.grid}
                           strokeOpacity={0.6}
@@ -316,9 +335,9 @@ export default function StatisticsDetail() {
                 {hasDaily ? (
                   <div className="w-full h-[220px] sm:h-[280px]">
                     <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={data.daily} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+                      <AreaChart data={daily} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
                         <defs>
-                          <linearGradient id={`dailyGradient-${type}`} x1="0" y1="0" x2="0" y2="1">
+                          <linearGradient id={`dailyGradient-${sectionId}`} x1="0" y1="0" x2="0" y2="1">
                             <stop offset="0%" stopColor={color} stopOpacity={0.15} />
                             <stop offset="100%" stopColor={color} stopOpacity={0} />
                           </linearGradient>
@@ -361,7 +380,7 @@ export default function StatisticsDetail() {
                           dataKey="total"
                           stroke={color}
                           strokeWidth={2}
-                          fill={`url(#dailyGradient-${type})`}
+                          fill={`url(#dailyGradient-${sectionId})`}
                           dot={false}
                           activeDot={{
                             r: 5,
@@ -386,7 +405,5 @@ export default function StatisticsDetail() {
         </>
       )}
     </motion.div>
-      </div>
-    </>
   );
 }
