@@ -36,7 +36,6 @@ All values are Tailwind utility classes derived from the 8-point scale. The proj
 | xs | 4px | gap-1 / p-1 | Icon gaps inside card header, drag handle margin |
 | sm | 8px | gap-2 / p-2 | Meter row internal padding, icon picker cell padding |
 | md | 16px | gap-4 / p-4 | Card content default horizontal padding |
-| lg | 20px | p-5 | Card content padding (matches existing Settings cards: `p-5`) |
 | xl | 24px | gap-6 | Space between section cards, archived area top margin |
 | 2xl | 32px | mt-8 | Space between card groups on Settings page |
 | 3xl | 48px | — | Not used in this phase |
@@ -44,6 +43,7 @@ All values are Tailwind utility classes derived from the 8-point scale. The proj
 Exceptions:
 - Touch targets for interactive controls (drag handle, delete icon, edit icon): minimum 44px height, enforced via `min-h-[44px]` — consistent with existing `index.css` rule for `input[type="date"]` etc.
 - Icon picker grid cells: 40px × 40px (`w-10 h-10`) — below touch minimum but acceptable inside a dialog scrollable area.
+- Card content padding `p-5` (20px): matches existing Settings card pattern. Changing to 16px or 24px would be a breaking change affecting Settings.jsx which is outside this phase's scope.
 
 ---
 
@@ -55,8 +55,10 @@ All sizes use Tailwind utility classes. The project does not declare custom `fon
 |------|------|----------------|--------|--------------|-------------|-------|
 | Body | 14px | text-sm | 400 regular | font-normal | 1.5 | Meter names, unit dropdown labels, dialog field labels |
 | Label | 12px | text-xs | 400 regular | font-normal | 1.4 | Muted-foreground descriptors, section unit display, archived area label |
-| Heading | 14px | text-sm | 500 medium | font-medium | 1.3 | Section card title, card group header (matches existing Settings `h2`) |
+| Heading | 14px | text-sm | 600 semibold | font-semibold | 1.3 | Section card title, card group header (matches existing Settings `h2`) |
 | Display | 20px | text-xl | 600 semibold | font-semibold | 1.2 | Settings page `h1` — not new to this phase, already established |
+
+Weights: font-normal (400) and font-semibold (600) only. font-medium (500) is not used in this phase.
 
 Note: `text-[13px]` is used in Settings.jsx for subtitle text — match this for the card group description paragraph using `text-[13px] text-muted-foreground`.
 
@@ -77,7 +79,7 @@ Colors are CSS custom properties resolved at runtime from `index.css :root`. All
 - Card group icon background: `bg-primary/10` with `text-primary` icon (matches Settings card pattern)
 - Selected icon in icon picker: ring + background highlight (`ring-2 ring-primary bg-primary/10`)
 - Selected unit in unit dropdown: active/focus ring (`focus:ring-primary`)
-- "Add Section" and "Save Changes" primary CTA buttons: `bg-primary text-primary-foreground`
+- "Add Section", "Create Section", and "Update Section" primary CTA buttons: `bg-primary text-primary-foreground`
 - Drag-over drop indicator line between cards
 
 **Muted / secondary surface** (`--secondary` / `--muted`): section card expanded area background, meter row hover state (`hover:bg-muted`), archived area background.
@@ -94,7 +96,7 @@ All components already exist. No new shadcn components to install.
 |-----------|------|----------|
 | Card, CardContent | src/components/ui/card.jsx | Section cards, archived area container, card group wrapper |
 | Dialog, DialogContent, DialogHeader, DialogFooter | src/components/ui/dialog.jsx | Section create/edit modal, delete confirmation modal |
-| Button | src/components/ui/button.jsx | All CTAs: Add Section, Save Changes, Archive, Restore, Delete, Cancel |
+| Button | src/components/ui/button.jsx | All CTAs: Add Section, Create Section, Update Section, Archive Section, Restore, Delete Section, Delete Meter, Discard Changes |
 | Input | src/components/ui/input.jsx | Section name field (in dialog), inline meter rename input, custom unit text input |
 | motion.div | framer-motion | Expand/collapse animation on section card, staggered card list entry, archived area collapse |
 
@@ -114,7 +116,7 @@ All components already exist. No new shadcn components to install.
 ## Interaction States
 
 ### Section Card (collapsed)
-- **Default:** Card with icon + name (text-sm font-medium) + unit badge (text-xs text-muted-foreground) + drag handle (right side) + edit pencil icon
+- **Default:** Card with icon + name (text-sm font-semibold) + unit badge (text-xs text-muted-foreground) + drag handle (right side) + edit pencil icon (aria-label: "Edit section")
 - **Hover:** `hover:bg-muted/50` on card — subtle highlight
 - **Expanded:** chevron-down rotates 180° (CSS transform, 0.2s ease); meter list animates in via Framer Motion `height: 0 → auto`
 - **Dragging (active):** `opacity-50` on the dragging card; `boxShadow: '0 8px 24px rgba(0,0,0,0.25)'`; blue drop indicator line (2px, `bg-primary`) appears between items at drop target
@@ -137,13 +139,13 @@ All components already exist. No new shadcn components to install.
 
 ### Archived Area
 - **Collapsed (default):** single row button "Archived (N)" with chevron-right, `text-xs text-muted-foreground`
-- **Expanded:** reveals list of archived section rows, each with section name + Restore button (outline) + Delete button (destructive variant, text-xs)
+- **Expanded:** reveals list of archived section rows, each with section name + Restore button (outline) + Delete Section button (destructive variant, text-xs)
 
 ### Delete Confirmation Dialog
 - Two instances: meter delete, section permanent delete
 - Title: destructive action name (e.g. "Delete Meter")
 - Body: warning message copy (see Copywriting Contract)
-- Footer: Cancel (outline) + Confirm Delete (destructive variant, `bg-destructive`)
+- Footer: Discard Changes (outline) + Confirm Delete (destructive variant, `bg-destructive`)
 
 ---
 
@@ -186,22 +188,25 @@ All copy below is the English source string. German translations are required in
 | Primary CTA | `settings.sections.addSection` | "Add Section" |
 | Edit dialog title (create) | `settings.sections.createSection` | "Create Section" |
 | Edit dialog title (edit) | `settings.sections.editSection` | "Edit Section" |
-| Save CTA (dialog) | `settings.sections.saveChanges` | "Save Changes" |
-| Cancel | `settings.sections.cancel` | "Cancel" |
+| Submit CTA (create dialog) | `settings.sections.createSectionSubmit` | "Create Section" |
+| Submit CTA (edit dialog) | `settings.sections.saveSectionChanges` | "Update Section" |
+| Cancel / discard (create dialog) | `settings.sections.cancelCreate` | "Discard Changes" |
+| Cancel / discard (edit dialog) | `settings.sections.cancelEdit` | "Discard Changes" |
 | Name field label | `settings.sections.name` | "Name" |
 | Name placeholder | `settings.sections.namePlaceholder` | "e.g. Solar" |
 | Unit field label | `settings.sections.unit` | "Unit" |
 | Custom unit option | `settings.sections.unitCustom` | "Custom..." |
 | Custom unit placeholder | `settings.sections.unitCustomPlaceholder` | "Enter unit" |
 | Icon field label | `settings.sections.icon` | "Icon" |
-| Archive action | `settings.sections.archiveSection` | "Archive" |
+| Edit pencil icon aria-label | `settings.sections.editSectionLabel` | "Edit section" |
+| Archive action | `settings.sections.archiveSection` | "Archive Section" |
 | Archived area label | `settings.sections.archivedSections` | "Archived ({{count}})" |
 | Restore action | `settings.sections.restoreSection` | "Restore" |
-| Delete section action | `settings.sections.deleteSection` | "Delete" |
+| Delete section action | `settings.sections.deleteSection` | "Delete Section" |
 | Delete section dialog title | `settings.sections.deleteSectionTitle` | "Delete Section" |
 | Delete section dialog body | `settings.sections.deleteSectionMessage` | "This will permanently delete this section and all its data. This cannot be undone." |
 | Add meter action | `settings.sections.addMeter` | "Add Meter" |
-| Delete meter action | `settings.sections.deleteMeter` | "Delete" |
+| Delete meter action | `settings.sections.deleteMeter` | "Delete Meter" |
 | Delete meter dialog title | `settings.sections.deleteMeterTitle` | "Delete Meter" |
 | Delete meter dialog body | `settings.sections.deleteMeterMessage` | "Delete {{name}}? This will permanently remove all entries for this meter." |
 | Empty state heading | `settings.sections.noSections` | "No sections yet" |
@@ -212,8 +217,8 @@ All copy below is the English source string. German translations are required in
 | Meter rename error (aria) | `settings.sections.renameError` | "Failed to rename meter. Your change was reverted." |
 
 **Destructive confirmations summary:**
-- Meter delete: one-step — confirmation dialog ("Delete {{name}}? This will permanently remove all entries for this meter.") with Cancel + Delete buttons
-- Section permanent delete: two-step — must archive first (from active list), then delete from archived area — confirmation dialog with Cancel + Delete buttons and data loss warning
+- Meter delete: one-step — confirmation dialog ("Delete {{name}}? This will permanently remove all entries for this meter.") with Discard Changes + Delete Meter buttons
+- Section permanent delete: two-step — must archive first (from active list), then delete from archived area — confirmation dialog with Discard Changes + Delete Section buttons and data loss warning
 
 **Empty state:** Shown when `sections` array from `useSections()` is empty. Centered text block with heading + hint text inside the SectionsManagementCard body. No illustration.
 
