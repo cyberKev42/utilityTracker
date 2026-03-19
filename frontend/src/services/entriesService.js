@@ -6,7 +6,8 @@ export async function createEntry(entryData) {
 
 export async function getEntries(filters = {}) {
   const params = new URLSearchParams();
-  if (filters.type) params.set('type', filters.type);
+  if (filters.section_id) params.set('section_id', filters.section_id);
+  if (filters.meter_id) params.set('meter_id', filters.meter_id);
   if (filters.from) params.set('from', filters.from);
   if (filters.to) params.set('to', filters.to);
   const query = params.toString();

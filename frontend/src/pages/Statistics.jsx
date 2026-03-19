@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { getStats } from '../services/entriesService';
+import { getStats, getEntries } from '../services/entriesService';
+import { useSections } from '../hooks/useSections';
+import { ICON_MAP } from '../components/settings/IconPickerGrid';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { motion } from 'framer-motion';
@@ -9,19 +11,20 @@ import {
   HiExclamationCircle,
   HiOutlineChartBar,
   HiOutlinePlusCircle,
-  HiOutlineBolt,
-  HiOutlineBeaker,
-  HiOutlineFire,
+  HiOutlineSquares2X2,
 } from 'react-icons/hi2';
 import SpendingLineChart from '../components/charts/SpendingLineChart';
 import CategoryBarChart from '../components/charts/CategoryBarChart';
 import DistributionPieChart from '../components/charts/DistributionPieChart';
 
-const TYPE_CONFIG = {
-  power: { icon: HiOutlineBolt, colorClass: 'text-amber-500', bgClass: 'bg-amber-500/10' },
-  water: { icon: HiOutlineBeaker, colorClass: 'text-sky-500', bgClass: 'bg-sky-500/10' },
-  fuel: { icon: HiOutlineFire, colorClass: 'text-orange-500', bgClass: 'bg-orange-500/10' },
-};
+const SECTION_COLORS = [
+  { colorClass: 'text-amber-500', bgClass: 'bg-amber-500/10' },
+  { colorClass: 'text-sky-500', bgClass: 'bg-sky-500/10' },
+  { colorClass: 'text-orange-500', bgClass: 'bg-orange-500/10' },
+  { colorClass: 'text-emerald-500', bgClass: 'bg-emerald-500/10' },
+  { colorClass: 'text-violet-500', bgClass: 'bg-violet-500/10' },
+  { colorClass: 'text-rose-500', bgClass: 'bg-rose-500/10' },
+];
 
 const stagger = {
   animate: { transition: { staggerChildren: 0.08 } },
@@ -37,17 +40,34 @@ const cardHover = {
   transition: { duration: 0.15, ease: 'easeOut' },
 };
 
+function deriveMonthlyData(entries) {
+  const byMonth = {};
+  for (const entry of entries) {
+    const d = new Date(entry.date);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    if (!byMonth[key]) byMonth[key] = { month: key, total_cost: 0 };
+    byMonth[key].total_cost += Number(entry.cost_amount) || 0;
+  }
+  return Object.values(byMonth).sort((a, b) => a.month.localeCompare(b.month));
+}
+
 export default function Statistics() {
   const { t } = useTranslation();
+  const { sections: contextSections } = useSections();
   const [stats, setStats] = useState(null);
+  const [monthlyData, setMonthlyData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
     async function load() {
       try {
-        const data = await getStats();
-        setStats(data);
+        const [statsData, entriesData] = await Promise.all([
+          getStats(),
+          getEntries(),
+        ]);
+        setStats(statsData);
+        setMonthlyData(deriveMonthlyData(entriesData));
       } catch (err) {
         setError(err.message);
       } finally {
@@ -82,7 +102,9 @@ export default function Statistics() {
     );
   }
 
-  const isEmpty = !stats?.totals || stats.totals.entry_count === 0;
+  const statsSections = stats?.sections ?? [];
+  const totalEntries = statsSections.reduce((sum, s) => sum + (s.entry_count || 0), 0);
+  const isEmpty = totalEntries === 0;
 
   if (isEmpty) {
     return (
@@ -112,6 +134,12 @@ export default function Statistics() {
     );
   }
 
+  // Build section lookup for icons
+  const sectionLookup = {};
+  for (const s of contextSections) {
+    sectionLookup[s.name] = s;
+  }
+
   return (
     <motion.div variants={stagger} initial="initial" animate="animate" className="space-y-6">
       <motion.div variants={fadeUp}>
@@ -120,23 +148,23 @@ export default function Statistics() {
       </motion.div>
 
       <div className="grid grid-cols-3 gap-3">
-        {['power', 'water', 'fuel'].map((type) => {
-          const config = TYPE_CONFIG[type];
-          const Icon = config.icon;
+        {statsSections.map((section, idx) => {
+          const ctxSection = sectionLookup[section.name];
+          const iconName = ctxSection?.icon;
+          const Icon = (iconName && ICON_MAP[iconName]) || HiOutlineSquares2X2;
+          const colors = SECTION_COLORS[idx % SECTION_COLORS.length];
           return (
-            <motion.div key={type} variants={fadeUp} whileHover={cardHover}>
-              <Link to={`/statistics/${type}`} className="block">
-                <Card className="hover:border-border/60 transition-colors duration-200 cursor-pointer">
-                  <CardContent className="p-4 flex items-center gap-3">
-                    <div className={`h-9 w-9 rounded-lg ${config.bgClass} flex items-center justify-center shrink-0`}>
-                      <Icon className={`h-[18px] w-[18px] ${config.colorClass}`} />
-                    </div>
-                    <span className="text-sm font-medium text-foreground">
-                      {t(`statistics.${type}`)}
-                    </span>
-                  </CardContent>
-                </Card>
-              </Link>
+            <motion.div key={section.id} variants={fadeUp} whileHover={cardHover}>
+              <Card className="hover:border-border/60 transition-colors duration-200">
+                <CardContent className="p-4 flex items-center gap-3">
+                  <div className={`h-9 w-9 rounded-lg ${colors.bgClass} flex items-center justify-center shrink-0`}>
+                    <Icon className={`h-[18px] w-[18px] ${colors.colorClass}`} />
+                  </div>
+                  <span className="text-sm font-medium text-foreground">
+                    {section.name}
+                  </span>
+                </CardContent>
+              </Card>
             </motion.div>
           );
         })}
@@ -152,7 +180,7 @@ export default function Statistics() {
               <p className="text-xs text-muted-foreground mb-4">
                 {t('statistics.spendingOverTimeDesc')}
               </p>
-              <SpendingLineChart data={stats.monthly} />
+              <SpendingLineChart data={monthlyData} />
             </CardContent>
           </Card>
         </motion.div>
@@ -166,7 +194,7 @@ export default function Statistics() {
               <p className="text-xs text-muted-foreground mb-4">
                 {t('statistics.spendingByCategoryDesc')}
               </p>
-              <CategoryBarChart data={stats.byType} />
+              <CategoryBarChart data={statsSections} />
             </CardContent>
           </Card>
         </motion.div>
@@ -180,7 +208,7 @@ export default function Statistics() {
               <p className="text-xs text-muted-foreground mb-4">
                 {t('statistics.costDistributionDesc')}
               </p>
-              <DistributionPieChart data={stats.byType} />
+              <DistributionPieChart data={statsSections} />
             </CardContent>
           </Card>
         </motion.div>

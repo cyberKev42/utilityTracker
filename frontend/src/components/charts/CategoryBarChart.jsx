@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import { useCurrency } from '../../hooks/useCurrency';
 import {
   ResponsiveContainer,
@@ -10,12 +9,16 @@ import {
   Tooltip,
   Cell,
 } from 'recharts';
+import { useTranslation } from 'react-i18next';
 
-const TYPE_COLORS = {
-  power: '#f59e0b',
-  water: '#0ea5e9',
-  fuel: '#f97316',
-};
+const SECTION_COLORS = [
+  '#f59e0b',
+  '#0ea5e9',
+  '#f97316',
+  '#10b981',
+  '#8b5cf6',
+  '#f43f5e',
+];
 
 const COLORS = {
   muted: 'hsl(0, 0%, 45%)',
@@ -24,10 +27,10 @@ const COLORS = {
 
 function CustomTooltip({ active, payload, formatCurrency }) {
   if (!active || !payload?.length) return null;
-  const { translatedName, total_cost, entry_count, avg_cost } = payload[0].payload;
+  const { name, total_cost, entry_count, avg_cost } = payload[0].payload;
   return (
     <div className="bg-card border border-border/50 rounded-lg px-3.5 py-2.5 shadow-xl backdrop-blur-sm">
-      <p className="text-[11px] text-muted-foreground mb-1">{translatedName}</p>
+      <p className="text-[11px] text-muted-foreground mb-1">{name}</p>
       <p className="text-[15px] font-semibold text-foreground tabular-nums tracking-tight">
         {formatCurrency(total_cost)}
       </p>
@@ -50,9 +53,10 @@ export default function CategoryBarChart({ data }) {
     );
   }
 
-  const chartData = data.map((item) => ({
+  const chartData = data.map((item, idx) => ({
     ...item,
-    translatedName: t(`statistics.${item.type}`),
+    avg_cost: item.entry_count > 0 ? item.total_cost / item.entry_count : 0,
+    color: SECTION_COLORS[idx % SECTION_COLORS.length],
   }));
 
   return (
@@ -73,7 +77,7 @@ export default function CategoryBarChart({ data }) {
             }}
           />
           <XAxis
-            dataKey="translatedName"
+            dataKey="name"
             tick={{ fontSize: 11, fill: COLORS.muted }}
             tickLine={false}
             axisLine={false}
@@ -103,10 +107,10 @@ export default function CategoryBarChart({ data }) {
             animationDuration={800}
             animationEasing="ease-out"
           >
-            {chartData.map((entry) => (
+            {chartData.map((entry, idx) => (
               <Cell
-                key={entry.type}
-                fill={TYPE_COLORS[entry.type] || '#6b7280'}
+                key={entry.name}
+                fill={entry.color}
                 fillOpacity={0.85}
               />
             ))}

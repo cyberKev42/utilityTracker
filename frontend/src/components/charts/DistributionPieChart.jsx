@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import { useCurrency } from '../../hooks/useCurrency';
 import {
   ResponsiveContainer,
@@ -7,12 +6,16 @@ import {
   Cell,
   Tooltip,
 } from 'recharts';
+import { useTranslation } from 'react-i18next';
 
-const TYPE_COLORS = {
-  power: '#f59e0b',
-  water: '#0ea5e9',
-  fuel: '#f97316',
-};
+const SECTION_COLORS = [
+  '#f59e0b',
+  '#0ea5e9',
+  '#f97316',
+  '#10b981',
+  '#8b5cf6',
+  '#f43f5e',
+];
 
 function CustomTooltip({ active, payload, formatCurrency }) {
   if (!active || !payload?.length) return null;
@@ -53,10 +56,10 @@ export default function DistributionPieChart({ data }) {
 
   const chartData = data
     .filter((item) => item.total_cost > 0)
-    .map((item) => ({
-      name: t(`statistics.${item.type}`),
+    .map((item, idx) => ({
+      name: item.name,
       value: item.total_cost,
-      type: item.type,
+      color: SECTION_COLORS[idx % SECTION_COLORS.length],
       percent: item.total_cost / total,
     }));
 
@@ -80,8 +83,8 @@ export default function DistributionPieChart({ data }) {
             >
               {chartData.map((entry) => (
                 <Cell
-                  key={entry.type}
-                  fill={TYPE_COLORS[entry.type] || '#6b7280'}
+                  key={entry.name}
+                  fill={entry.color}
                   fillOpacity={0.85}
                 />
               ))}
@@ -100,10 +103,10 @@ export default function DistributionPieChart({ data }) {
       </div>
       <div className="flex flex-wrap justify-center gap-x-5 gap-y-1.5 mt-2">
         {chartData.map((entry) => (
-          <div key={entry.type} className="flex items-center gap-2">
+          <div key={entry.name} className="flex items-center gap-2">
             <span
               className="inline-block h-2 w-2 rounded-full shrink-0"
-              style={{ backgroundColor: TYPE_COLORS[entry.type], opacity: 0.85 }}
+              style={{ backgroundColor: entry.color, opacity: 0.85 }}
             />
             <span className="text-[11px] text-muted-foreground">
               {entry.name}
