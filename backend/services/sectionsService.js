@@ -220,19 +220,38 @@ export async function createMeter(userId, sectionId, { name }) {
   return result.rows[0];
 }
 
-export async function updateMeter(userId, meterId, { name }) {
+export async function updateMeter(userId, meterId, { name, entry_mode }) {
   const pool = getDb();
   if (!pool) throw new Error('Database not configured');
 
+  const setClauses = ['updated_at = now()'];
+  const params = [userId, meterId];
+  let idx = 3;
+
+  if (name !== undefined) {
+    setClauses.push(`name = $${idx}`);
+    params.push(name);
+    idx++;
+  }
+
+  if (entry_mode !== undefined) {
+    if (!['usage', 'reading'].includes(entry_mode)) {
+      throw Object.assign(new Error('entry_mode must be "usage" or "reading"'), { status: 400 });
+    }
+    setClauses.push(`entry_mode = $${idx}`);
+    params.push(entry_mode);
+    idx++;
+  }
+
   const result = await pool.query(
     `UPDATE utility_meters m
-     SET name = $3, updated_at = now()
+     SET ${setClauses.join(', ')}
      FROM utility_sections s
      WHERE m.id = $2
        AND m.section_id = s.id
        AND s.user_id = $1
      RETURNING m.*`,
-    [userId, meterId, name]
+    params
   );
 
   return result.rows.length > 0 ? result.rows[0] : null;

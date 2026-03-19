@@ -173,12 +173,19 @@ export async function updateMeter(req, res) {
       return res.status(400).json({ error: 'Invalid meter ID' });
     }
 
-    const { name } = req.body;
-    if (!name || typeof name !== 'string' || name.trim().length === 0) {
-      return res.status(400).json({ error: 'name is required' });
+    const { name, entry_mode } = req.body;
+    if (!name && !entry_mode) {
+      return res.status(400).json({ error: 'name or entry_mode is required' });
+    }
+    if (name !== undefined && (typeof name !== 'string' || name.trim().length === 0)) {
+      return res.status(400).json({ error: 'name must be a non-empty string' });
     }
 
-    const meter = await sectionsService.updateMeter(req.user.id, meterId, { name: name.trim() });
+    const updates = {};
+    if (name) updates.name = name.trim();
+    if (entry_mode) updates.entry_mode = entry_mode;
+
+    const meter = await sectionsService.updateMeter(req.user.id, meterId, updates);
     if (!meter) {
       return res.status(404).json({ error: 'Meter not found' });
     }

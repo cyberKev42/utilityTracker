@@ -39,7 +39,7 @@ function App() {
               <Route path="/add-entry" element={<AddEntry />} />
               <Route path="/entries" element={<Entries />} />
               <Route path="/statistics" element={<Statistics />} />
-              <Route path="/statistics/:type" element={<StatisticsDetail />} />
+              <Route path="/statistics/:sectionId" element={<StatisticsDetail />} />
               <Route path="/settings" element={<Settings />} />
             </Route>
           </Routes>

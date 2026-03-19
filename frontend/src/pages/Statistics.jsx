@@ -155,16 +155,18 @@ export default function Statistics() {
           const colors = SECTION_COLORS[idx % SECTION_COLORS.length];
           return (
             <motion.div key={section.id} variants={fadeUp} whileHover={cardHover}>
-              <Card className="hover:border-border/60 transition-colors duration-200">
-                <CardContent className="p-4 flex items-center gap-3">
-                  <div className={`h-9 w-9 rounded-lg ${colors.bgClass} flex items-center justify-center shrink-0`}>
-                    <Icon className={`h-[18px] w-[18px] ${colors.colorClass}`} />
-                  </div>
-                  <span className="text-sm font-medium text-foreground">
-                    {section.name}
-                  </span>
-                </CardContent>
-              </Card>
+              <Link to={`/statistics/${section.id}`} className="block">
+                <Card className="hover:border-border/60 transition-colors duration-200 cursor-pointer">
+                  <CardContent className="p-4 flex items-center gap-3">
+                    <div className={`h-9 w-9 rounded-lg ${colors.bgClass} flex items-center justify-center shrink-0`}>
+                      <Icon className={`h-[18px] w-[18px] ${colors.colorClass}`} />
+                    </div>
+                    <span className="text-sm font-medium text-foreground">
+                      {section.name}
+                    </span>
+                  </CardContent>
+                </Card>
+              </Link>
             </motion.div>
           );
         })}
