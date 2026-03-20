@@ -32,7 +32,25 @@ Users can track any utility across multiple meters with accurate, flexible data 
 
 ### Active
 
-*No active requirements. Next milestone not yet planned.*
+- [ ] App feels like a single-page app — no loading spinners between pages, instant UI updates on settings changes
+- [ ] Mobile-optimized layout — no horizontal scroll or cut-off elements on any page
+- [ ] Comma accepted as decimal separator in entry fields
+- [ ] Section names translated in entry dropdown
+- [ ] Dashboard section click navigates to statistics with that section pre-selected
+- [ ] Dashboard toggle for usage vs cost display
+- [ ] Meter names editable inline in settings
+- [ ] Improved water icon options (droplet, wave, etc.)
+
+## Current Milestone: v1.1 Polish & UX
+
+**Goal:** Eliminate loading friction, fix mobile layout issues, and add UX improvements across dashboard, settings, and data entry.
+
+**Target features:**
+- SPA-like navigation with no page reloads
+- Mobile-responsive fixes
+- Input improvements (comma decimals, translated dropdowns)
+- Dashboard enhancements (section linking, usage/cost toggle)
+- Settings improvements (editable meter names, water icons)
 
 ### Out of Scope
 
@@ -66,4 +84,22 @@ Users can track any utility across multiple meters with accurate, flexible data 
 | Archive + delete options for sections | Preserve historical data when hiding, permanent removal when desired | Deferred to v2 (SECT-05) |
 
 ---
-*Last updated: 2026-03-20 — Milestone v1.0 shipped*
+## Evolution
+
+This document evolves at phase transitions and milestone boundaries.
+
+**After each phase transition** (via `/gsd:transition`):
+1. Requirements invalidated? → Move to Out of Scope with reason
+2. Requirements validated? → Move to Validated with phase reference
+3. New requirements emerged? → Add to Active
+4. Decisions to log? → Add to Key Decisions
+5. "What This Is" still accurate? → Update if drifted
+
+**After each milestone** (via `/gsd:complete-milestone`):
+1. Full review of all sections
+2. Core Value check — still the right priority?
+3. Audit Out of Scope — reasons still valid?
+4. Update Context with current state
+
+---
+*Last updated: 2026-03-20 — Milestone v1.1 started*

@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { getStats, getEntries } from '../services/entriesService';
+import { useEntriesData } from '../hooks/useEntriesData';
 import { useSections } from '../hooks/useSections';
 import { useCurrency } from '../hooks/useCurrency';
 import { ICON_MAP } from '../components/settings/IconPickerGrid';
@@ -84,39 +84,22 @@ export default function Statistics() {
   const { t } = useTranslation();
   const { sections: contextSections } = useSections();
   const { formatCurrency } = useCurrency();
-  const [stats, setStats] = useState(null);
-  const [rawEntries, setRawEntries] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const { stats, entries: rawEntries, loading, error } = useEntriesData();
   const [viewMode, setViewMode] = useState('usage');
   const [granularity, setGranularity] = useState('weekly');
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const [statsData, entriesData] = await Promise.all([
-          getStats(),
-          getEntries({ limit: 500 }),
-        ]);
-        setStats(statsData);
-        setRawEntries(entriesData);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, []);
-
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent"
-        />
+      <div className="space-y-6">
+        <div>
+          <div className="h-6 w-32 bg-card animate-pulse rounded" />
+          <div className="h-4 w-48 bg-card animate-pulse rounded mt-2" />
+        </div>
+        <div className="grid grid-cols-3 gap-3">
+          <div className="bg-card animate-pulse rounded-lg h-[72px]" />
+          <div className="bg-card animate-pulse rounded-lg h-[72px]" />
+          <div className="bg-card animate-pulse rounded-lg h-[72px]" />
+        </div>
       </div>
     );
   }

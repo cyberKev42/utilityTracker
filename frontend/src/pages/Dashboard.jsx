@@ -1,13 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { getStats, getEntries, getTrend } from '../services/entriesService';
+import { useEntriesData } from '../hooks/useEntriesData';
 import { useCurrency } from '../hooks/useCurrency';
 import { useSections } from '../hooks/useSections';
 import { ICON_MAP } from '../components/settings/IconPickerGrid';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
+import Sparkline from '../components/charts/Sparkline';
 import { motion } from 'framer-motion';
 import {
   HiOutlineBanknotes,
@@ -51,31 +52,33 @@ export default function Dashboard() {
   const { t } = useTranslation();
   const { formatCurrency } = useCurrency();
   const { sections: contextSections } = useSections();
-  const [stats, setStats] = useState(null);
-  const [trend, setTrend] = useState(null);
-  const [recentEntries, setRecentEntries] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const { stats, entries, recentEntries, trend, loading, error } = useEntriesData();
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const [statsData, entriesData, trendData] = await Promise.all([
-          getStats(),
-          getEntries(),
-          getTrend(),
-        ]);
-        setStats(statsData);
-        setRecentEntries(entriesData.slice(0, 5));
-        setTrend(trendData);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
+  const sparklineDataBySection = useMemo(() => {
+    const bySectionName = {};
+    for (const entry of entries) {
+      if (!bySectionName[entry.section_name]) bySectionName[entry.section_name] = [];
+      bySectionName[entry.section_name].push(entry);
     }
-    load();
-  }, []);
+    const result = {};
+    for (const [name, sectionEntries] of Object.entries(bySectionName)) {
+      const byWeek = {};
+      for (const e of sectionEntries) {
+        const d = new Date(e.date);
+        const day = d.getDay() || 7;
+        const monday = new Date(d);
+        monday.setDate(d.getDate() - day + 1);
+        const key = monday.toISOString().slice(0, 10);
+        if (!byWeek[key]) byWeek[key] = 0;
+        byWeek[key] += Number(e.usage_amount) || 0;
+      }
+      result[name] = Object.entries(byWeek)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .slice(-7)
+        .map(([, val]) => ({ value: val }));
+    }
+    return result;
+  }, [entries]);
 
   // Build section lookup from context for icons
   const sectionLookup = {};
@@ -124,12 +127,17 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent"
-        />
+      <div className="space-y-6">
+        <div>
+          <div className="h-6 w-32 bg-card animate-pulse rounded" />
+          <div className="h-4 w-48 bg-card animate-pulse rounded mt-2" />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="bg-card animate-pulse rounded-lg h-[140px]" />
+          <div className="bg-card animate-pulse rounded-lg h-[140px]" />
+          <div className="bg-card animate-pulse rounded-lg h-[140px]" />
+          <div className="bg-card animate-pulse rounded-lg h-[140px]" />
+        </div>
       </div>
     );
   }
@@ -188,13 +196,22 @@ export default function Dashboard() {
             <motion.div key={section.id} variants={fadeUp} whileHover={cardHover}>
               <Card className="h-full hover:border-border/60 transition-colors duration-200">
                 <CardContent className="p-5">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className={`h-9 w-9 rounded-lg ${colors.bgClass} flex items-center justify-center`}>
-                      <Icon className={`h-[18px] w-[18px] ${colors.colorClass}`} />
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      <div className={`h-9 w-9 rounded-lg ${colors.bgClass} flex items-center justify-center`}>
+                        <Icon className={`h-[18px] w-[18px] ${colors.colorClass}`} />
+                      </div>
+                      <span className="text-[13px] font-medium text-muted-foreground">
+                        {section.name}
+                      </span>
                     </div>
-                    <span className="text-[13px] font-medium text-muted-foreground">
-                      {section.name}
-                    </span>
+                    <Link
+                      to={`/statistics/${section.id}`}
+                      aria-label={`View ${section.name} statistics`}
+                      className="rounded-md p-1 hover:ring-1 hover:ring-primary/40 active:opacity-80 transition-all cursor-pointer"
+                    >
+                      <Sparkline data={sparklineDataBySection[section.name] || []} />
+                    </Link>
                   </div>
                   <p className="text-2xl font-semibold text-foreground tabular-nums tracking-tight">
                     {formatCurrency(section.total_cost)}
