@@ -123,11 +123,9 @@ function deriveMonthly(entries, mode) {
   return Object.values(byMonth).sort((a, b) => a.month.localeCompare(b.month));
 }
 
-function deriveDaily(entries, year, month, mode) {
+function deriveDaily(entries, mode) {
   const byDay = {};
   for (const e of entries) {
-    const d = new Date(e.date);
-    if (d.getFullYear() !== year || d.getMonth() + 1 !== month) continue;
     const key = e.date.slice(0, 10);
     if (!byDay[key]) byDay[key] = { date: key, total: 0 };
     byDay[key].total += Number(mode === 'usage' ? e.usage_amount : e.cost_amount) || 0;
@@ -152,12 +150,44 @@ function deriveStackedMonthly(entries, meters, mode) {
   return Object.values(byMonth).sort((a, b) => a.month.localeCompare(b.month));
 }
 
-function deriveStackedDaily(entries, meters, year, month, mode) {
+function deriveWeekly(entries, mode) {
+  const byWeek = {};
+  for (const e of entries) {
+    const d = new Date(e.date);
+    const day = d.getDay() || 7;
+    const monday = new Date(d);
+    monday.setDate(d.getDate() - day + 1);
+    const key = monday.toISOString().slice(0, 10);
+    if (!byWeek[key]) byWeek[key] = { date: key, total: 0 };
+    byWeek[key].total += Number(mode === 'usage' ? e.usage_amount : e.cost_amount) || 0;
+  }
+  return Object.values(byWeek).sort((a, b) => a.date.localeCompare(b.date));
+}
+
+function deriveStackedWeekly(entries, meters, mode) {
+  const field = mode === 'usage' ? 'usage_amount' : 'cost_amount';
+  const byWeek = {};
+  for (const e of entries) {
+    const d = new Date(e.date);
+    const day = d.getDay() || 7;
+    const monday = new Date(d);
+    monday.setDate(d.getDate() - day + 1);
+    const key = monday.toISOString().slice(0, 10);
+    if (!byWeek[key]) {
+      byWeek[key] = { date: key };
+      meters.forEach(m => { byWeek[key][m.id] = 0; });
+    }
+    if (byWeek[key][e.meter_id] !== undefined) {
+      byWeek[key][e.meter_id] += Number(e[field]) || 0;
+    }
+  }
+  return Object.values(byWeek).sort((a, b) => a.date.localeCompare(b.date));
+}
+
+function deriveStackedDaily(entries, meters, mode) {
   const field = mode === 'usage' ? 'usage_amount' : 'cost_amount';
   const byDay = {};
   for (const e of entries) {
-    const d = new Date(e.date);
-    if (d.getFullYear() !== year || d.getMonth() + 1 !== month) continue;
     const key = e.date.slice(0, 10);
     if (!byDay[key]) {
       byDay[key] = { date: key };
@@ -177,12 +207,10 @@ export default function StatisticsDetail() {
   const { sections, getSectionById } = useSections();
 
   const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth() + 1;
-
   const [viewMode, setViewMode] = useState('usage'); // 'usage' | 'cost'
   const [activeMeter, setActiveMeter] = useState('all'); // 'all' | meter.id
   const [year, setYear] = useState(currentYear);
-  const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+  const [granularity, setGranularity] = useState('weekly'); // 'daily' | 'weekly' | 'monthly'
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -208,14 +236,6 @@ export default function StatisticsDetail() {
     }
     load();
   }, [sectionId, year]);
-
-  const months = Array.from({ length: 12 }, (_, i) => {
-    const d = new Date(year, i);
-    return {
-      value: i + 1,
-      label: d.toLocaleDateString(undefined, { month: 'long' }),
-    };
-  });
 
   if (loading) {
     return (
@@ -251,17 +271,24 @@ export default function StatisticsDetail() {
   const isAllTab = activeMeter === 'all';
   const useStacked = isAllTab && meters.length > 1;
 
-  // Derive chart data
-  const monthly = useStacked
-    ? deriveStackedMonthly(entries, meters, viewMode)
-    : deriveMonthly(filteredEntries, viewMode);
+  // Derive chart data based on granularity
+  const chartData = (() => {
+    if (granularity === 'monthly') {
+      return useStacked
+        ? deriveStackedMonthly(entries, meters, viewMode)
+        : deriveMonthly(filteredEntries, viewMode);
+    }
+    if (granularity === 'weekly') {
+      return useStacked
+        ? deriveStackedWeekly(entries, meters, viewMode)
+        : deriveWeekly(filteredEntries, viewMode);
+    }
+    return useStacked
+      ? deriveStackedDaily(entries, meters, viewMode)
+      : deriveDaily(filteredEntries, viewMode);
+  })();
 
-  const daily = useStacked
-    ? deriveStackedDaily(entries, meters, year, selectedMonth, viewMode)
-    : deriveDaily(filteredEntries, year, selectedMonth, viewMode);
-
-  const hasMonthly = monthly.length > 0;
-  const hasDaily = daily.length > 0;
+  const hasChartData = chartData.length > 0;
   const isEmpty = filteredEntries.length === 0;
 
   const sectionName = section?.name || t('statistics.unknownSection', 'Section');
@@ -435,200 +462,185 @@ export default function StatisticsDetail() {
         </motion.div>
       ) : (
         <>
-          {/* Monthly Overview */}
-          <motion.div variants={fadeUp} whileHover={cardHover}>
-            <Card>
-              <CardContent className="p-5 px-3 sm:px-5">
-                <h2 className="text-sm font-semibold text-foreground mb-0.5">
-                  {t('statisticsDetail.monthlyOverview')}
-                </h2>
-                <p className="text-xs text-muted-foreground mb-4">
-                  {t('statisticsDetail.monthlyOverviewDesc', { year })}
-                </p>
-                {hasMonthly ? (
-                  <div className="w-full h-[220px] sm:h-[280px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={monthly} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
-                        <CartesianGrid
-                          stroke={CHART_COLORS.grid}
-                          strokeOpacity={0.6}
-                          vertical={false}
-                          horizontalCoordinatesGenerator={gridGenerator}
-                        />
-                        <XAxis
-                          dataKey="month"
-                          tickFormatter={formatMonth}
-                          tick={{ fontSize: 14, fill: CHART_COLORS.muted }}
-                          tickLine={false}
-                          axisLine={false}
-                          dy={10}
-                          tickMargin={0}
-                        />
-                        <YAxis
-                          tick={{ fontSize: 14, fill: CHART_COLORS.muted }}
-                          tickLine={false}
-                          axisLine={false}
-                          tickFormatter={(v) => v.toLocaleString()}
-                          width={48}
-                          tickCount={5}
-                          label={yAxisLabel}
-                        />
-                        <Tooltip
-                          content={<MonthlyTooltip formatCurrency={formatCurrency} viewMode={viewMode} unit={section?.unit} />}
-                          cursor={{ fill: 'hsl(0, 0%, 12%)', fillOpacity: 0.5, radius: 4 }}
-                        />
-                        {useStacked ? (
-                          meters.map((m, idx) => (
-                            <Bar
-                              key={m.id}
-                              dataKey={m.id}
-                              name={m.name}
-                              stackId="meters"
-                              fill={SECTION_COLORS[idx % SECTION_COLORS.length]}
-                              fillOpacity={0.85}
-                              radius={idx === meters.length - 1 ? [6, 6, 0, 0] : [0, 0, 0, 0]}
-                              maxBarSize={52}
-                              animationDuration={800}
-                              animationEasing="ease-out"
-                            />
-                          ))
-                        ) : (
-                          <Bar
-                            dataKey="total"
-                            fill={color}
-                            fillOpacity={0.85}
-                            radius={[6, 6, 0, 0]}
-                            maxBarSize={52}
-                            animationDuration={800}
-                            animationEasing="ease-out"
-                          />
-                        )}
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                ) : (
-                  <p className="text-sm text-muted-foreground text-center py-10">
-                    {t('statisticsDetail.noData')}
-                  </p>
-                )}
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Daily Breakdown */}
+          {/* Overview Chart */}
           <motion.div variants={fadeUp} whileHover={cardHover}>
             <Card>
               <CardContent className="p-5 px-3 sm:px-5">
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <h2 className="text-sm font-semibold text-foreground mb-0.5">
-                      {t('statisticsDetail.dailyBreakdown')}
+                      {t('statisticsDetail.overview')}
                     </h2>
                     <p className="text-xs text-muted-foreground">
-                      {t('statisticsDetail.dailyBreakdownDesc')}
+                      {t('statisticsDetail.overviewDesc', { year })}
                     </p>
                   </div>
-                  <select
-                    value={selectedMonth}
-                    onChange={(e) => setSelectedMonth(Number(e.target.value))}
-                    className="h-9 rounded-lg border border-border/40 bg-card px-3 text-xs font-medium text-foreground focus:outline-none focus:ring-1 focus:ring-primary/30"
-                  >
-                    {months.map((m) => (
-                      <option key={m.value} value={m.value}>
-                        {m.label}
-                      </option>
+                  <div className="flex rounded-lg border border-border/40 overflow-hidden text-xs font-medium">
+                    {[
+                      { value: 'daily', label: t('statistics.granularity.daily') },
+                      { value: 'weekly', label: t('statistics.granularity.weekly') },
+                      { value: 'monthly', label: t('statistics.granularity.monthly') },
+                    ].map(({ value, label }) => (
+                      <button
+                        key={value}
+                        onClick={() => setGranularity(value)}
+                        className={`px-3 py-1.5 transition-colors ${granularity === value ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                      >
+                        {label}
+                      </button>
                     ))}
-                  </select>
+                  </div>
                 </div>
-                {hasDaily ? (
+                {hasChartData ? (
                   <div className="w-full h-[220px] sm:h-[280px]">
                     <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={daily} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
-                        <defs>
+                      {granularity === 'monthly' ? (
+                        <BarChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+                          <CartesianGrid
+                            stroke={CHART_COLORS.grid}
+                            strokeOpacity={0.6}
+                            vertical={false}
+                            horizontalCoordinatesGenerator={gridGenerator}
+                          />
+                          <XAxis
+                            dataKey="month"
+                            tickFormatter={formatMonth}
+                            tick={{ fontSize: 14, fill: CHART_COLORS.muted }}
+                            tickLine={false}
+                            axisLine={false}
+                            dy={10}
+                            tickMargin={0}
+                          />
+                          <YAxis
+                            tick={{ fontSize: 14, fill: CHART_COLORS.muted }}
+                            tickLine={false}
+                            axisLine={false}
+                            tickFormatter={(v) => v.toLocaleString()}
+                            width={48}
+                            tickCount={5}
+                            label={yAxisLabel}
+                          />
+                          <Tooltip
+                            content={<MonthlyTooltip formatCurrency={formatCurrency} viewMode={viewMode} unit={section?.unit} />}
+                            cursor={{ fill: 'hsl(0, 0%, 12%)', fillOpacity: 0.5, radius: 4 }}
+                          />
                           {useStacked ? (
                             meters.map((m, idx) => (
-                              <linearGradient key={m.id} id={`dailyGradient-${m.id}`} x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stopColor={SECTION_COLORS[idx % SECTION_COLORS.length]} stopOpacity={0.3} />
-                                <stop offset="100%" stopColor={SECTION_COLORS[idx % SECTION_COLORS.length]} stopOpacity={0} />
-                              </linearGradient>
+                              <Bar
+                                key={m.id}
+                                dataKey={m.id}
+                                name={m.name}
+                                stackId="meters"
+                                fill={SECTION_COLORS[idx % SECTION_COLORS.length]}
+                                fillOpacity={0.85}
+                                radius={idx === meters.length - 1 ? [6, 6, 0, 0] : [0, 0, 0, 0]}
+                                maxBarSize={52}
+                                animationDuration={800}
+                                animationEasing="ease-out"
+                              />
                             ))
                           ) : (
-                            <linearGradient id={`dailyGradient-${sectionId}`} x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor={color} stopOpacity={0.15} />
-                              <stop offset="100%" stopColor={color} stopOpacity={0} />
-                            </linearGradient>
-                          )}
-                        </defs>
-                        <CartesianGrid
-                          stroke={CHART_COLORS.grid}
-                          strokeOpacity={0.6}
-                          vertical={false}
-                          horizontalCoordinatesGenerator={gridGenerator}
-                        />
-                        <XAxis
-                          dataKey="date"
-                          tickFormatter={formatDay}
-                          tick={{ fontSize: 14, fill: CHART_COLORS.muted }}
-                          tickLine={false}
-                          axisLine={false}
-                          dy={10}
-                          interval="preserveStartEnd"
-                          tickMargin={0}
-                        />
-                        <YAxis
-                          tick={{ fontSize: 14, fill: CHART_COLORS.muted }}
-                          tickLine={false}
-                          axisLine={false}
-                          tickFormatter={(v) => v.toLocaleString()}
-                          width={48}
-                          tickCount={5}
-                          label={yAxisLabel}
-                        />
-                        <Tooltip
-                          content={<DailyTooltip formatCurrency={formatCurrency} viewMode={viewMode} unit={section?.unit} />}
-                          cursor={{
-                            stroke: color,
-                            strokeWidth: 1,
-                            strokeOpacity: 0.3,
-                            strokeDasharray: '4 4',
-                          }}
-                        />
-                        {useStacked ? (
-                          meters.map((m, idx) => (
-                            <Area
-                              key={m.id}
-                              type="monotone"
-                              dataKey={m.id}
-                              name={m.name}
-                              stackId="meters"
-                              stroke={SECTION_COLORS[idx % SECTION_COLORS.length]}
-                              strokeWidth={1.5}
-                              fill={`url(#dailyGradient-${m.id})`}
-                              fillOpacity={0.6}
-                              dot={false}
+                            <Bar
+                              dataKey="total"
+                              fill={color}
+                              fillOpacity={0.85}
+                              radius={[6, 6, 0, 0]}
+                              maxBarSize={52}
                               animationDuration={800}
                               animationEasing="ease-out"
                             />
-                          ))
-                        ) : (
-                          <Area
-                            type="monotone"
-                            dataKey="total"
-                            stroke={color}
-                            strokeWidth={2}
-                            fill={`url(#dailyGradient-${sectionId})`}
-                            dot={false}
-                            activeDot={{
-                              r: 5,
-                              strokeWidth: 2,
-                              stroke: color,
-                              fill: 'hsl(0, 0%, 3.5%)',
-                            }}
-                            animationDuration={800}
-                            animationEasing="ease-out"
+                          )}
+                        </BarChart>
+                      ) : (
+                        <AreaChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+                          <defs>
+                            {useStacked ? (
+                              meters.map((m, idx) => (
+                                <linearGradient key={m.id} id={`gradient-${m.id}`} x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor={SECTION_COLORS[idx % SECTION_COLORS.length]} stopOpacity={0.3} />
+                                  <stop offset="100%" stopColor={SECTION_COLORS[idx % SECTION_COLORS.length]} stopOpacity={0} />
+                                </linearGradient>
+                              ))
+                            ) : (
+                              <linearGradient id={`gradient-${sectionId}`} x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor={color} stopOpacity={0.15} />
+                                <stop offset="100%" stopColor={color} stopOpacity={0} />
+                              </linearGradient>
+                            )}
+                          </defs>
+                          <CartesianGrid
+                            stroke={CHART_COLORS.grid}
+                            strokeOpacity={0.6}
+                            vertical={false}
+                            horizontalCoordinatesGenerator={gridGenerator}
                           />
-                        )}
-                      </AreaChart>
+                          <XAxis
+                            dataKey="date"
+                            tickFormatter={granularity === 'weekly'
+                              ? (v) => new Date(v).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })
+                              : formatDay}
+                            tick={{ fontSize: 14, fill: CHART_COLORS.muted }}
+                            tickLine={false}
+                            axisLine={false}
+                            dy={10}
+                            interval="preserveStartEnd"
+                            tickMargin={0}
+                          />
+                          <YAxis
+                            tick={{ fontSize: 14, fill: CHART_COLORS.muted }}
+                            tickLine={false}
+                            axisLine={false}
+                            tickFormatter={(v) => v.toLocaleString()}
+                            width={48}
+                            tickCount={5}
+                            label={yAxisLabel}
+                          />
+                          <Tooltip
+                            content={<DailyTooltip formatCurrency={formatCurrency} viewMode={viewMode} unit={section?.unit} />}
+                            cursor={{
+                              stroke: color,
+                              strokeWidth: 1,
+                              strokeOpacity: 0.3,
+                              strokeDasharray: '4 4',
+                            }}
+                          />
+                          {useStacked ? (
+                            meters.map((m, idx) => (
+                              <Area
+                                key={m.id}
+                                type="monotone"
+                                dataKey={m.id}
+                                name={m.name}
+                                stackId="meters"
+                                stroke={SECTION_COLORS[idx % SECTION_COLORS.length]}
+                                strokeWidth={1.5}
+                                fill={`url(#gradient-${m.id})`}
+                                fillOpacity={0.6}
+                                dot={false}
+                                animationDuration={800}
+                                animationEasing="ease-out"
+                              />
+                            ))
+                          ) : (
+                            <Area
+                              type="monotone"
+                              dataKey="total"
+                              stroke={color}
+                              strokeWidth={2}
+                              fill={`url(#gradient-${sectionId})`}
+                              dot={false}
+                              activeDot={{
+                                r: 5,
+                                strokeWidth: 2,
+                                stroke: color,
+                                fill: 'hsl(0, 0%, 3.5%)',
+                              }}
+                              animationDuration={800}
+                              animationEasing="ease-out"
+                            />
+                          )}
+                        </AreaChart>
+                      )}
                     </ResponsiveContainer>
                   </div>
                 ) : (

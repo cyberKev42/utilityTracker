@@ -167,6 +167,8 @@
     "monthlyOverviewDesc": "Gesamtkosten pro Monat in {{year}}",
     "dailyBreakdown": "Tagesaufschlüsselung",
     "dailyBreakdownDesc": "Kosten pro Tag für den ausgewählten Monat",
+    "overview": "Übersicht",
+    "overviewDesc": "Verbrauchs- und Kostentrends für {{year}}",
     "allMeters": "Alle",
     "totalUsage": "Gesamtverbrauch",
     "totalCost": "Gesamtkosten",

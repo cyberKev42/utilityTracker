@@ -51,7 +51,7 @@ function CustomTooltip({ active, payload, label, formatCurrency, viewMode, granu
   );
 }
 
-export default function SpendingLineChart({ data, granularity = 'weekly', onGranularityChange, viewMode = 'cost' }) {
+export default function SpendingLineChart({ data, granularity = 'weekly', onGranularityChange, viewMode = 'cost', unit }) {
   const { t } = useTranslation();
   const { formatCurrency } = useCurrency();
 
@@ -125,7 +125,7 @@ export default function SpendingLineChart({ data, granularity = 'weekly', onGran
               tickCount={5}
             />
             <Tooltip
-              content={<CustomTooltip formatCurrency={formatCurrency} viewMode={viewMode} granularity={granularity} />}
+              content={<CustomTooltip formatCurrency={formatCurrency} viewMode={viewMode} granularity={granularity} unit={unit} />}
               cursor={{
                 stroke: COLORS.primary,
                 strokeWidth: 1,
