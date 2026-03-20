@@ -19,6 +19,7 @@ export default function ArchivedSectionsArea() {
   const [expanded, setExpanded] = useState(false);
   const [archivedSections, setArchivedSections] = useState([]);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
 
   async function loadArchived() {
     try {
@@ -46,8 +47,13 @@ export default function ArchivedSectionsArea() {
 
   async function handleDeleteConfirm() {
     if (!deleteTarget) return;
-    await deleteSection(deleteTarget.id);
-    setDeleteTarget(null);
+    setDeletingId(deleteTarget.id);
+    try {
+      await deleteSection(deleteTarget.id);
+      setDeleteTarget(null);
+    } finally {
+      setDeletingId(null);
+    }
     await loadArchived();
   }
 
@@ -116,8 +122,10 @@ export default function ArchivedSectionsArea() {
             <Button variant="outline" onClick={() => setDeleteTarget(null)}>
               {t('settings.sections.cancelEdit')}
             </Button>
-            <Button variant="destructive" onClick={handleDeleteConfirm}>
-              {t('settings.sections.deleteSection')}
+            <Button variant="destructive" onClick={handleDeleteConfirm} disabled={deletingId === deleteTarget?.id}>
+              {deletingId === deleteTarget?.id
+                ? <motion.span animate={{ opacity: [1, 0.4, 1] }} transition={{ repeat: Infinity, duration: 1 }}>Deleting...</motion.span>
+                : t('settings.sections.deleteSection')}
             </Button>
           </DialogFooter>
         </DialogContent>

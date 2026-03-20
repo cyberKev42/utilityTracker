@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -21,6 +22,7 @@ export default function MeterRow({ meter, sectionId, isNew = false }) {
   const [editing, setEditing] = useState(isNew);
   const [value, setValue] = useState(meter.name);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState(null);
   const errorTimerRef = useRef(null);
 
@@ -68,12 +70,15 @@ export default function MeterRow({ meter, sectionId, isNew = false }) {
   }
 
   async function handleDeleteConfirm() {
+    setDeleting(true);
     try {
       await deleteMeter(sectionId, meter.id);
       setDeleteOpen(false);
     } catch {
       setDeleteOpen(false);
       showError(t('settings.sections.saveError'));
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -154,8 +159,10 @@ export default function MeterRow({ meter, sectionId, isNew = false }) {
             <Button variant="outline" onClick={() => setDeleteOpen(false)}>
               {t('settings.sections.cancelEdit')}
             </Button>
-            <Button variant="destructive" onClick={handleDeleteConfirm}>
-              {t('settings.sections.deleteMeter')}
+            <Button variant="destructive" onClick={handleDeleteConfirm} disabled={deleting}>
+              {deleting
+                ? <motion.span animate={{ opacity: [1, 0.4, 1] }} transition={{ repeat: Infinity, duration: 1 }}>Deleting...</motion.span>
+                : t('settings.sections.deleteMeter')}
             </Button>
           </DialogFooter>
         </DialogContent>
