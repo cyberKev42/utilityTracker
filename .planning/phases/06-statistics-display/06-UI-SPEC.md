@@ -49,19 +49,23 @@ Exceptions:
 
 ## Typography
 
+**Primary visual anchor:** Summary Stat Cards row (top of page) — largest numeric displays draw the eye first.
+
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
-| Body | 16px | 400 (regular) | 1.5 |
-| Label / small UI | 14px | 400 (regular) | 1.4 |
-| Stat value (tabular) | 24px | 700 (bold) | 1.2 |
+| Body / tooltip value | 16px | 400 (regular) | 1.5 |
+| Label / small UI / empty state body | 14px | 400 (regular) | 1.4 |
+| Stat value (tabular) | 24px | 600 (semibold) | 1.2 |
 | Heading / page title | 20px | 600 (semibold) | 1.2 |
 
 Notes:
-- Chart axis tick labels: 11px at weight 400 — established in `StatisticsDetail.jsx` `CHART_COLORS` usage
-- Tooltip primary value: 15px at weight 600 — established in `MonthlyTooltip` component
-- Stat value suffix (unit label): 14px at weight 400, `text-muted-foreground` — e.g. "1,245 **kWh**" suffix
+- Chart axis tick labels: 12px at weight 400 — smallest permitted size, used only for Recharts axis ticks
+- Stat value suffix (unit label): 14px at weight 400, `text-muted-foreground` — e.g. "1,245 **kWh**" suffix; maps to Label row
+- Tooltip primary value: 16px at weight 600 — maps to Body row
 - `tabular-nums` class applied to all numeric stat displays for alignment
-- `tracking-tight` on large numeric displays
+- `tracking-tight` on large numeric displays (24px stat values)
+
+Weights in use: 400 (regular) and 600 (semibold) only. `font-bold` (700) is not used in this phase.
 
 Source: `frontend/src/pages/StatisticsDetail.jsx` lines 71–75, RESEARCH.md Pattern 5 and Summary Stat Card example
 
@@ -155,7 +159,7 @@ Source: CONTEXT.md locked decision — "Year selector (dropdown or arrows) to sw
 
 - **Layout:** 3 cards in a row (flex or grid-cols-3)
 - **Stats:** Total usage + unit | Total cost | Average per day
-- **Value typography:** 24px bold, `tabular-nums`, `tracking-tight`
+- **Value typography:** 24px semibold (600), `tabular-nums`, `tracking-tight`
 - **Unit suffix:** 14px regular, `text-muted-foreground`, inline after value
 - **Label:** 12px regular, `text-muted-foreground`, above value
 - **Card:** shadcn `<Card><CardContent>` with `p-4` padding
@@ -178,8 +182,8 @@ Source: RESEARCH.md Pattern 3 (stacked area), CONTEXT.md locked decision — "To
 ### Chart Tooltips (all charts)
 
 - **Container:** `bg-card border border-border/50 rounded-lg px-3.5 py-2.5 shadow-xl backdrop-blur-sm`
-- **Date label:** `text-[11px] text-muted-foreground mb-1`
-- **Value:** `text-[15px] font-semibold text-foreground tabular-nums tracking-tight`
+- **Date label:** 12px regular, `text-muted-foreground`, `mb-1`
+- **Value:** 16px semibold (600), `text-foreground tabular-nums tracking-tight`
 - **No units in tooltip** (locked decision from CONTEXT.md)
 
 Source: `frontend/src/pages/StatisticsDetail.jsx` lines 69–75
@@ -201,7 +205,7 @@ Source: Claude's discretion (established animate-pulse pattern, standard shadcn 
 - **Icon:** `HiOutlineChartBar` at 32px, `text-muted-foreground`
 - **Heading:** "No data" (i18n key: `statisticsDetail.emptyMeter.heading`)
 - **Body:** "No entries recorded for this meter yet." (i18n key: `statisticsDetail.emptyMeter.body`)
-- **Typography:** Heading 14px semibold `text-foreground`, body 13px regular `text-muted-foreground`
+- **Typography:** Heading 14px semibold (600) `text-foreground`, body 14px regular `text-muted-foreground`
 - **Min height:** 160px container so the chart area doesn't collapse
 
 Source: Claude's discretion (locked: "Empty state handling per meter tab" is Claude's discretion per CONTEXT.md)
