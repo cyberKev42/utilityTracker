@@ -19,7 +19,7 @@ Replaced hardcoded Water/Power/Fuel categories with dynamic sections/meters syst
 
 ## Current Milestone
 
-### 🚧 v1.1 Polish & UX
+### v1.1 Polish & UX
 
 **Milestone Goal:** Eliminate loading friction, fix mobile layout issues, and deliver UX improvements across navigation, data entry, dashboard, and settings.
 
@@ -39,7 +39,12 @@ Replaced hardcoded Water/Power/Fuel categories with dynamic sections/meters syst
   1. User navigates between Dashboard, Statistics, AddEntry, and Settings without a full-page reload or loading spinner appearing
   2. User creates or edits a section or meter in Settings and the change appears immediately in the UI without refreshing the page
   3. User clicks a section card on the Dashboard and lands on the Statistics page with that section already selected
-**Plans**: TBD
+**Plans:** 3 plans
+
+Plans:
+- [ ] 07-01-PLAN.md — Centralized EntriesDataContext + consume in Dashboard/Statistics (PERF-01)
+- [ ] 07-02-PLAN.md — Optimistic mutations in SectionsContext + withRetry (PERF-02)
+- [ ] 07-03-PLAN.md — Dashboard sparklines + statistics linking + back button (NAVI-01)
 
 ### Phase 8: Data Entry & Mobile
 **Goal**: Data entry works correctly across locales and all pages render without layout breakage on mobile
@@ -73,6 +78,6 @@ Replaced hardcoded Water/Power/Fuel categories with dynamic sections/meters syst
 | 4. Section & Meter Management UI | v1.0 | 2/2 | Complete | 2026-03-19 |
 | 5. Dynamic Entry Form | v1.0 | 2/2 | Complete | 2026-03-19 |
 | 6. Statistics & Display | v1.0 | 2/2 | Complete | 2026-03-20 |
-| 7. Performance & Navigation | v1.1 | 0/TBD | Not started | - |
+| 7. Performance & Navigation | v1.1 | 0/3 | Not started | - |
 | 8. Data Entry & Mobile | v1.1 | 0/TBD | Not started | - |
 | 9. Dashboard & Settings Polish | v1.1 | 0/TBD | Not started | - |
