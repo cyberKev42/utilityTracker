@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { getStats, getEntries, getTrend } from '../services/entriesService';
+import { useEntriesData } from '../hooks/useEntriesData';
 import { useCurrency } from '../hooks/useCurrency';
 import { useSections } from '../hooks/useSections';
 import { ICON_MAP } from '../components/settings/IconPickerGrid';
@@ -51,31 +50,7 @@ export default function Dashboard() {
   const { t } = useTranslation();
   const { formatCurrency } = useCurrency();
   const { sections: contextSections } = useSections();
-  const [stats, setStats] = useState(null);
-  const [trend, setTrend] = useState(null);
-  const [recentEntries, setRecentEntries] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    async function load() {
-      try {
-        const [statsData, entriesData, trendData] = await Promise.all([
-          getStats(),
-          getEntries(),
-          getTrend(),
-        ]);
-        setStats(statsData);
-        setRecentEntries(entriesData.slice(0, 5));
-        setTrend(trendData);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, []);
+  const { stats, recentEntries, trend, loading, error } = useEntriesData();
 
   // Build section lookup from context for icons
   const sectionLookup = {};
@@ -124,12 +99,17 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent"
-        />
+      <div className="space-y-6">
+        <div>
+          <div className="h-6 w-32 bg-card animate-pulse rounded" />
+          <div className="h-4 w-48 bg-card animate-pulse rounded mt-2" />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="bg-card animate-pulse rounded-lg h-[140px]" />
+          <div className="bg-card animate-pulse rounded-lg h-[140px]" />
+          <div className="bg-card animate-pulse rounded-lg h-[140px]" />
+          <div className="bg-card animate-pulse rounded-lg h-[140px]" />
+        </div>
       </div>
     );
   }
