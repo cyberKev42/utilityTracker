@@ -1,8 +1,8 @@
-# UtilityTracker v2
+# UtilityTracker
 
 ## What This Is
 
-A personal utility tracking web app (React + Express + PostgreSQL) that lets users log water, power, and fuel consumption, view statistics and cost breakdowns, with bilingual support (English/German). This milestone adds custom sections, sub-meters, flexible entry modes, and corrected units.
+A personal utility tracking web app (React + Express + PostgreSQL) that lets users log consumption for any utility type across multiple meters, view statistics and cost breakdowns, with bilingual support (English/German).
 
 ## Core Value
 
@@ -20,18 +20,19 @@ Users can track any utility across multiple meters with accurate, flexible data 
 - ✓ i18n support for English and German — existing
 - ✓ Responsive UI with Tailwind CSS and Framer Motion animations — existing
 - ✓ Year/month breakdown queries and trend calculations — existing
+- ✓ Custom sections — user can create new utility sections with name, unit, and icon — v1.0
+- ✓ Sections are fully editable — rename, reorder, delete, or archive (including default Water/Power/Fuel) — v1.0
+- ✓ Subsections (meters) — each section supports multiple meters (e.g. Water Meter 1, Water Meter 2) — v1.0
+- ✓ Per-meter and aggregated section statistics — v1.0
+- ✓ Entry mode A: enter usage amount for a date or date range (split evenly across days), added to running total — v1.0
+- ✓ Entry mode B: enter current meter reading, app calculates usage since last reading — v1.0
+- ✓ First meter entry prompts for initial reading (usage = 0 for first entry) — v1.0
+- ✓ Change default Power unit to "kWh" and Water unit to "m³" — v1.0
+- ✓ All new UI text, labels, and messages translated into both English and German — v1.0
 
 ### Active
 
-- [ ] Custom sections — user can create new utility sections with name, unit, and icon
-- [ ] Sections are fully editable — rename, reorder, delete, or archive (including default Water/Power/Fuel)
-- [ ] Subsections (meters) — each section supports multiple meters (e.g. Water Meter 1, Water Meter 2)
-- [ ] Per-meter and aggregated section statistics
-- ✓ Entry mode A: enter usage amount for a date or date range (split evenly across days), added to running total — Validated in Phase 05: dynamic-entry-form
-- ✓ Entry mode B: enter current meter reading, app calculates usage since last reading — Validated in Phase 05: dynamic-entry-form
-- ✓ First meter entry prompts for initial reading (usage = 0 for first entry) — Validated in Phase 05: dynamic-entry-form
-- [ ] Change default Power unit to "kWh" and Water unit to "m³"
-- [ ] All new UI text, labels, and messages translated into both English and German
+*No active requirements. Next milestone not yet planned.*
 
 ### Out of Scope
 
@@ -42,10 +43,10 @@ Users can track any utility across multiple meters with accurate, flexible data 
 
 ## Context
 
-- Existing app has hardcoded Water/Power/Fuel categories in both frontend and backend
-- Database schema will need new tables for sections, subsections (meters), and updated entries schema
-- Statistics and charts currently assume 3 fixed categories — must become dynamic
-- Settings page manages unit prices per category — needs to support dynamic sections
+- App uses dynamic sections/meters system (shipped v1.0) — no more hardcoded Water/Power/Fuel
+- Database has `utility_sections` and `utility_meters` tables with full CRUD API
+- Statistics and charts render dynamically based on user-created sections
+- Settings page supports section/meter management with drag-and-drop reordering
 - Deployed on Railway with Nixpacks
 
 ## Constraints
@@ -58,11 +59,11 @@ Users can track any utility across multiple meters with accurate, flexible data 
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Sections are fully editable including defaults | User wants flexibility to rename/reorder/delete Water/Power/Fuel | — Pending |
-| Both per-meter and section-level stats | User wants granular visibility into each meter plus rolled-up totals | — Pending |
-| Date range entries split evenly across days | Most intuitive for billing periods where daily usage is unknown | — Pending |
-| First meter reading has usage = 0 | Establishes baseline without assuming prior consumption | — Pending |
-| Archive + delete options for sections | Preserve historical data when hiding, permanent removal when desired | — Pending |
+| Sections are fully editable including defaults | User wants flexibility to rename/reorder/delete Water/Power/Fuel | Shipped v1.0 — all sections treated equally |
+| Both per-meter and section-level stats | User wants granular visibility into each meter plus rolled-up totals | Shipped v1.0 — meter tabs + section aggregation |
+| Date range entries split evenly across days | Most intuitive for billing periods where daily usage is unknown | Shipped v1.0 — split preview in entry form |
+| First meter reading has usage = 0 | Establishes baseline without assuming prior consumption | Shipped v1.0 — clean baseline, no negative deltas |
+| Archive + delete options for sections | Preserve historical data when hiding, permanent removal when desired | Deferred to v2 (SECT-05) |
 
 ---
-*Last updated: 2026-03-19 — Phase 05 complete (dynamic entry form with cascading dropdowns, split preview, reading mode)*
+*Last updated: 2026-03-20 — Milestone v1.0 shipped*
