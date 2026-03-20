@@ -152,17 +152,36 @@
     "water": "Water",
     "fuel": "Fuel",
     "noMonthlyData": "Not enough data for a time trend yet.",
-    "noCategoryData": "No category data available."
+    "noCategoryData": "No category data available.",
+    "usage": "Usage",
+    "granularity": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly"
+    }
   },
   "statisticsDetail": {
     "back": "Back to Statistics",
     "title": "{{type}} Details",
-    "description": "Detailed cost breakdown for {{year}}.",
+    "description": "Usage and cost breakdown for {{year}}.",
     "noData": "No data available for this utility type. Add entries to see the breakdown.",
     "monthlyOverview": "Monthly Overview",
     "monthlyOverviewDesc": "Total cost per month in {{year}}",
     "dailyBreakdown": "Daily Breakdown",
-    "dailyBreakdownDesc": "Cost per day for the selected month"
+    "dailyBreakdownDesc": "Cost per day for the selected month",
+    "allMeters": "All",
+    "totalUsage": "Total Usage",
+    "totalCost": "Total Cost",
+    "dailyAvg": "Daily Avg",
+    "emptyMeter": {
+      "heading": "No data",
+      "body": "No entries recorded for this meter yet."
+    },
+    "emptySection": {
+      "heading": "No entries yet",
+      "body": "Add your first entry to see statistics here."
+    },
+    "errorLoad": "Could not load statistics. Check your connection and try again."
   },
   "sections": {
     "loadError": "Failed to load sections.",

@@ -150,17 +150,36 @@
     "water": "Wasser",
     "fuel": "Brennstoff",
     "noMonthlyData": "Noch nicht genug Daten für einen Zeitverlauf.",
-    "noCategoryData": "Keine Kategoriedaten vorhanden."
+    "noCategoryData": "Keine Kategoriedaten vorhanden.",
+    "usage": "Verbrauch",
+    "granularity": {
+      "daily": "Täglich",
+      "weekly": "Wöchentlich",
+      "monthly": "Monatlich"
+    }
   },
   "statisticsDetail": {
     "back": "Zurück zu Statistiken",
     "title": "{{type}} Details",
-    "description": "Detaillierte Kostenaufschlüsselung für {{year}}.",
+    "description": "Verbrauchs- und Kostenaufstellung für {{year}}.",
     "noData": "Keine Daten für diese Verbrauchsart vorhanden. Fügen Sie Einträge hinzu.",
     "monthlyOverview": "Monatsübersicht",
     "monthlyOverviewDesc": "Gesamtkosten pro Monat in {{year}}",
     "dailyBreakdown": "Tagesaufschlüsselung",
-    "dailyBreakdownDesc": "Kosten pro Tag für den ausgewählten Monat"
+    "dailyBreakdownDesc": "Kosten pro Tag für den ausgewählten Monat",
+    "allMeters": "Alle",
+    "totalUsage": "Gesamtverbrauch",
+    "totalCost": "Gesamtkosten",
+    "dailyAvg": "Tagesschnitt",
+    "emptyMeter": {
+      "heading": "Keine Daten",
+      "body": "Noch keine Einträge für diesen Zähler."
+    },
+    "emptySection": {
+      "heading": "Noch keine Einträge",
+      "body": "Erstelle deinen ersten Eintrag, um Statistiken zu sehen."
+    },
+    "errorLoad": "Statistiken konnten nicht geladen werden. Prüfe deine Verbindung."
   },
   "sections": {
     "loadError": "Abschnitte konnten nicht geladen werden.",
