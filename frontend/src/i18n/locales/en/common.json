@@ -169,6 +169,8 @@
     "monthlyOverviewDesc": "Total cost per month in {{year}}",
     "dailyBreakdown": "Daily Breakdown",
     "dailyBreakdownDesc": "Cost per day for the selected month",
+    "overview": "Overview",
+    "overviewDesc": "Usage and cost trends for {{year}}",
     "allMeters": "All",
     "totalUsage": "Total Usage",
     "totalCost": "Total Cost",
