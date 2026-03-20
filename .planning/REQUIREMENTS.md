@@ -57,12 +57,21 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
+| PERF-01 | Phase 7 | Pending |
+| PERF-02 | Phase 7 | Pending |
+| NAVI-01 | Phase 7 | Pending |
+| ENTR-01 | Phase 8 | Pending |
+| ENTR-02 | Phase 8 | Pending |
+| MOBI-01 | Phase 8 | Pending |
+| DASH-01 | Phase 9 | Pending |
+| SETT-01 | Phase 9 | Pending |
+| VISL-01 | Phase 9 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 9 total
-- Mapped to phases: 0
-- Unmapped: 9 ⚠️
+- Mapped to phases: 9
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-03-20*
-*Last updated: 2026-03-20 after initial definition*
+*Last updated: 2026-03-20 — Traceability populated after roadmap creation*
