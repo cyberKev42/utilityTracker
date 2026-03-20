@@ -9,8 +9,8 @@ Requirements for polish & UX milestone. Each maps to roadmap phases.
 
 ### Performance
 
-- [ ] **PERF-01**: App navigates between pages without full-page reload or loading spinners — feels like a single-page app
-- [ ] **PERF-02**: Creating/editing sections and meters in settings updates the UI instantly without page refresh
+- [x] **PERF-01**: App navigates between pages without full-page reload or loading spinners — feels like a single-page app
+- [x] **PERF-02**: Creating/editing sections and meters in settings updates the UI instantly without page refresh
 
 ### Mobile
 
@@ -57,8 +57,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PERF-01 | Phase 7 | Pending |
-| PERF-02 | Phase 7 | Pending |
+| PERF-01 | Phase 7 | Complete |
+| PERF-02 | Phase 7 | Complete |
 | NAVI-01 | Phase 7 | Pending |
 | ENTR-01 | Phase 8 | Pending |
 | ENTR-02 | Phase 8 | Pending |
