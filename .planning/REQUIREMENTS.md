@@ -16,8 +16,8 @@
 
 - [x] **METR-01**: User can add multiple meters to any section (e.g. Water Meter 1, Water Meter 2)
 - [x] **METR-02**: User can rename or delete a meter
-- [ ] **METR-03**: User can view statistics per individual meter
-- [ ] **METR-04**: User can view aggregated statistics rolled up to the section level
+- [x] **METR-03**: User can view statistics per individual meter
+- [x] **METR-04**: User can view aggregated statistics rolled up to the section level
 
 ### Entry Modes
 
@@ -30,7 +30,7 @@
 
 - [x] **UNIT-01**: Power section defaults to "kWh" unit
 - [x] **UNIT-02**: Water section defaults to "m³" unit
-- [ ] **UNIT-03**: Custom sections display their user-defined unit throughout the app
+- [x] **UNIT-03**: Custom sections display their user-defined unit throughout the app
 
 ### Internationalization
 
@@ -72,15 +72,15 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SECT-04 | Phase 4 | Complete |
 | METR-01 | Phase 4 | Complete |
 | METR-02 | Phase 4 | Complete |
-| METR-03 | Phase 6 | Pending |
-| METR-04 | Phase 6 | Pending |
+| METR-03 | Phase 6 | Complete |
+| METR-04 | Phase 6 | Complete |
 | ENTR-01 | Phase 5 | Complete |
 | ENTR-02 | Phase 5 | Complete |
 | ENTR-03 | Phase 5 | Complete |
 | ENTR-04 | Phase 5 | Complete |
 | UNIT-01 | Phase 1 | Complete |
 | UNIT-02 | Phase 1 | Complete |
-| UNIT-03 | Phase 6 | Pending |
+| UNIT-03 | Phase 6 | Complete |
 | I18N-01 | Phase 4 | Complete |
 | I18N-02 | Phase 4 | Complete |
 

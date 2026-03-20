@@ -104,10 +104,10 @@ Plans:
   2. User can view usage breakdown per individual meter within a section
   3. User can view aggregated totals rolled up to the section level
   4. All units shown throughout the app match each section's configured unit (e.g. a custom "Gas" section shows "m³" if that is its unit)
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 Plans:
-- [ ] 04-01-PLAN.md — Foundation components (IconPickerGrid, SectionEditDialog, MeterRow) + dnd-kit install + i18n keys
-- [ ] 04-02-PLAN.md — SectionCard, ArchivedSectionsArea, SectionsManagementCard, Settings.jsx integration + human verification
+- [ ] 06-01-PLAN.md — StatisticsDetail rework: meter tabs, stacked area chart, usage/cost toggle, year selector, summary stats, i18n keys
+- [ ] 06-02-PLAN.md — Statistics overview: usage/cost toggle, section card units, SpendingLineChart granularity toggle, human verification
 
 ## Progress
 
@@ -121,4 +121,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 3. SectionsContext | 2/2 | Complete   | 2026-03-18 |
 | 4. Section & Meter Management UI | 2/2 | Complete   | 2026-03-19 |
 | 5. Dynamic Entry Form | 0/2 | Not started | - |
-| 6. Statistics & Display | 0/TBD | Not started | - |
+| 6. Statistics & Display | 1/2 | In Progress|  |

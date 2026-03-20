@@ -10,6 +10,8 @@ export async function getEntries(filters = {}) {
   if (filters.meter_id) params.set('meter_id', filters.meter_id);
   if (filters.from) params.set('from', filters.from);
   if (filters.to) params.set('to', filters.to);
+  if (filters.year) params.set('year', String(filters.year));
+  if (filters.limit) params.set('limit', String(filters.limit));
   const query = params.toString();
   return api.get(`/api/entries${query ? `?${query}` : ''}`);
 }

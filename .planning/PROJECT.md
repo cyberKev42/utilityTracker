@@ -27,9 +27,9 @@ Users can track any utility across multiple meters with accurate, flexible data 
 - [ ] Sections are fully editable — rename, reorder, delete, or archive (including default Water/Power/Fuel)
 - [ ] Subsections (meters) — each section supports multiple meters (e.g. Water Meter 1, Water Meter 2)
 - [ ] Per-meter and aggregated section statistics
-- [ ] Entry mode A: enter usage amount for a date or date range (split evenly across days), added to running total
-- [ ] Entry mode B: enter current meter reading, app calculates usage since last reading
-- [ ] First meter entry prompts for initial reading (usage = 0 for first entry)
+- ✓ Entry mode A: enter usage amount for a date or date range (split evenly across days), added to running total — Validated in Phase 05: dynamic-entry-form
+- ✓ Entry mode B: enter current meter reading, app calculates usage since last reading — Validated in Phase 05: dynamic-entry-form
+- ✓ First meter entry prompts for initial reading (usage = 0 for first entry) — Validated in Phase 05: dynamic-entry-form
 - [ ] Change default Power unit to "kWh" and Water unit to "m³"
 - [ ] All new UI text, labels, and messages translated into both English and German
 
@@ -65,4 +65,4 @@ Users can track any utility across multiple meters with accurate, flexible data 
 | Archive + delete options for sections | Preserve historical data when hiding, permanent removal when desired | — Pending |
 
 ---
-*Last updated: 2026-03-18 after initialization*
+*Last updated: 2026-03-19 — Phase 05 complete (dynamic entry form with cascading dropdowns, split preview, reading mode)*
