@@ -53,13 +53,14 @@ Exceptions:
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
 | Body | 14px | 400 (regular) | 1.5 |
-| Label | 12px | 500 (medium) | 1.4 |
+| Label | 12px | 400 (regular) | 1.4 |
 | Heading | 20px | 600 (semibold) | 1.2 |
-| Display | 28px | 700 (bold) | 1.15 |
+| Display | 28px | 600 (semibold) | 1.15 |
 
 Notes:
 - Font is Inter; letter-spacing: -0.011em applied globally (index.css)
 - font-feature-settings: "cv02", "cv03", "cv04", "cv11" applied globally
+- Exactly 2 weights declared: 400 (regular) for body and label roles; 600 (semibold) for heading and display roles
 - No new font sizes or weights introduced by this phase — all new UI elements (sparkline, back button, delete animation) use existing roles above
 
 ---
@@ -106,6 +107,8 @@ Sparkline data key: `usage_amount` (default per RESEARCH.md open question recomm
 
 Data shape passed to Recharts: `[{ value: number }, ...]` — normalize from `deriveWeeklyData` output to use key `value` for `dataKey="value"` in `<Line>`.
 
+**Accessibility:** The sparkline wrapper element must carry `aria-label="View {sectionName} statistics"` (e.g. `aria-label="View Electricity statistics"`). This label is interpolated from the section name at render time. The element must also have `role="button"` if rendered as a non-`<button>` element, or be wrapped in a `<button>` element to receive keyboard focus.
+
 ### Delete Button Animation (D-07, D-08)
 
 | State | Visual |
@@ -136,15 +139,15 @@ Choice: loading skeleton (not blank space) — per Claude's Discretion. Consiste
 
 ## Copywriting Contract
 
-| Element | Copy |
-|---------|------|
-| Primary CTA — section stats back button | "Back to Statistics" (D-12) |
-| Sparkline hover tooltip (none) | No tooltip — sparkline is a visual indicator only, not interactive data |
-| Delete button — resting | "Delete" |
-| Delete button — deleting state | "Deleting…" |
-| Empty state — sparkline with no data | No copy — render flat sparkline line (graceful Recharts fallback); no text label at icon scale |
-| Error state — mutation rollback | Silent — no visible error copy on optimistic rollback failure per D-06 (silent retry then revert) |
-| First-visit loading — section cards | No copy in skeleton state — structural skeleton only (shape, no text placeholders) |
+| Element | Copy | Notes |
+|---------|------|-------|
+| Primary CTA — section stats back button | "Back to Statistics" (D-12) | |
+| Sparkline hover tooltip (none) | No tooltip — sparkline is a visual indicator only, not interactive data | |
+| Delete button — resting | "Delete" | Inherited pattern from existing app — single-word CTA without noun. Low risk; matches established app-wide delete affordance. Do not change in this phase. |
+| Delete button — deleting state | "Deleting…" | |
+| Empty state — sparkline with no data | No copy — render flat sparkline line (graceful Recharts fallback); no text label at icon scale | |
+| Error state — mutation rollback | Silent — no visible error copy on optimistic rollback failure per D-06 (silent retry then revert) | |
+| First-visit loading — section cards | No copy in skeleton state — structural skeleton only (shape, no text placeholders) | |
 
 No destructive confirmation dialogs in this phase. Deletes already exist in the app with existing dialogs — this phase only adds a loading animation to the delete button (D-08), not a new confirmation pattern.
 
@@ -156,7 +159,7 @@ New and modified components for this phase:
 
 | Component | Status | Location | Notes |
 |-----------|--------|----------|-------|
-| `Sparkline` | NEW | `src/components/charts/Sparkline.jsx` | Recharts LineChart, no axes, 48×24px, accepts `data` array of `{ value }` and `color` prop |
+| `Sparkline` | NEW | `src/components/charts/Sparkline.jsx` | Recharts LineChart, no axes, 48×24px, accepts `data` array of `{ value }` and `color` prop; wrapper must render `aria-label="View {sectionName} statistics"` and be keyboard-focusable |
 | `EntriesDataContext` | NEW | `src/context/EntriesDataContext.jsx` | Centralized stats/entries cache; `loading` true only on first fetch |
 | `useEntriesData` hook | NEW | `src/hooks/useEntriesData.js` | Consumer hook for EntriesDataContext |
 | `withRetry` utility | NEW | `src/utils/withRetry.js` | 10-line exponential backoff, 3 attempts, 400ms base delay |
@@ -198,9 +201,11 @@ No new shadcn components added in this phase. All UI uses existing components fr
 | Color tokens (all HSL values) | `frontend/src/index.css` — CSS custom properties |
 | Font family, border-radius, animation keyframes | `frontend/tailwind.config.js` |
 | Spacing scale | Standard 8-point grid (default); 44px touch target from index.css |
-| Typography sizes/weights | CONTEXT.md locked decisions + existing app patterns (Dashboard.jsx) |
+| Typography sizes/weights | CONTEXT.md locked decisions + existing app patterns (Dashboard.jsx); weights collapsed to 2 per checker requirement |
 | Sparkline dimensions (48×24px) | RESEARCH.md Pattern 4 — Recharts sparkline example |
+| Sparkline aria-label | Checker flag — Dimension 2 Visuals; pattern: `aria-label="View {sectionName} statistics"` |
 | Interaction states (D-05 through D-13) | CONTEXT.md locked decisions |
 | Section color palette | `Dashboard.jsx` SECTION_COLORS constant (amber/sky/orange/emerald/violet/rose) |
 | Delete animation pattern | RESEARCH.md Code Examples — delete button animation |
+| "Delete" inherited pattern note | Checker flag — Dimension 1 Copywriting; existing app convention, not introduced by this phase |
 | No light mode | `index.css` — color-scheme: dark; single theme only |
