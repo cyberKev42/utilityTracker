@@ -59,7 +59,7 @@ Exceptions:
 | Heading / page title | 20px | 600 (semibold) | 1.2 |
 
 Notes:
-- Chart axis tick labels: 12px at weight 400 — smallest permitted size, used only for Recharts axis ticks
+- Chart axis tick labels: 14px at weight 400 — maps to Label row
 - Stat value suffix (unit label): 14px at weight 400, `text-muted-foreground` — e.g. "1,245 **kWh**" suffix; maps to Label row
 - Tooltip primary value: 16px at weight 600 — maps to Body row
 - `tabular-nums` class applied to all numeric stat displays for alignment
@@ -161,7 +161,7 @@ Source: CONTEXT.md locked decision — "Year selector (dropdown or arrows) to sw
 - **Stats:** Total usage + unit | Total cost | Average per day
 - **Value typography:** 24px semibold (600), `tabular-nums`, `tracking-tight`
 - **Unit suffix:** 14px regular, `text-muted-foreground`, inline after value
-- **Label:** 12px regular, `text-muted-foreground`, above value
+- **Label:** 14px regular, `text-muted-foreground`, above value
 - **Card:** shadcn `<Card><CardContent>` with `p-4` padding
 - **No entry count stat** (locked decision from CONTEXT.md)
 
@@ -182,7 +182,7 @@ Source: RESEARCH.md Pattern 3 (stacked area), CONTEXT.md locked decision — "To
 ### Chart Tooltips (all charts)
 
 - **Container:** `bg-card border border-border/50 rounded-lg px-3.5 py-2.5 shadow-xl backdrop-blur-sm`
-- **Date label:** 12px regular, `text-muted-foreground`, `mb-1`
+- **Date label:** 14px regular, `text-muted-foreground`, `mb-1`
 - **Value:** 16px semibold (600), `text-foreground tabular-nums tracking-tight`
 - **No units in tooltip** (locked decision from CONTEXT.md)
 
