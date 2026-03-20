@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { getStats, getEntries } from '../services/entriesService';
 import { useSections } from '../hooks/useSections';
+import { useCurrency } from '../hooks/useCurrency';
 import { ICON_MAP } from '../components/settings/IconPickerGrid';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -40,34 +41,65 @@ const cardHover = {
   transition: { duration: 0.15, ease: 'easeOut' },
 };
 
-function deriveMonthlyData(entries) {
+function deriveMonthlyData(entries, mode) {
+  const field = mode === 'usage' ? 'usage_amount' : 'cost_amount';
   const byMonth = {};
   for (const entry of entries) {
     const d = new Date(entry.date);
     const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
     if (!byMonth[key]) byMonth[key] = { month: key, total_cost: 0 };
-    byMonth[key].total_cost += Number(entry.cost_amount) || 0;
+    byMonth[key].total_cost += Number(entry[field]) || 0;
   }
   return Object.values(byMonth).sort((a, b) => a.month.localeCompare(b.month));
+}
+
+function deriveWeeklyData(entries, mode) {
+  const field = mode === 'usage' ? 'usage_amount' : 'cost_amount';
+  const byWeek = {};
+  for (const entry of entries) {
+    const d = new Date(entry.date);
+    const day = d.getDay() || 7;
+    const monday = new Date(d);
+    monday.setDate(d.getDate() - day + 1);
+    const key = monday.toISOString().slice(0, 10);
+    if (!byWeek[key]) byWeek[key] = { month: key, total_cost: 0 };
+    byWeek[key].total_cost += Number(entry[field]) || 0;
+  }
+  return Object.values(byWeek).sort((a, b) => a.month.localeCompare(b.month));
+}
+
+function deriveDailyData(entries, mode) {
+  const field = mode === 'usage' ? 'usage_amount' : 'cost_amount';
+  const byDay = {};
+  for (const entry of entries) {
+    const key = entry.date?.slice(0, 10);
+    if (!key) continue;
+    if (!byDay[key]) byDay[key] = { month: key, total_cost: 0 };
+    byDay[key].total_cost += Number(entry[field]) || 0;
+  }
+  return Object.values(byDay).sort((a, b) => a.month.localeCompare(b.month));
 }
 
 export default function Statistics() {
   const { t } = useTranslation();
   const { sections: contextSections } = useSections();
+  const { formatCurrency } = useCurrency();
   const [stats, setStats] = useState(null);
-  const [monthlyData, setMonthlyData] = useState(null);
+  const [rawEntries, setRawEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [viewMode, setViewMode] = useState('usage');
+  const [granularity, setGranularity] = useState('weekly');
 
   useEffect(() => {
     async function load() {
       try {
         const [statsData, entriesData] = await Promise.all([
           getStats(),
-          getEntries(),
+          getEntries({ limit: 500 }),
         ]);
         setStats(statsData);
-        setMonthlyData(deriveMonthlyData(entriesData));
+        setRawEntries(entriesData);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -111,7 +143,7 @@ export default function Statistics() {
       <motion.div variants={stagger} initial="initial" animate="animate" className="space-y-6">
         <motion.div variants={fadeUp}>
           <h1 className="text-xl font-semibold text-foreground tracking-tight">{t('statistics.title')}</h1>
-          <p className="text-[13px] text-muted-foreground mt-1">{t('statistics.description')}</p>
+          <p className="text-sm text-muted-foreground mt-1">{t('statistics.description')}</p>
         </motion.div>
         <motion.div variants={fadeUp}>
           <Card>
@@ -134,17 +166,39 @@ export default function Statistics() {
     );
   }
 
-  // Build section lookup for icons
+  // Build section lookup for icons and units
   const sectionLookup = {};
   for (const s of contextSections) {
     sectionLookup[s.name] = s;
   }
 
+  // Derive chart data based on granularity and viewMode
+  const chartData = granularity === 'monthly'
+    ? deriveMonthlyData(rawEntries, viewMode)
+    : granularity === 'weekly'
+      ? deriveWeeklyData(rawEntries, viewMode)
+      : deriveDailyData(rawEntries, viewMode);
+
   return (
     <motion.div variants={stagger} initial="initial" animate="animate" className="space-y-6">
       <motion.div variants={fadeUp}>
-        <h1 className="text-xl font-semibold text-foreground tracking-tight">{t('statistics.title')}</h1>
-        <p className="text-[13px] text-muted-foreground mt-1">{t('statistics.description')}</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-xl font-semibold text-foreground tracking-tight">{t('statistics.title')}</h1>
+            <p className="text-sm text-muted-foreground mt-1">{t('statistics.description')}</p>
+          </div>
+          <div className="flex rounded-lg border border-border/40 overflow-hidden text-xs font-medium">
+            {[{ value: 'usage', label: t('statistics.usage') }, { value: 'cost', label: t('statistics.cost') }].map(({ value, label }) => (
+              <button
+                key={value}
+                onClick={() => setViewMode(value)}
+                className={`px-3 py-1.5 transition-colors ${viewMode === value ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
       </motion.div>
 
       <div className="grid grid-cols-3 gap-3">
@@ -161,9 +215,17 @@ export default function Statistics() {
                     <div className={`h-9 w-9 rounded-lg ${colors.bgClass} flex items-center justify-center shrink-0`}>
                       <Icon className={`h-[18px] w-[18px] ${colors.colorClass}`} />
                     </div>
-                    <span className="text-sm font-medium text-foreground">
-                      {section.name}
-                    </span>
+                    <div>
+                      <span className="text-sm font-medium text-foreground">
+                        {section.name}
+                      </span>
+                      <div className="text-xs text-muted-foreground mt-0.5">
+                        {viewMode === 'usage'
+                          ? `${Number(section.total_usage || 0).toLocaleString()} ${ctxSection?.unit || ''}`
+                          : formatCurrency(Number(section.total_cost || 0))
+                        }
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               </Link>
@@ -182,7 +244,12 @@ export default function Statistics() {
               <p className="text-xs text-muted-foreground mb-4">
                 {t('statistics.spendingOverTimeDesc')}
               </p>
-              <SpendingLineChart data={monthlyData} />
+              <SpendingLineChart
+                data={chartData}
+                granularity={granularity}
+                onGranularityChange={setGranularity}
+                viewMode={viewMode}
+              />
             </CardContent>
           </Card>
         </motion.div>
