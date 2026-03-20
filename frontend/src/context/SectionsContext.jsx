@@ -3,6 +3,7 @@ import { useAuth } from '../hooks/useAuth';
 import * as sectionsService from '../services/sectionsService';
 import { Button } from '../components/ui/button';
 import { useTranslation } from 'react-i18next';
+import { withRetry } from '../utils/withRetry';
 
 export const SectionsContext = createContext(null);
 
@@ -12,10 +13,10 @@ export function SectionsProvider({ children }) {
 
   const [sections, setSections] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const fetchSections = useCallback(async () => {
-    setLoading(true);
     setError(null);
     try {
       const data = await sectionsService.getSections();
@@ -24,6 +25,7 @@ export function SectionsProvider({ children }) {
       setError(err);
     } finally {
       setLoading(false);
+      setInitialLoading(false);
     }
   }, []);
 
@@ -32,61 +34,113 @@ export function SectionsProvider({ children }) {
       setSections([]);
       setError(null);
       setLoading(false);
+      setInitialLoading(false);
       return;
     }
     fetchSections();
   }, [user, fetchSections]);
 
-  // Server-wait mutations
+  // Optimistic mutations
   const createSection = useCallback(async (data) => {
-    const result = await sectionsService.createSection(data);
-    await fetchSections();
-    return result;
-  }, [fetchSections]);
+    const tempId = `temp-${Date.now()}`;
+    const optimistic = { id: tempId, ...data, meters: [], sort_order: sections.length };
+    setSections((prev) => [...prev, optimistic]);
+    try {
+      const result = await withRetry(() => sectionsService.createSection(data));
+      setSections((prev) => prev.map((s) => s.id === tempId ? { ...result, meters: result.meters || [] } : s));
+      return result;
+    } catch (err) {
+      setSections((prev) => prev.filter((s) => s.id !== tempId));
+      throw err;
+    }
+  }, [sections.length]);
 
   const updateSection = useCallback(async (id, data) => {
-    const result = await sectionsService.updateSection(id, data);
-    await fetchSections();
-    return result;
-  }, [fetchSections]);
+    let previous;
+    setSections((prev) => {
+      previous = prev.find((s) => s.id === id);
+      return prev.map((s) => s.id === id ? { ...s, ...data } : s);
+    });
+    try {
+      const result = await withRetry(() => sectionsService.updateSection(id, data));
+      setSections((prev) => prev.map((s) => s.id === id ? { ...result, meters: s.meters } : s));
+      return result;
+    } catch (err) {
+      setSections((prev) => prev.map((s) => s.id === id ? previous : s));
+      throw err;
+    }
+  }, []);
 
+  // Server-confirmed deletes (per D-07)
   const deleteSection = useCallback(async (id) => {
-    const result = await sectionsService.deleteSection(id);
-    await fetchSections();
+    const result = await withRetry(() => sectionsService.deleteSection(id));
+    setSections((prev) => prev.filter((s) => s.id !== id));
     return result;
-  }, [fetchSections]);
+  }, []);
 
   const archiveSection = useCallback(async (id) => {
     const result = await sectionsService.archiveSection(id);
-    await fetchSections();
+    setSections((prev) => prev.filter((s) => s.id !== id));
     return result;
-  }, [fetchSections]);
+  }, []);
 
   const unarchiveSection = useCallback(async (id) => {
     const result = await sectionsService.unarchiveSection(id);
+    // Re-fetch all to get the unarchived section in the right position
     await fetchSections();
     return result;
   }, [fetchSections]);
 
   const createMeter = useCallback(async (sectionId, data) => {
-    const result = await sectionsService.createMeter(sectionId, data);
-    await fetchSections();
-    return result;
-  }, [fetchSections]);
+    const tempId = `temp-${Date.now()}`;
+    const optimistic = { id: tempId, ...data };
+    setSections((prev) => prev.map((s) =>
+      s.id === sectionId ? { ...s, meters: [...(s.meters || []), optimistic] } : s
+    ));
+    try {
+      const result = await withRetry(() => sectionsService.createMeter(sectionId, data));
+      setSections((prev) => prev.map((s) =>
+        s.id === sectionId ? { ...s, meters: s.meters.map((m) => m.id === tempId ? result : m) } : s
+      ));
+      return result;
+    } catch (err) {
+      setSections((prev) => prev.map((s) =>
+        s.id === sectionId ? { ...s, meters: s.meters.filter((m) => m.id !== tempId) } : s
+      ));
+      throw err;
+    }
+  }, []);
 
   const updateMeter = useCallback(async (sectionId, meterId, data) => {
-    const result = await sectionsService.updateMeter(sectionId, meterId, data);
-    await fetchSections();
-    return result;
-  }, [fetchSections]);
+    let previousMeter;
+    setSections((prev) => prev.map((s) => {
+      if (s.id !== sectionId) return s;
+      previousMeter = s.meters.find((m) => m.id === meterId);
+      return { ...s, meters: s.meters.map((m) => m.id === meterId ? { ...m, ...data } : m) };
+    }));
+    try {
+      const result = await withRetry(() => sectionsService.updateMeter(sectionId, meterId, data));
+      setSections((prev) => prev.map((s) =>
+        s.id === sectionId ? { ...s, meters: s.meters.map((m) => m.id === meterId ? result : m) } : s
+      ));
+      return result;
+    } catch (err) {
+      setSections((prev) => prev.map((s) =>
+        s.id === sectionId ? { ...s, meters: s.meters.map((m) => m.id === meterId ? previousMeter : m) } : s
+      ));
+      throw err;
+    }
+  }, []);
 
   const deleteMeter = useCallback(async (sectionId, meterId) => {
-    const result = await sectionsService.deleteMeter(sectionId, meterId);
-    await fetchSections();
+    const result = await withRetry(() => sectionsService.deleteMeter(sectionId, meterId));
+    setSections((prev) => prev.map((s) =>
+      s.id === sectionId ? { ...s, meters: s.meters.filter((m) => m.id !== meterId) } : s
+    ));
     return result;
-  }, [fetchSections]);
+  }, []);
 
-  // Optimistic mutations
+  // Optimistic mutations (already implemented)
   const reorderSections = useCallback(async (newOrder) => {
     const previous = sections;
     setSections(newOrder);
@@ -138,6 +192,7 @@ export function SectionsProvider({ children }) {
   const value = useMemo(() => ({
     sections,
     loading,
+    initialLoading,
     error,
     retry: fetchSections,
     createSection,
@@ -157,6 +212,7 @@ export function SectionsProvider({ children }) {
   }), [
     sections,
     loading,
+    initialLoading,
     error,
     fetchSections,
     createSection,
@@ -175,15 +231,7 @@ export function SectionsProvider({ children }) {
     fetchWithArchived,
   ]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent" />
-      </div>
-    );
-  }
-
-  if (error) {
+  if (initialLoading && error) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center space-y-4 p-8">
