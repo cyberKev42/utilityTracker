@@ -63,14 +63,14 @@ function formatDay(dateStr) {
   return d.toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
 }
 
-function MonthlyTooltip({ active, payload, label, formatCurrency, viewMode }) {
+function MonthlyTooltip({ active, payload, label, formatCurrency, viewMode, unit }) {
   if (!active || !payload?.length) return null;
   const [year, month] = label.split('-');
   const date = new Date(Number(year), Number(month) - 1);
   const formatted = date.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
   const total = payload.reduce((sum, p) => sum + (Number(p.value) || 0), 0);
   const displayValue = viewMode === 'usage'
-    ? total.toLocaleString()
+    ? `${total.toLocaleString()}${unit ? ` ${unit}` : ''}`
     : formatCurrency(total);
   return (
     <div className="bg-card border border-border/50 rounded-lg px-3.5 py-2.5 shadow-xl backdrop-blur-sm">
@@ -82,7 +82,7 @@ function MonthlyTooltip({ active, payload, label, formatCurrency, viewMode }) {
   );
 }
 
-function DailyTooltip({ active, payload, label, formatCurrency, viewMode }) {
+function DailyTooltip({ active, payload, label, formatCurrency, viewMode, unit }) {
   if (!active || !payload?.length) return null;
   const formatted = new Date(label).toLocaleDateString(undefined, {
     weekday: 'short',
@@ -91,7 +91,7 @@ function DailyTooltip({ active, payload, label, formatCurrency, viewMode }) {
   });
   const total = payload.reduce((sum, p) => sum + (Number(p.value) || 0), 0);
   const displayValue = viewMode === 'usage'
-    ? total.toLocaleString()
+    ? `${total.toLocaleString()}${unit ? ` ${unit}` : ''}`
     : formatCurrency(total);
   return (
     <div className="bg-card border border-border/50 rounded-lg px-3.5 py-2.5 shadow-xl backdrop-blur-sm">
@@ -474,7 +474,7 @@ export default function StatisticsDetail() {
                           label={yAxisLabel}
                         />
                         <Tooltip
-                          content={<MonthlyTooltip formatCurrency={formatCurrency} viewMode={viewMode} />}
+                          content={<MonthlyTooltip formatCurrency={formatCurrency} viewMode={viewMode} unit={section?.unit} />}
                           cursor={{ fill: 'hsl(0, 0%, 12%)', fillOpacity: 0.5, radius: 4 }}
                         />
                         {useStacked ? (
@@ -585,7 +585,7 @@ export default function StatisticsDetail() {
                           label={yAxisLabel}
                         />
                         <Tooltip
-                          content={<DailyTooltip formatCurrency={formatCurrency} viewMode={viewMode} />}
+                          content={<DailyTooltip formatCurrency={formatCurrency} viewMode={viewMode} unit={section?.unit} />}
                           cursor={{
                             stroke: color,
                             strokeWidth: 1,
