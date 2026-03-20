@@ -32,17 +32,20 @@ function formatTick(value, granularity) {
   return d.toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
 }
 
-function CustomTooltip({ active, payload, label, formatCurrency, viewMode, granularity }) {
+function CustomTooltip({ active, payload, label, formatCurrency, viewMode, granularity, unit }) {
   if (!active || !payload?.length) return null;
   const value = payload[0].value;
   const formattedDate = granularity === 'monthly'
     ? formatMonth(label)
     : new Date(label).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+  const displayValue = viewMode === 'cost'
+    ? formatCurrency(value)
+    : `${value.toLocaleString()}${unit ? ` ${unit}` : ''}`;
   return (
     <div className="bg-card border border-border/50 rounded-lg px-3.5 py-2.5 shadow-xl backdrop-blur-sm">
       <p className="text-sm text-muted-foreground mb-1">{formattedDate}</p>
       <p className="text-base font-semibold text-foreground tabular-nums tracking-tight">
-        {viewMode === 'cost' ? formatCurrency(value) : value.toLocaleString()}
+        {displayValue}
       </p>
     </div>
   );
