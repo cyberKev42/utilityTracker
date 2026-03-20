@@ -4,6 +4,7 @@ import { CurrencyProvider } from './context/CurrencyContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { SectionsProvider } from './context/SectionsContext';
+import { EntriesDataProvider } from './context/EntriesDataContext';
 import { MainLayout } from './layouts/MainLayout';
 import { AuthLayout } from './layouts/AuthLayout';
 import Login from './pages/Login';
@@ -30,7 +31,9 @@ function App() {
               element={
                 <ProtectedRoute>
                   <SectionsProvider>
-                    <MainLayout />
+                    <EntriesDataProvider>
+                      <MainLayout />
+                    </EntriesDataProvider>
                   </SectionsProvider>
                 </ProtectedRoute>
               }
