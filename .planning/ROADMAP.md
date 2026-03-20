@@ -25,7 +25,7 @@ Replaced hardcoded Water/Power/Fuel categories with dynamic sections/meters syst
 
 ## Phases
 
-- [ ] **Phase 7: Performance & Navigation** - SPA-like navigation and instant settings UI updates
+- [x] **Phase 7: Performance & Navigation** - SPA-like navigation and instant settings UI updates (completed 2026-03-20)
 - [ ] **Phase 8: Data Entry & Mobile** - Comma decimal support, translated dropdowns, and mobile layout fixes
 - [ ] **Phase 9: Dashboard & Settings Polish** - Usage/cost toggle, inline meter name editing, and improved water icons
 
@@ -39,12 +39,12 @@ Replaced hardcoded Water/Power/Fuel categories with dynamic sections/meters syst
   1. User navigates between Dashboard, Statistics, AddEntry, and Settings without a full-page reload or loading spinner appearing
   2. User creates or edits a section or meter in Settings and the change appears immediately in the UI without refreshing the page
   3. User clicks a section card on the Dashboard and lands on the Statistics page with that section already selected
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 
 Plans:
 - [x] 07-01-PLAN.md — Centralized EntriesDataContext + consume in Dashboard/Statistics (PERF-01)
 - [x] 07-02-PLAN.md — Optimistic mutations in SectionsContext + withRetry (PERF-02)
-- [ ] 07-03-PLAN.md — Dashboard sparklines + statistics linking + back button (NAVI-01)
+- [x] 07-03-PLAN.md — Dashboard sparklines + statistics linking + back button (NAVI-01)
 
 ### Phase 8: Data Entry & Mobile
 **Goal**: Data entry works correctly across locales and all pages render without layout breakage on mobile
@@ -78,6 +78,6 @@ Plans:
 | 4. Section & Meter Management UI | v1.0 | 2/2 | Complete | 2026-03-19 |
 | 5. Dynamic Entry Form | v1.0 | 2/2 | Complete | 2026-03-19 |
 | 6. Statistics & Display | v1.0 | 2/2 | Complete | 2026-03-20 |
-| 7. Performance & Navigation | v1.1 | 2/3 | In Progress|  |
+| 7. Performance & Navigation | v1.1 | 3/3 | Complete   | 2026-03-20 |
 | 8. Data Entry & Mobile | v1.1 | 0/TBD | Not started | - |
 | 9. Dashboard & Settings Polish | v1.1 | 0/TBD | Not started | - |

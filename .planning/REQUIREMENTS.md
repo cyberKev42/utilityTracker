@@ -23,7 +23,7 @@ Requirements for polish & UX milestone. Each maps to roadmap phases.
 
 ### Navigation
 
-- [ ] **NAVI-01**: Clicking a section on the dashboard navigates to the statistics page with that section pre-selected
+- [x] **NAVI-01**: Clicking a section on the dashboard navigates to the statistics page with that section pre-selected
 
 ### Dashboard
 
@@ -59,7 +59,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | PERF-01 | Phase 7 | Complete |
 | PERF-02 | Phase 7 | Complete |
-| NAVI-01 | Phase 7 | Pending |
+| NAVI-01 | Phase 7 | Complete |
 | ENTR-01 | Phase 8 | Pending |
 | ENTR-02 | Phase 8 | Pending |
 | MOBI-01 | Phase 8 | Pending |
