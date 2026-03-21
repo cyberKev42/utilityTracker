@@ -5,6 +5,7 @@ import { getEntries, deleteEntry } from '../services/entriesService';
 import { useCurrency } from '../hooks/useCurrency';
 import { useSections } from '../hooks/useSections';
 import { ICON_MAP } from '../components/settings/IconPickerGrid';
+import { getSectionDisplayName } from '../utils/sectionName';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -220,7 +221,7 @@ export default function Entries() {
                           <option value="">{t('entries.filterByType')}</option>
                           {sections.map((s) => (
                             <option key={s.id} value={s.name}>
-                              {s.name}
+                              {getSectionDisplayName(s, t)}
                             </option>
                           ))}
                         </select>

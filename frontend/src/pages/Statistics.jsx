@@ -5,6 +5,7 @@ import { useEntriesData } from '../hooks/useEntriesData';
 import { useSections } from '../hooks/useSections';
 import { useCurrency } from '../hooks/useCurrency';
 import { ICON_MAP } from '../components/settings/IconPickerGrid';
+import { getSectionDisplayName } from '../utils/sectionName';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { motion } from 'framer-motion';
@@ -200,7 +201,7 @@ export default function Statistics() {
                     </div>
                     <div>
                       <span className="text-sm font-medium text-foreground">
-                        {section.name}
+                        {getSectionDisplayName(section, t)}
                       </span>
                       <div className="text-xs text-muted-foreground mt-0.5">
                         {viewMode === 'usage'

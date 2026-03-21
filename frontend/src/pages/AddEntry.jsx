@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { normalizeDecimal } from '../utils/normalizeDecimal';
+import { getSectionDisplayName } from '../utils/sectionName';
 import { createEntry } from '../services/entriesService';
 import { useCurrency } from '../hooks/useCurrency';
 import { useSections } from '../hooks/useSections';
@@ -363,7 +364,7 @@ export default function AddEntry() {
                   >
                     <option value="">{t('addEntry.sectionPlaceholder')}</option>
                     {sections.map((s) => (
-                      <option key={s.id} value={s.id}>{s.name}</option>
+                      <option key={s.id} value={s.id}>{getSectionDisplayName(s, t)}</option>
                     ))}
                   </select>
                   {touched.sectionId && fieldErrors.sectionId && (

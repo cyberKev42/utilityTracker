@@ -5,6 +5,7 @@ import { useEntriesData } from '../hooks/useEntriesData';
 import { useCurrency } from '../hooks/useCurrency';
 import { useSections } from '../hooks/useSections';
 import { ICON_MAP } from '../components/settings/IconPickerGrid';
+import { getSectionDisplayName } from '../utils/sectionName';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -202,12 +203,12 @@ export default function Dashboard() {
                         <Icon className={`h-[18px] w-[18px] ${colors.colorClass}`} />
                       </div>
                       <span className="text-[13px] font-medium text-muted-foreground">
-                        {section.name}
+                        {getSectionDisplayName(section, t)}
                       </span>
                     </div>
                     <Link
                       to={`/statistics/${section.id}`}
-                      aria-label={`View ${section.name} statistics`}
+                      aria-label={`View ${getSectionDisplayName(section, t)} statistics`}
                       className="rounded-md p-1 hover:ring-1 hover:ring-primary/40 active:opacity-80 transition-all cursor-pointer"
                     >
                       <Sparkline data={sparklineDataBySection[section.name] || []} />
