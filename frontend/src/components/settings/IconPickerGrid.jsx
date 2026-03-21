@@ -31,6 +31,8 @@ import {
   HiOutlineRocketLaunch,
   HiOutlineSparkles,
 } from 'react-icons/hi2';
+import { FaDroplet, FaWater, FaFaucet, FaFaucetDrip } from 'react-icons/fa6';
+import { LuDroplet, LuDroplets, LuGlassWater, LuWaves } from 'react-icons/lu';
 
 export const ICON_MAP = {
   HiOutlineBolt,
@@ -63,6 +65,15 @@ export const ICON_MAP = {
   HiOutlinePaperAirplane,
   HiOutlineRocketLaunch,
   HiOutlineSparkles,
+  // Water icons
+  FaDroplet,
+  FaWater,
+  FaFaucet,
+  FaFaucetDrip,
+  LuDroplet,
+  LuDroplets,
+  LuGlassWater,
+  LuWaves,
 };
 
 const ICON_NAMES = Object.keys(ICON_MAP);
