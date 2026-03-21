@@ -22,7 +22,7 @@ created: 2026-03-21
 | Preset | not applicable |
 | Component library | Radix UI (via existing `src/components/ui/` wrappers) |
 | Icon library | lucide-react (existing usage) |
-| Font | Inter (declared in `tailwind.config.js` fontFamily.sans) |
+| Font | Inter (declared in `frontend/tailwind.config.js` fontFamily.sans) |
 
 Source: `frontend/tailwind.config.js`, `frontend/src/components/ui/input.jsx`, `frontend/src/index.css`
 
@@ -43,10 +43,10 @@ Declared values (multiples of 4):
 | 3xl | 64px | Page-level spacing |
 
 Exceptions:
-- Touch targets (inputs, buttons, select) must be minimum **44px tall** — already enforced by `input[type="date"], input[type="number"], select { min-height: 44px }` in `index.css`. Extend this rule to cover `type="text"` numeric inputs added in this phase (the `h-11` class = 44px on the Input component handles this).
-- Statistics grid responsive gap: `gap-3` (12px) on mobile, `gap-4` (16px) at `sm:` — gap stays consistent; only column count changes.
+- Touch targets (inputs, buttons, select) must be minimum **44px tall**. The `h-11` Tailwind class (44px) is used on Input components in AddEntry.jsx — this applies to all numeric inputs changed in this phase (`type="text"` with `inputMode="decimal"`). Do not use `h-9` (36px) for these fields.
+- Statistics grid responsive gap: `gap-3` (12px) — consistent across all breakpoints; only column count changes.
 
-Source: `frontend/src/index.css`, `frontend/src/components/ui/input.jsx` (h-9 default → use h-11 for numeric inputs in this phase per existing pattern in AddEntry.jsx)
+Source: `frontend/src/index.css`, `frontend/src/components/ui/input.jsx`
 
 ---
 
@@ -62,16 +62,16 @@ Source: `frontend/src/index.css`, `frontend/src/components/ui/input.jsx` (h-9 de
 Notes:
 - Body text in form fields and dropdowns: 14px / weight 400.
 - Form labels: 14px / weight 500 — matches existing `<Label>` component pattern.
-- Error messages below fields: 12px (text-xs) / weight 400 / color `hsl(var(--destructive))`.
-- Font is Inter at all sizes; `letter-spacing: -0.011em` applied globally via `body` rule in `index.css` — do not override.
+- Validation error messages below fields: 12px (text-xs) / weight 400 / color `hsl(var(--destructive))`.
+- Font is Inter at all sizes; `letter-spacing: -0.011em` applied globally via `body` rule in `index.css` — do not override per-component.
 
-Source: `frontend/src/index.css` body rules, `frontend/src/components/ui/input.jsx` (`text-sm`), codebase pattern.
+Source: `frontend/src/index.css` body rules, `frontend/src/components/ui/input.jsx` (text-sm), codebase pattern.
 
 ---
 
 ## Color
 
-All values are CSS custom properties from `frontend/src/index.css`. Dark mode only (no light theme).
+All values are CSS custom properties from `frontend/src/index.css`. Dark mode only — no light theme.
 
 | Role | CSS Variable | Resolved HSL | Usage |
 |------|-------------|--------------|-------|
@@ -82,7 +82,7 @@ All values are CSS custom properties from `frontend/src/index.css`. Dark mode on
 
 Accent (`--primary` / blue) reserved for:
 - Submit / Save button fill
-- Focus ring on numeric inputs (`--ring` resolves to same blue)
+- Focus ring on numeric inputs (`--ring` resolves to `hsl(217 91% 60%)` — same blue)
 - Link text (if any navigation links appear)
 - Active/selected state indicator in section dropdown
 
@@ -91,8 +91,8 @@ Accent is NOT used for: card borders, section headers, icon fills, placeholder t
 Validation error state:
 - Field border: `border-destructive` (`hsl(0 72% 51%)`)
 - Focus ring on errored field: `focus-visible:ring-destructive`
-- Error message text: `text-destructive` (12px below field)
-- Submit button: `disabled:opacity-50` + `disabled:cursor-not-allowed` — existing button disabled styles apply
+- Error message text below field: `text-destructive text-xs`
+- Submit button when errors present: `disabled:opacity-50 disabled:cursor-not-allowed` — existing button disabled styles apply
 
 Source: `frontend/src/index.css` CSS variables, CONTEXT.md D-04, RESEARCH.md code example for numeric input.
 
@@ -103,39 +103,41 @@ Source: `frontend/src/index.css` CSS variables, CONTEXT.md D-04, RESEARCH.md cod
 ### Comma Decimal Input (ENTR-01)
 
 - Input type: `type="text"` with `inputMode="decimal"` — not `type="number"`
+- Remove `type="number"`-only attributes: `step="any"` and `min="0"` — browser validation is replaced by JS validation
 - Comma display: user's typed comma is preserved visually while typing ("1,5" stays as "1,5" in the field)
 - Normalization: happens at parse time only — inside `validateField()` and `handleSubmit()`, not on `onChange`
-- Validation trigger: on blur (`onBlur`) — same as existing field validation pattern
-- Error appearance: red border (`border-destructive focus-visible:ring-destructive`) + error message below field at 12px
-- Submit guard: submit button disabled when any `fieldErrors` value is truthy
+- Validation trigger: on blur (`onBlur`) — same as existing field validation pattern in AddEntry.jsx
+- Error appearance: `border-destructive focus-visible:ring-destructive` on the Input + `text-destructive text-xs` message below
+- Submit guard: submit button `disabled` when any `fieldErrors` value is truthy — verify `Object.values(fieldErrors).some(Boolean)` drives the disabled state
 
 ### Section Name Translation (ENTR-02)
 
-- Translated names appear wherever `section.name` currently renders: Dashboard cards, Statistics headers, Entries list, AddEntry dropdown
-- Default sections (Water/Power/Fuel): show translated string from `sections.water` / `sections.power` / `sections.fuel` i18n keys
-- User-created sections: show raw `section.name` — no translation UI, no indicator
+- Translated names appear everywhere `section.name` currently renders: Dashboard cards, Statistics headers, Entries list, AddEntry section dropdown
+- Default sections (Water/Power/Fuel): resolved via `sections.water` / `sections.power` / `sections.fuel` i18n keys
+- User-created sections (`translation_key` is NULL): display raw `section.name` — no translation, no visual indicator of untranslated status
 - No visual distinction between translated and untranslated section names
+- Guard required: `if (section.translation_key)` — do not call `t(`sections.null`)` or `t(`sections.undefined`)`
 
 ### Mobile Layout Fixes (MOBI-01)
 
 **Statistics grid:**
-- Mobile (default): `grid-cols-1` — single column, full width cards
+- Mobile (default): `grid-cols-1` — single column, full-width cards
 - Tablet (`sm:`, 640px+): `grid-cols-2`
 - Desktop (`lg:`, 1024px+): `grid-cols-3`
-- Full class: `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3`
+- Full class string: `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3`
 
 **AddEntry date fields:**
 - Mobile (default): `grid-cols-1` — stacked, each field full width
-- Tablet+ (`sm:`): `grid-cols-2` — side by side
-- Full class: `grid grid-cols-1 sm:grid-cols-2 gap-3`
+- Tablet+ (`sm:`, 640px+): `grid-cols-2` — side by side
+- Full class string: `grid grid-cols-1 sm:grid-cols-2 gap-3`
 
-**Drag-and-drop reorder (Settings):**
-- Desktop: existing `PointerSensor` drag retained, add `activationConstraint: { distance: 8 }`
-- Mobile: `TouchSensor` with `activationConstraint: { delay: 250, tolerance: 5 }` — long-press to activate
-- No visual change to drag handles — existing UI unchanged
-- If `TouchSensor` is still unreliable after implementation: fall back to up/down arrow buttons (visible on mobile only, hidden at `sm:` and above), styled as ghost icon buttons using `ChevronUp` / `ChevronDown` lucide icons
+**Drag-and-drop reorder (Settings — SectionsManagementCard):**
+- Desktop: existing `PointerSensor` retained, add `activationConstraint: { distance: 8 }` to prevent accidental drag on click
+- Mobile: add `TouchSensor` with `activationConstraint: { delay: 250, tolerance: 5 }` — 250ms long-press initiates drag
+- No visual change to drag handles — existing UI unchanged on desktop
+- Fallback pattern (if TouchSensor remains unreliable after implementation): up/down arrow buttons visible on mobile only (`sm:hidden`), hidden at `sm:` and above. Style as ghost icon buttons using `ChevronUp` / `ChevronDown` from lucide-react, `aria-label="Move up"` / `aria-label="Move down"`, minimum 44px touch target.
 
-**Target viewport:** iPhone 12+ (390px) — no narrower breakpoints introduced.
+**Target viewport:** iPhone 12+ (390px) — no breakpoints narrower than `sm:` (640px) are introduced.
 
 ---
 
@@ -144,12 +146,12 @@ Source: `frontend/src/index.css` CSS variables, CONTEXT.md D-04, RESEARCH.md cod
 | Element | Copy |
 |---------|------|
 | Primary CTA (AddEntry form submit) | "Save Entry" (existing — do not change) |
-| Numeric field validation — empty | "This field is required." (existing i18n key — do not change) |
-| Numeric field validation — invalid | "Enter a valid number." — used when `parseFloat(normalizeDecimal(value))` returns `NaN` |
-| Numeric field validation — not positive | "Value must be greater than 0." (existing pattern — do not change) |
-| Section dropdown — no sections exist | Not applicable — sections always exist if app is set up (empty state is outside phase scope) |
-| Mobile reorder fallback button — move up | No text label — icon only (`ChevronUp`), `aria-label="Move up"` |
-| Mobile reorder fallback button — move down | No text label — icon only (`ChevronDown`), `aria-label="Move down"` |
+| Numeric field validation — empty | Existing i18n key for required field — do not change |
+| Numeric field validation — invalid (NaN after normalization) | "Enter a valid number." |
+| Numeric field validation — not positive | Existing i18n key for must-be-positive — do not change |
+| Section dropdown — no sections | Not applicable — sections always exist at app setup; empty state is out of scope |
+| Mobile reorder fallback — move up button | No text label — icon only (`ChevronUp`), `aria-label="Move up"` |
+| Mobile reorder fallback — move down button | No text label — icon only (`ChevronDown`), `aria-label="Move down"` |
 
 Destructive actions in this phase: none. No delete, reset, or irreversible actions are introduced.
 
@@ -161,26 +163,29 @@ Source: CONTEXT.md D-04, REQUIREMENTS.md ENTR-01/ENTR-02/MOBI-01, existing codeb
 
 | Registry | Blocks Used | Safety Gate |
 |----------|-------------|-------------|
-| shadcn official | none (components.json not present; existing ui/ components are manually maintained) | not applicable |
+| shadcn official | none (components.json not present; existing `src/components/ui/` components are manually maintained) | not applicable |
 | Third-party | none | not applicable |
 
-No new component registry blocks are introduced in this phase. All changes are to existing components (`input.jsx` wrapped in place, Tailwind class edits, `@dnd-kit/core` sensor config).
+No new component registry blocks are introduced in this phase. All changes are surgical edits to existing components and new utility files.
 
 ---
 
 ## Component Inventory
 
-Existing components touched in this phase (no new components added):
+Existing components touched in this phase (no new components added to `src/components/ui/`):
 
 | Component | File | Change |
 |-----------|------|--------|
-| Input | `src/components/ui/input.jsx` | No change to component itself — call sites change `type` prop |
-| AddEntry form | `src/pages/AddEntry.jsx` | Change `type="number"` → `type="text"` on numeric inputs; add `normalizeDecimal` calls |
-| Settings numeric input | `src/pages/Settings.jsx` (or SectionEditDialog) | Same `type` and normalize treatment as AddEntry |
-| Statistics grid | `src/pages/Statistics.jsx` | Tailwind responsive class update |
-| AddEntry date grid | `src/pages/AddEntry.jsx` | Tailwind responsive class update |
-| SectionsManagementCard | `src/components/SectionsManagementCard.jsx` | Add `TouchSensor` to `useSensors()` |
-| Dashboard, Entries, Statistics, AddEntry | Multiple | Replace `section.name` with `getSectionDisplayName(section, t)` |
+| Input | `src/components/ui/input.jsx` | No change to the component itself — call sites change the `type` prop |
+| AddEntry form | `src/pages/AddEntry.jsx` | Change `type="number"` to `type="text"` on numeric inputs; add `normalizeDecimal` at validateField/handleSubmit call sites |
+| Settings numeric input | `src/pages/Settings.jsx` or child component | Same `type="text"` and normalize treatment as AddEntry (D-05 applies to all numeric inputs) |
+| Statistics grid | `src/pages/Statistics.jsx` | Tailwind responsive class: `grid-cols-3` → `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3` |
+| AddEntry date grid | `src/pages/AddEntry.jsx` | Tailwind responsive class: `grid-cols-2` → `grid grid-cols-1 sm:grid-cols-2 gap-3` |
+| SectionsManagementCard | `src/components/SectionsManagementCard.jsx` | Add `TouchSensor` to `useSensors()` with activation constraint |
+| Dashboard | `src/pages/Dashboard.jsx` | Replace `section.name` with `getSectionDisplayName(section, t)` |
+| Statistics | `src/pages/Statistics.jsx` | Replace `section.name` with `getSectionDisplayName(section, t)` |
+| Entries | `src/pages/Entries.jsx` | Replace `section.name` with `getSectionDisplayName(section, t)` |
+| AddEntry section dropdown | `src/pages/AddEntry.jsx` line ~365 | Replace `s.name` with `getSectionDisplayName(s, t)` |
 
 New utility files introduced:
 
