@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { HiOutlineBars3, HiOutlineTrash, HiOutlineCalculator, HiOutlineSignal } from 'react-icons/hi2';
+import { HiOutlineBars3, HiOutlineTrash, HiOutlineCalculator, HiOutlineSignal, HiOutlinePencilSquare } from 'react-icons/hi2';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import {
@@ -131,6 +131,18 @@ export default function MeterRow({ meter, sectionId, isNew = false }) {
           {meter.entry_mode === 'reading'
             ? <HiOutlineSignal className="h-4 w-4" />
             : <HiOutlineCalculator className="h-4 w-4" />}
+        </button>
+
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            setEditing(true);
+          }}
+          className="flex items-center justify-center text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity"
+          aria-label={t('settings.sections.renameMeter')}
+        >
+          <HiOutlinePencilSquare className="h-4 w-4" />
         </button>
 
         <button

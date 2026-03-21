@@ -45,6 +45,50 @@
 
 ---
 
+## Milestone: v1.1 — Polish & UX
+
+**Shipped:** 2026-03-21
+**Phases:** 3 | **Plans:** 8 | **Sessions:** ~4
+
+### What Was Built
+- SPA-like navigation via centralized EntriesDataContext — eliminates per-page loading spinners
+- Optimistic mutations in SectionsContext for instant settings UI feedback
+- Dashboard sparklines (48x24px Recharts) with section-to-statistics click-through
+- Comma decimal input across all numeric fields (type=text + inputMode=decimal)
+- Translated section names via translation_key + getSectionDisplayName
+- Mobile-responsive grids (1→2→3 cols) and TouchSensor long-press drag
+- Dashboard cost/usage segmented toggle with localStorage persistence
+- Pencil edit affordance on meter rows + 8 water-themed icons
+
+### What Worked
+- 3-phase structure (perf → data → polish) kept each phase tightly scoped
+- Parallel plan execution in Wave 1 — both Phase 9 plans ran simultaneously with no conflicts
+- UI-SPEC contracts prevented ambiguity on toggle styling and icon placement
+- Research phases identified key pitfalls early (comma input requires type=text, not type=number)
+
+### What Was Inefficient
+- Both Phase 9 plans touched the same i18n files — could have caused merge conflicts in parallel (didn't, but risky)
+- Some SUMMARY.md one-liner fields were empty — template compliance could be tighter
+
+### Patterns Established
+- normalizeDecimal applied at parse time only, not onChange — preserves comma visibility
+- TouchSensor delay=250ms / tolerance=5px as mobile drag standard
+- Segmented pill toggle pattern (bg-muted container, bg-background active) reusable from LanguageSwitcher
+- e.stopPropagation() on action buttons inside draggable rows
+
+### Key Lessons
+1. type=number blocks comma entry in all browsers — must use type=text + inputMode=decimal
+2. Translation keys in DB (translation_key column) enable runtime i18n without hardcoded mappings
+3. Sparkline sizing must be fixed (not responsive) inside card layouts to prevent layout thrash
+4. localStorage for UI preferences (display mode) is simpler and more appropriate than server state
+
+### Cost Observations
+- Model mix: Opus orchestrator + Sonnet executors (balanced profile)
+- Sessions: ~4 across 2 days
+- Notable: Parallel executor agents completed Phase 9 in ~2 minutes total
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -52,14 +96,18 @@
 | Milestone | Sessions | Phases | Key Change |
 |-----------|----------|--------|------------|
 | v1.0 | ~12 | 6 | Established dependency-driven phase ordering |
+| v1.1 | ~4 | 3 | Parallel executor agents, UI-SPEC contracts |
 
 ### Cumulative Quality
 
 | Milestone | Tests | Coverage | Zero-Dep Additions |
 |-----------|-------|----------|-------------------|
 | v1.0 | Integration tests for schema + API | — | dnd-kit (drag-and-drop) |
+| v1.1 | vitest scaffold + 10 unit tests | — | react-icons/fa6, react-icons/lu (already installed) |
 
 ### Top Lessons (Verified Across Milestones)
 
 1. Dependency-driven phase ordering prevents integration rework
 2. Write-before-read UI ordering ensures data availability
+3. type=text + inputMode=decimal is the only reliable cross-browser pattern for comma decimal entry
+4. Parallel executor agents work well when plans touch different files; shared files (i18n) need ordering or conflict awareness

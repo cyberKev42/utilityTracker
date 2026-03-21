@@ -1,5 +1,22 @@
 # Milestones
 
+## v1.1 Polish & UX (Shipped: 2026-03-21)
+
+**Phases completed:** 3 phases, 8 plans, 14 tasks
+
+**Key accomplishments:**
+
+- Centralized React context fetching stats/entries/trend once on mount, eliminating per-page spinners on Dashboard and Statistics with skeleton card loading on first visit
+- One-liner:
+- Clickable 48x24px Recharts sparklines on Dashboard section cards showing 7-week usage trends, linking to /statistics/:sectionId
+- vitest scaffold, DB migration adding translation_key to utility_sections, normalizeDecimal and getSectionDisplayName utilities, plus EN/DE sectionNames i18n keys
+- Comma decimal input wired into all AddEntry numeric fields and getSectionDisplayName applied to every section display point across Dashboard, Statistics, Entries, and AddEntry
+- Responsive grids on Statistics/AddEntry (1→2→3 cols) and TouchSensor long-press drag on Settings via dnd-kit, fulfilling MOBI-01 at 390px viewport
+- One-liner:
+- Pencil inline-edit affordance on meter row hover (HiOutlinePencilSquare) plus 8 water-themed icons (fa6 + lu) in the icon picker grid
+
+---
+
 ## v1.0 — MVP
 
 **Shipped:** 2026-03-20

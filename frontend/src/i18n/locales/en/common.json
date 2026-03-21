@@ -57,7 +57,9 @@
     "cost": "Cost",
     "loadingError": "Failed to load dashboard data.",
     "trendNoData": "No previous month data",
-    "trendVsPrevious": "vs last month"
+    "trendVsPrevious": "vs last month",
+    "toggleCost": "Cost",
+    "toggleUsage": "Usage"
   },
   "addEntry": {
     "title": "Add Entry",
@@ -241,7 +243,8 @@
       "reorderHint": "Drag to reorder",
       "saveError": "Failed to save. Please try again.",
       "reorderError": "Failed to save new order.",
-      "renameError": "Failed to rename meter. Your change was reverted."
+      "renameError": "Failed to rename meter. Your change was reverted.",
+      "renameMeter": "Rename meter"
     }
   }
 }

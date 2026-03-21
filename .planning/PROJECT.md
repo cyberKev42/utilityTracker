@@ -30,27 +30,18 @@ Users can track any utility across multiple meters with accurate, flexible data 
 - ✓ Change default Power unit to "kWh" and Water unit to "m³" — v1.0
 - ✓ All new UI text, labels, and messages translated into both English and German — v1.0
 
+- ✓ SPA-like navigation — no loading spinners between pages, instant UI updates on settings changes — v1.1 Phase 7
+- ✓ Mobile-optimized layout — no horizontal scroll or cut-off elements on any page — v1.1 Phase 8
+- ✓ Comma accepted as decimal separator in entry fields — v1.1 Phase 8
+- ✓ Section names translated in entry dropdown — v1.1 Phase 8
+- ✓ Dashboard section click navigates to statistics with that section pre-selected — v1.1 Phase 7
+- ✓ Dashboard toggle for usage vs cost display — v1.1 Phase 9
+- ✓ Meter names editable inline in settings — v1.1 Phase 9
+- ✓ Improved water icon options (droplet, wave, etc.) — v1.1 Phase 9
+
 ### Active
 
-- [ ] App feels like a single-page app — no loading spinners between pages, instant UI updates on settings changes
-- [ ] Mobile-optimized layout — no horizontal scroll or cut-off elements on any page
-- [ ] Comma accepted as decimal separator in entry fields
-- [ ] Section names translated in entry dropdown
-- [ ] Dashboard section click navigates to statistics with that section pre-selected
-- [ ] Dashboard toggle for usage vs cost display
-- [ ] Meter names editable inline in settings
-- [ ] Improved water icon options (droplet, wave, etc.)
-
-## Current Milestone: v1.1 Polish & UX
-
-**Goal:** Eliminate loading friction, fix mobile layout issues, and add UX improvements across dashboard, settings, and data entry.
-
-**Target features:**
-- SPA-like navigation with no page reloads
-- Mobile-responsive fixes
-- Input improvements (comma decimals, translated dropdowns)
-- Dashboard enhancements (section linking, usage/cost toggle)
-- Settings improvements (editable meter names, water icons)
+(None — define in next milestone via `/gsd:new-milestone`)
 
 ### Out of Scope
 
@@ -58,14 +49,20 @@ Users can track any utility across multiple meters with accurate, flexible data 
 - Real-time multi-user collaboration — single-user tracking
 - Import/export of data (CSV, etc.) — defer to future milestone
 - Notifications or alerts for usage thresholds — future feature
+- Archive + delete options for sections — deferred from v1.0 (SECT-05)
 
 ## Context
 
 - App uses dynamic sections/meters system (shipped v1.0) — no more hardcoded Water/Power/Fuel
-- Database has `utility_sections` and `utility_meters` tables with full CRUD API
+- Database has `utility_sections` (with `translation_key` column) and `utility_meters` tables with full CRUD API
 - Statistics and charts render dynamically based on user-created sections
-- Settings page supports section/meter management with drag-and-drop reordering
+- Settings page supports section/meter management with drag-and-drop reordering and touch-friendly mobile drag
+- SPA-like navigation via centralized EntriesDataContext — no page reloads
+- Dashboard has sparklines, section-to-statistics linking, and cost/usage toggle
+- Comma decimal input supported across all numeric fields
+- 38 icons available in icon picker (30 HiOutline + 8 water-themed from fa6/lu)
 - Deployed on Railway with Nixpacks
+- Shipped v1.0 (2026-03-20) and v1.1 (2026-03-21)
 
 ## Constraints
 
@@ -82,6 +79,10 @@ Users can track any utility across multiple meters with accurate, flexible data 
 | Date range entries split evenly across days | Most intuitive for billing periods where daily usage is unknown | Shipped v1.0 — split preview in entry form |
 | First meter reading has usage = 0 | Establishes baseline without assuming prior consumption | Shipped v1.0 — clean baseline, no negative deltas |
 | Archive + delete options for sections | Preserve historical data when hiding, permanent removal when desired | Deferred to v2 (SECT-05) |
+| Centralized EntriesDataContext | Fetch stats/entries/trend once, share across pages | ✓ v1.1 — eliminates per-page spinners |
+| type=text + inputMode=decimal for numbers | Browsers block comma in type=number inputs | ✓ v1.1 — comma entry works everywhere |
+| TouchSensor with 250ms delay for mobile drag | Prevents scroll-vs-drag conflict on touch devices | ✓ v1.1 — reliable on 390px viewport |
+| Default toggle mode is 'usage' | Users tracking consumption want usage view first | ✓ v1.1 — localStorage persistence |
 
 ---
 ## Evolution
@@ -102,4 +103,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-20 — Milestone v1.1 started*
+*Last updated: 2026-03-21 after v1.1 milestone*

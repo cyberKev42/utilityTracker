@@ -57,7 +57,9 @@
     "cost": "Kosten",
     "loadingError": "Dashboard-Daten konnten nicht geladen werden.",
     "trendNoData": "Keine Daten vom Vormonat",
-    "trendVsPrevious": "ggü. Vormonat"
+    "trendVsPrevious": "ggü. Vormonat",
+    "toggleCost": "Kosten",
+    "toggleUsage": "Verbrauch"
   },
   "addEntry": {
     "title": "Eintrag hinzufügen",
@@ -239,7 +241,8 @@
       "reorderHint": "Zum Sortieren ziehen",
       "saveError": "Speichern fehlgeschlagen. Bitte erneut versuchen.",
       "reorderError": "Neue Reihenfolge konnte nicht gespeichert werden.",
-      "renameError": "Umbenennung fehlgeschlagen. Änderung wurde zurückgesetzt."
+      "renameError": "Umbenennung fehlgeschlagen. Änderung wurde zurückgesetzt.",
+      "renameMeter": "Zahler umbenennen"
     }
   }
 }
