@@ -33,9 +33,9 @@ Users can track any utility across multiple meters with accurate, flexible data 
 ### Active
 
 - [ ] App feels like a single-page app — no loading spinners between pages, instant UI updates on settings changes
-- [ ] Mobile-optimized layout — no horizontal scroll or cut-off elements on any page
-- [ ] Comma accepted as decimal separator in entry fields
-- [ ] Section names translated in entry dropdown
+- ✓ Mobile-optimized layout — no horizontal scroll or cut-off elements on any page — v1.1 Phase 8
+- ✓ Comma accepted as decimal separator in entry fields — v1.1 Phase 8
+- ✓ Section names translated in entry dropdown — v1.1 Phase 8
 - [ ] Dashboard section click navigates to statistics with that section pre-selected
 - [ ] Dashboard toggle for usage vs cost display
 - [ ] Meter names editable inline in settings
@@ -62,7 +62,7 @@ Users can track any utility across multiple meters with accurate, flexible data 
 ## Context
 
 - App uses dynamic sections/meters system (shipped v1.0) — no more hardcoded Water/Power/Fuel
-- Database has `utility_sections` and `utility_meters` tables with full CRUD API
+- Database has `utility_sections` (with `translation_key` column) and `utility_meters` tables with full CRUD API
 - Statistics and charts render dynamically based on user-created sections
 - Settings page supports section/meter management with drag-and-drop reordering
 - Deployed on Railway with Nixpacks
@@ -102,4 +102,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-20 — Milestone v1.1 started*
+*Last updated: 2026-03-21 — Phase 8 complete*
