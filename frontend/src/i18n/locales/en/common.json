@@ -243,7 +243,8 @@
       "reorderHint": "Drag to reorder",
       "saveError": "Failed to save. Please try again.",
       "reorderError": "Failed to save new order.",
-      "renameError": "Failed to rename meter. Your change was reverted."
+      "renameError": "Failed to rename meter. Your change was reverted.",
+      "renameMeter": "Rename meter"
     }
   }
 }
