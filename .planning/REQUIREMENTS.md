@@ -27,15 +27,15 @@ Requirements for polish & UX milestone. Each maps to roadmap phases.
 
 ### Dashboard
 
-- [ ] **DASH-01**: Dashboard includes a toggle to switch between displaying data as usage amounts or cost values
+- [x] **DASH-01**: Dashboard includes a toggle to switch between displaying data as usage amounts or cost values
 
 ### Settings
 
-- [ ] **SETT-01**: Meter names are editable inline, same as section names
+- [x] **SETT-01**: Meter names are editable inline, same as section names
 
 ### Visual
 
-- [ ] **VISL-01**: Water sections offer improved icon options including droplet, wave, and additional water-themed icons
+- [x] **VISL-01**: Water sections offer improved icon options including droplet, wave, and additional water-themed icons
 
 ## Future Requirements
 
@@ -63,9 +63,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ENTR-01 | Phase 8 | Complete |
 | ENTR-02 | Phase 8 | Complete |
 | MOBI-01 | Phase 8 | Complete |
-| DASH-01 | Phase 9 | Pending |
-| SETT-01 | Phase 9 | Pending |
-| VISL-01 | Phase 9 | Pending |
+| DASH-01 | Phase 9 | Complete |
+| SETT-01 | Phase 9 | Complete |
+| VISL-01 | Phase 9 | Complete |
 
 **Coverage:**
 - v1.1 requirements: 9 total
