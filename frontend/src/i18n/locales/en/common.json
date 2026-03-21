@@ -57,7 +57,9 @@
     "cost": "Cost",
     "loadingError": "Failed to load dashboard data.",
     "trendNoData": "No previous month data",
-    "trendVsPrevious": "vs last month"
+    "trendVsPrevious": "vs last month",
+    "toggleCost": "Cost",
+    "toggleUsage": "Usage"
   },
   "addEntry": {
     "title": "Add Entry",

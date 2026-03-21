@@ -57,7 +57,9 @@
     "cost": "Kosten",
     "loadingError": "Dashboard-Daten konnten nicht geladen werden.",
     "trendNoData": "Keine Daten vom Vormonat",
-    "trendVsPrevious": "ggü. Vormonat"
+    "trendVsPrevious": "ggü. Vormonat",
+    "toggleCost": "Kosten",
+    "toggleUsage": "Verbrauch"
   },
   "addEntry": {
     "title": "Eintrag hinzufügen",
