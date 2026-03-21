@@ -18,8 +18,8 @@ Requirements for polish & UX milestone. Each maps to roadmap phases.
 
 ### Data Entry
 
-- [ ] **ENTR-01**: Comma (",") is accepted as a decimal separator in numeric entry fields alongside period (".")
-- [ ] **ENTR-02**: Section names in the new entry dropdown are translated to the active language (German/English)
+- [x] **ENTR-01**: Comma (",") is accepted as a decimal separator in numeric entry fields alongside period (".")
+- [x] **ENTR-02**: Section names in the new entry dropdown are translated to the active language (German/English)
 
 ### Navigation
 
@@ -60,8 +60,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PERF-01 | Phase 7 | Complete |
 | PERF-02 | Phase 7 | Complete |
 | NAVI-01 | Phase 7 | Complete |
-| ENTR-01 | Phase 8 | Pending |
-| ENTR-02 | Phase 8 | Pending |
+| ENTR-01 | Phase 8 | Complete |
+| ENTR-02 | Phase 8 | Complete |
 | MOBI-01 | Phase 8 | Pending |
 | DASH-01 | Phase 9 | Pending |
 | SETT-01 | Phase 9 | Pending |
