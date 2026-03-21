@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useEntriesData } from '../hooks/useEntriesData';
@@ -54,6 +54,10 @@ export default function Dashboard() {
   const { formatCurrency } = useCurrency();
   const { sections: contextSections } = useSections();
   const { stats, entries, recentEntries, trend, loading, error } = useEntriesData();
+
+  const [displayMode, setDisplayMode] = useState(
+    () => localStorage.getItem('dashboard_display_mode') || 'usage'
+  );
 
   const sparklineDataBySection = useMemo(() => {
     const bySectionName = {};
@@ -158,9 +162,31 @@ export default function Dashboard() {
 
   return (
     <motion.div variants={stagger} initial="initial" animate="animate" className="space-y-6">
-      <motion.div variants={fadeUp}>
-        <h1 className="text-xl font-semibold text-foreground tracking-tight">{t('dashboard.title')}</h1>
-        <p className="text-[13px] text-muted-foreground mt-1">{t('dashboard.description')}</p>
+      <motion.div variants={fadeUp} className="flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-semibold text-foreground tracking-tight">{t('dashboard.title')}</h1>
+          <p className="text-[13px] text-muted-foreground mt-1">{t('dashboard.description')}</p>
+        </div>
+        <div className="flex items-center gap-1 p-1 rounded-lg bg-muted w-fit">
+          {['cost', 'usage'].map((mode) => (
+            <motion.button
+              key={mode}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => {
+                setDisplayMode(mode);
+                localStorage.setItem('dashboard_display_mode', mode);
+              }}
+              className={[
+                'px-3 py-1.5 rounded-md text-xs font-medium transition-colors duration-150',
+                displayMode === mode
+                  ? 'bg-background text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground',
+              ].join(' ')}
+            >
+              {t(mode === 'cost' ? 'dashboard.toggleCost' : 'dashboard.toggleUsage')}
+            </motion.button>
+          ))}
+        </div>
       </motion.div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -215,7 +241,9 @@ export default function Dashboard() {
                     </Link>
                   </div>
                   <p className="text-2xl font-semibold text-foreground tabular-nums tracking-tight">
-                    {formatCurrency(section.total_cost)}
+                    {displayMode === 'cost'
+                      ? formatCurrency(section.total_cost)
+                      : `${Number(section.total_usage || 0).toLocaleString()} ${ctxSection?.unit || ''}`}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
                     {section.entry_count > 0
