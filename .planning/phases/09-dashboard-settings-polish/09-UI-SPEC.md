@@ -50,19 +50,21 @@ Exceptions:
 
 ## Typography
 
-| Role | Size | Weight | Line Height |
-|------|------|--------|-------------|
-| Body | 14px (text-sm) | 400 (regular) | 1.5 |
-| Label | 12px (text-xs) | 500 (medium) | 1.4 |
-| Heading | 20px (text-xl) | 600 (semibold) | 1.2 |
-| Display | 28px (text-2xl) | 700 (bold) | 1.2 |
+Weights actively introduced or modified in this phase: **400 (regular)** and **500 (medium)** only.
+
+| Role | Size | Weight | Line Height | Phase-9 Status |
+|------|------|--------|-------------|----------------|
+| Body | 14px (text-sm) | 400 (regular) | 1.5 | Active — used in meter name edit input |
+| Label | 12px (text-xs) | 500 (medium) | 1.4 | Active — used in toggle button labels |
+| Heading | 20px (text-xl) | 600 (semibold) | 1.2 | Existing system — not modified in this phase |
+| Display | 28px (text-2xl) | 700 (bold) | 1.2 | Existing system — not modified in this phase |
 
 Applied to this phase:
 - Toggle button labels: text-xs, font-medium (500) — matches LanguageSwitcher pattern
-- Section card value (cost or usage): text-xl, font-semibold (600) — existing pattern, unchanged
 - Meter name in edit mode: text-sm, font-regular (400) — matches existing Input styling
 - Pencil icon affordance button: no label text; aria-label required (see Copywriting Contract)
 - Error messages in MeterRow: text-xs, color text-destructive — existing pattern, unchanged
+- Section card value (cost or usage): text-xl, font-semibold (600) — existing pattern, unchanged; not a new weight declaration
 
 Source: `index.css` body styles, `LanguageSwitcher.jsx` (text-xs font-medium), `MeterRow.jsx` (text-sm).
 
