@@ -44,7 +44,6 @@ Declared values (multiples of 4):
 
 Exceptions:
 - Touch targets (inputs, buttons, select) must be minimum **44px tall**. The `h-11` Tailwind class (44px) is used on Input components in AddEntry.jsx — this applies to all numeric inputs changed in this phase (`type="text"` with `inputMode="decimal"`). Do not use `h-9` (36px) for these fields.
-- Statistics grid responsive gap: `gap-3` (12px) — consistent across all breakpoints; only column count changes.
 
 Source: `frontend/src/index.css`, `frontend/src/components/ui/input.jsx`
 
@@ -55,14 +54,15 @@ Source: `frontend/src/index.css`, `frontend/src/components/ui/input.jsx`
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
 | Body | 14px (text-sm) | 400 (regular) | 1.5 |
-| Label | 14px (text-sm) | 500 (medium) | 1.4 |
+| Label | 14px (text-sm) | 400 (regular) | 1.4 |
 | Heading | 20px (text-xl) | 600 (semibold) | 1.2 |
-| Display | 28px (text-3xl) | 700 (bold) | 1.1 |
+| Display | 28px (text-3xl) | 600 (semibold) | 1.1 |
 
 Notes:
 - Body text in form fields and dropdowns: 14px / weight 400.
-- Form labels: 14px / weight 500 — matches existing `<Label>` component pattern.
+- Form labels: 14px / weight 400 — weight 500 is not used; 400 is sufficient for label legibility at this size.
 - Validation error messages below fields: 12px (text-xs) / weight 400 / color `hsl(var(--destructive))`.
+- Display size (28px / weight 600) is reserved for prominent numeric values in Statistics cards only.
 - Font is Inter at all sizes; `letter-spacing: -0.011em` applied globally via `body` rule in `index.css` — do not override per-component.
 
 Source: `frontend/src/index.css` body rules, `frontend/src/components/ui/input.jsx` (text-sm), codebase pattern.
@@ -98,6 +98,12 @@ Source: `frontend/src/index.css` CSS variables, CONTEXT.md D-04, RESEARCH.md cod
 
 ---
 
+## Visual Hierarchy
+
+Primary visual anchor: the numeric input fields in the AddEntry form are the focal point of the primary interaction screen. They occupy the majority of vertical space, carry the largest touch targets (44px), and receive the blue accent focus ring — drawing the eye and finger to the data entry action before all other UI elements on the page.
+
+---
+
 ## Interaction Contracts
 
 ### Comma Decimal Input (ENTR-01)
@@ -124,12 +130,12 @@ Source: `frontend/src/index.css` CSS variables, CONTEXT.md D-04, RESEARCH.md cod
 - Mobile (default): `grid-cols-1` — single column, full-width cards
 - Tablet (`sm:`, 640px+): `grid-cols-2`
 - Desktop (`lg:`, 1024px+): `grid-cols-3`
-- Full class string: `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3`
+- Full class string: `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4`
 
 **AddEntry date fields:**
 - Mobile (default): `grid-cols-1` — stacked, each field full width
 - Tablet+ (`sm:`, 640px+): `grid-cols-2` — side by side
-- Full class string: `grid grid-cols-1 sm:grid-cols-2 gap-3`
+- Full class string: `grid grid-cols-1 sm:grid-cols-2 gap-4`
 
 **Drag-and-drop reorder (Settings — SectionsManagementCard):**
 - Desktop: existing `PointerSensor` retained, add `activationConstraint: { distance: 8 }` to prevent accidental drag on click
@@ -179,8 +185,8 @@ Existing components touched in this phase (no new components added to `src/compo
 | Input | `src/components/ui/input.jsx` | No change to the component itself — call sites change the `type` prop |
 | AddEntry form | `src/pages/AddEntry.jsx` | Change `type="number"` to `type="text"` on numeric inputs; add `normalizeDecimal` at validateField/handleSubmit call sites |
 | Settings numeric input | `src/pages/Settings.jsx` or child component | Same `type="text"` and normalize treatment as AddEntry (D-05 applies to all numeric inputs) |
-| Statistics grid | `src/pages/Statistics.jsx` | Tailwind responsive class: `grid-cols-3` → `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3` |
-| AddEntry date grid | `src/pages/AddEntry.jsx` | Tailwind responsive class: `grid-cols-2` → `grid grid-cols-1 sm:grid-cols-2 gap-3` |
+| Statistics grid | `src/pages/Statistics.jsx` | Tailwind responsive class: `grid-cols-3` → `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4` |
+| AddEntry date grid | `src/pages/AddEntry.jsx` | Tailwind responsive class: `grid-cols-2` → `grid grid-cols-1 sm:grid-cols-2 gap-4` |
 | SectionsManagementCard | `src/components/SectionsManagementCard.jsx` | Add `TouchSensor` to `useSensors()` with activation constraint |
 | Dashboard | `src/pages/Dashboard.jsx` | Replace `section.name` with `getSectionDisplayName(section, t)` |
 | Statistics | `src/pages/Statistics.jsx` | Replace `section.name` with `getSectionDisplayName(section, t)` |
