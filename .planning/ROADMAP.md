@@ -69,7 +69,11 @@ Plans:
   1. User sees a toggle on the Dashboard and can switch between displaying raw usage amounts and calculated cost values for each section
   2. User clicks a meter name in Settings and edits it inline, the same way section names are already editable
   3. User selects an icon for a water-related section and sees options including droplet, wave, and at least two additional water-themed icons
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 09-01-PLAN.md — Dashboard usage/cost segmented toggle (DASH-01)
+- [ ] 09-02-PLAN.md — Meter edit pencil affordance + water icon expansion (SETT-01, VISL-01)
 
 ## Progress
 
@@ -85,4 +89,4 @@ Plans:
 | 6. Statistics & Display | v1.0 | 2/2 | Complete | 2026-03-20 |
 | 7. Performance & Navigation | v1.1 | 3/3 | Complete   | 2026-03-20 |
 | 8. Data Entry & Mobile | v1.1 | 3/3 | Complete   | 2026-03-21 |
-| 9. Dashboard & Settings Polish | v1.1 | 0/TBD | Not started | - |
+| 9. Dashboard & Settings Polish | v1.1 | 0/2 | Not started | - |
