@@ -183,6 +183,11 @@
     },
     "errorLoad": "Statistiken konnten nicht geladen werden. Prüfe deine Verbindung."
   },
+  "sectionNames": {
+    "water": "Wasser",
+    "power": "Strom",
+    "fuel": "Brennstoff"
+  },
   "sections": {
     "loadError": "Abschnitte konnten nicht geladen werden.",
     "loadErrorHint": "Prufen Sie Ihre Verbindung und versuchen Sie es erneut.",
