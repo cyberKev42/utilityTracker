@@ -26,7 +26,7 @@ Replaced hardcoded Water/Power/Fuel categories with dynamic sections/meters syst
 ## Phases
 
 - [x] **Phase 7: Performance & Navigation** - SPA-like navigation and instant settings UI updates (completed 2026-03-20)
-- [ ] **Phase 8: Data Entry & Mobile** - Comma decimal support, translated dropdowns, and mobile layout fixes
+- [x] **Phase 8: Data Entry & Mobile** - Comma decimal support, translated dropdowns, and mobile layout fixes (completed 2026-03-21)
 - [ ] **Phase 9: Dashboard & Settings Polish** - Usage/cost toggle, inline meter name editing, and improved water icons
 
 ## Phase Details
@@ -54,12 +54,12 @@ Plans:
   1. User types a comma as a decimal separator (e.g. "1,5") in any numeric entry field and the value is accepted and parsed correctly
   2. User views the new entry form with German active and section names appear in German in the section dropdown
   3. User opens any page on a mobile device and no horizontal scroll bar appears and no UI element is clipped or cut off
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 
 Plans:
 - [x] 08-01-PLAN.md — DB migration + utility functions + i18n keys (ENTR-01, ENTR-02)
 - [x] 08-02-PLAN.md — Comma decimal input + section name translation across all pages (ENTR-01, ENTR-02)
-- [ ] 08-03-PLAN.md — Mobile responsive grids + touch-friendly drag-and-drop (MOBI-01)
+- [x] 08-03-PLAN.md — Mobile responsive grids + touch-friendly drag-and-drop (MOBI-01)
 
 ### Phase 9: Dashboard & Settings Polish
 **Goal**: Dashboard shows usage or cost at user's choice, settings provides inline meter name editing, and water icons are improved
@@ -84,5 +84,5 @@ Plans:
 | 5. Dynamic Entry Form | v1.0 | 2/2 | Complete | 2026-03-19 |
 | 6. Statistics & Display | v1.0 | 2/2 | Complete | 2026-03-20 |
 | 7. Performance & Navigation | v1.1 | 3/3 | Complete   | 2026-03-20 |
-| 8. Data Entry & Mobile | v1.1 | 2/3 | In Progress|  |
+| 8. Data Entry & Mobile | v1.1 | 3/3 | Complete   | 2026-03-21 |
 | 9. Dashboard & Settings Polish | v1.1 | 0/TBD | Not started | - |

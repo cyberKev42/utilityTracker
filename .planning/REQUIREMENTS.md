@@ -14,7 +14,7 @@ Requirements for polish & UX milestone. Each maps to roadmap phases.
 
 ### Mobile
 
-- [ ] **MOBI-01**: All pages render correctly on mobile without horizontal scroll or cut-off elements (including settings toggles)
+- [x] **MOBI-01**: All pages render correctly on mobile without horizontal scroll or cut-off elements (including settings toggles)
 
 ### Data Entry
 
@@ -62,7 +62,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | NAVI-01 | Phase 7 | Complete |
 | ENTR-01 | Phase 8 | Complete |
 | ENTR-02 | Phase 8 | Complete |
-| MOBI-01 | Phase 8 | Pending |
+| MOBI-01 | Phase 8 | Complete |
 | DASH-01 | Phase 9 | Pending |
 | SETT-01 | Phase 9 | Pending |
 | VISL-01 | Phase 9 | Pending |
