@@ -5,6 +5,7 @@ import { useEntriesData } from '../hooks/useEntriesData';
 import { useSections } from '../hooks/useSections';
 import { useCurrency } from '../hooks/useCurrency';
 import { ICON_MAP } from '../components/settings/IconPickerGrid';
+import { getSectionDisplayName } from '../utils/sectionName';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { motion } from 'framer-motion';
@@ -95,7 +96,7 @@ export default function Statistics() {
           <div className="h-6 w-32 bg-card animate-pulse rounded" />
           <div className="h-4 w-48 bg-card animate-pulse rounded mt-2" />
         </div>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="bg-card animate-pulse rounded-lg h-[72px]" />
           <div className="bg-card animate-pulse rounded-lg h-[72px]" />
           <div className="bg-card animate-pulse rounded-lg h-[72px]" />
@@ -184,7 +185,7 @@ export default function Statistics() {
         </div>
       </motion.div>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {statsSections.map((section, idx) => {
           const ctxSection = sectionLookup[section.name];
           const iconName = ctxSection?.icon;
@@ -200,7 +201,7 @@ export default function Statistics() {
                     </div>
                     <div>
                       <span className="text-sm font-medium text-foreground">
-                        {section.name}
+                        {getSectionDisplayName(section, t)}
                       </span>
                       <div className="text-xs text-muted-foreground mt-0.5">
                         {viewMode === 'usage'

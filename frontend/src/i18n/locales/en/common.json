@@ -185,6 +185,11 @@
     },
     "errorLoad": "Could not load statistics. Check your connection and try again."
   },
+  "sectionNames": {
+    "water": "Water",
+    "power": "Power",
+    "fuel": "Fuel"
+  },
   "sections": {
     "loadError": "Failed to load sections.",
     "loadErrorHint": "Check your connection and try again.",
