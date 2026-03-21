@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { normalizeDecimal } from '../utils/normalizeDecimal';
 import { createEntry } from '../services/entriesService';
 import { useCurrency } from '../hooks/useCurrency';
 import { useSections } from '../hooks/useSections';
@@ -112,7 +113,7 @@ export default function AddEntry() {
     const end = new Date(endDate);
     if (end < start) return null;
     const days = Math.round((end - start) / 86400000) + 1;
-    const usage = parseFloat(usageAmount);
+    const usage = parseFloat(normalizeDecimal(usageAmount));
     if (isNaN(usage) || usage <= 0) return null;
     const perDay = Math.round((usage / days) * 100) / 100;
     return { days, perDay };
@@ -121,8 +122,8 @@ export default function AddEntry() {
   // Auto-calculate cost preview when usage or unit price changes
   const costPreview = useCallback(() => {
     if (isReadingMode) return null;
-    const usage = parseFloat(usageAmount);
-    const price = parseFloat(unitPrice);
+    const usage = parseFloat(normalizeDecimal(usageAmount));
+    const price = parseFloat(normalizeDecimal(unitPrice));
     if (!isNaN(usage) && !isNaN(price) && usage > 0 && price >= 0) {
       return Math.round(usage * price * 100) / 100;
     }
@@ -160,19 +161,19 @@ export default function AddEntry() {
         return '';
       case 'usageAmount': {
         if (value === '' || value == null) return t('addEntry.validation.usageRequired');
-        const num = parseFloat(value);
+        const num = parseFloat(normalizeDecimal(value));
         if (isNaN(num) || num <= 0) return t('addEntry.validation.usagePositive');
         return '';
       }
       case 'meterReading': {
         if (value === '' || value == null) return t('addEntry.validation.meterReadingRequired');
-        const num = parseFloat(value);
+        const num = parseFloat(normalizeDecimal(value));
         if (isNaN(num) || num < 0) return t('addEntry.validation.meterReadingNonNegative');
         return '';
       }
       case 'unitPrice': {
         if (value === '' || value == null) return '';
-        const num = parseFloat(value);
+        const num = parseFloat(normalizeDecimal(value));
         if (isNaN(num) || num < 0) return t('addEntry.validation.unitPricePositive');
         return '';
       }
@@ -258,13 +259,13 @@ export default function AddEntry() {
       };
 
       if (isReadingMode) {
-        payload.meter_reading = parseFloat(meterReading);
+        payload.meter_reading = parseFloat(normalizeDecimal(meterReading));
       } else {
-        payload.usage_amount = parseFloat(usageAmount);
+        payload.usage_amount = parseFloat(normalizeDecimal(usageAmount));
       }
 
       if (unitPrice !== '') {
-        payload.unit_price = parseFloat(unitPrice);
+        payload.unit_price = parseFloat(normalizeDecimal(unitPrice));
       }
 
       await createEntry(payload);
@@ -460,10 +461,8 @@ export default function AddEntry() {
                             <Label htmlFor="meterReading">{t('addEntry.meterReading')}</Label>
                             <Input
                               id="meterReading"
-                              type="number"
+                              type="text"
                               inputMode="decimal"
-                              step="any"
-                              min="0"
                               placeholder={t('addEntry.meterReadingPlaceholder')}
                               value={meterReading}
                               onChange={(e) => handleFieldChange('meterReading', e.target.value)}
@@ -554,10 +553,8 @@ export default function AddEntry() {
                             </Label>
                             <Input
                               id="usageAmount"
-                              type="number"
+                              type="text"
                               inputMode="decimal"
-                              step="any"
-                              min="0"
                               placeholder={t('addEntry.usageAmountPlaceholder')}
                               value={usageAmount}
                               onChange={(e) => handleFieldChange('usageAmount', e.target.value)}
@@ -580,10 +577,8 @@ export default function AddEntry() {
                         <Label htmlFor="unitPrice">{t('addEntry.unitPrice')} <span className="text-muted-foreground font-normal text-xs">({t('addEntry.optional')})</span></Label>
                         <Input
                           id="unitPrice"
-                          type="number"
+                          type="text"
                           inputMode="decimal"
-                          step="any"
-                          min="0"
                           placeholder={t('addEntry.unitPricePlaceholder')}
                           value={unitPrice}
                           onChange={(e) => handleFieldChange('unitPrice', e.target.value)}
